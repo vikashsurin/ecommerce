@@ -1,5 +1,5 @@
 {
-  "name": "necom",
+  "name": "ecommerce",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -24,5 +24,8 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "dotenv": "^17.4.2"
+  }
 }
