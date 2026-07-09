@@ -1,10 +1,12 @@
-import { Geist, Geist_Mono } from "next/font/google"
+import { Geist, Geist_Mono } from "next/font/google";
+import './globals.css'
 
-import "@workspace/ui/globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
+import "@workspace/ui/globals.css";
+// import { ThemeProvider } from "@/components/theme-provider"
+import { Providers } from "@/lib";
 import { cn } from "@workspace/ui/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'})
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' })
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
@@ -23,7 +25,9 @@ export default function RootLayout({
       className={cn("antialiased", fontMono.variable, "font-sans", geist.variable)}
     >
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   )

@@ -21,7 +21,7 @@ export async function registerUser({ name, email, password, phone }: RegisterSch
       email,
       password,
       phone,
-      role: 'user',
+      role: 'seller',
     },
   })
 

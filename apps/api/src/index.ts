@@ -20,7 +20,7 @@ const app = new Hono<Env>()
 
 app.use('*', logger())
 app.use("*", cors({
-  origin: "http://localhost:3000", // Your frontend 'web' app URL
+  origin: ["http://localhost:3000", "http://localhost:3001"],
   allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
 }))

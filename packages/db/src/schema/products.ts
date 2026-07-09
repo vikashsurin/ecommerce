@@ -3,7 +3,7 @@ import { integer, jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 export const products = pgTable("products", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   name: text("name").notNull(),
-  slug: text("slug").notNull(),
+  slug: text("slug").notNull().unique(),
   description: text("description"),
   price: integer("price").notNull(),
   salePrice: integer("sale_price"),

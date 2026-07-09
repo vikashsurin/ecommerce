@@ -3,17 +3,9 @@ import { Hono } from "hono";
 import { z } from "zod";
 import { authMiddleware, isSeller } from '../../../middleware';
 import { validate } from "../../../middleware/validate";
+import { createProductSchema, slugSchema } from './schema';
 
-const createProductSchema = z.object({
-  name: z.string(),
-  slug: z.string(),
-  description: z.string(),
-  price: z.number(),
-  salePrice: z.number(),
-  stock: z.number(),
-  categoryId: z.number(),
-  brandId: z.number(),
-});
+
 
 export const createProductApp = new Hono()
   .post('/',
@@ -24,7 +16,9 @@ export const createProductApp = new Hono()
       const parsedData = c.req.valid("json");
 
       try {
-        const product = await insertProduct(parsedData)
+        const productSlug = slugSchema.parse(parsedData.name)
+
+        const product = await insertProductWithUniqueSlug(parsedData, productSlug)
         if (!product) {
           return c.json({ message: 'Failed to create product ' }, 400)
         }
@@ -38,12 +32,19 @@ export const createProductApp = new Hono()
     })
 
 
-const insertProduct = async (data: z.infer<typeof createProductSchema>) => {
+const insertProductWithUniqueSlug = async (data: z.infer<typeof createProductSchema>, baseSlug: string) => {
+  let slug = baseSlug;
+  let attempt = 0;
+  let maxAttempts = 10;
+
+
+  while (attempt < maxAttempts) {
+    try {
   const product = await db
     .insert(products)
     .values({
       name: data.name,
-      slug: data.slug,
+      slug: slug,
       description: data.description,
       price: data.price,
       salePrice: data.salePrice,
@@ -53,5 +54,22 @@ const insertProduct = async (data: z.infer<typeof createProductSchema>) => {
     })
     .returning()
 
-  return product[0] || null;
+      return product[0] || null;
+    }
+    catch (error:any) {
+      const isUniqueViolation = error?.cause?.errno === '23505';
+      const isSlugConflict = error?.cause?.constraint?.includes('slug');
+
+
+      if (isUniqueViolation && isSlugConflict && attempt < maxAttempts - 1) {
+        attempt++;
+        slug = `${baseSlug}-${attempt + 1}`;
+        continue;
+      }
+
+      throw error;
+    }
+  }
+  throw new Error('Failed to generate unique slug after max attempts');
+
 }

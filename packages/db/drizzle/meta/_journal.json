@@ -92,6 +92,20 @@
       "when": 1781851061024,
       "tag": "0012_daily_abomination",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1783593495007,
+      "tag": "0013_new_cable",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1783600351201,
+      "tag": "0014_rare_spot",
+      "breakpoints": true
     }
   ]
 }

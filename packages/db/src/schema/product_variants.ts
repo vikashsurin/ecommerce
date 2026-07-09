@@ -6,7 +6,7 @@ export const productVariants = pgTable("product_variants", {
   productId: integer("product_id")
     .notNull()
     .references(() => products.id, { onDelete: "cascade" }),
-  sku: text("sku").notNull(),
+  sku: text("sku").notNull().unique(),
   attributes: jsonb("attributes"),
   price: integer("price").notNull(),
   stock: integer("stock").notNull(),
