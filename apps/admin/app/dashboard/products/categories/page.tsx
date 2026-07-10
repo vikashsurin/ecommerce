@@ -9,8 +9,10 @@ import { Table, TableBody, TableHead, TableHeader, TableRow } from "@workspace/u
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@workspace/ui/components/dropdown-menu"
 
 import { Button } from "@workspace/ui/components/button"
-import { Ellipsis } from 'lucide-react'
+import { ArrowRight, Ellipsis } from 'lucide-react'
 
+import Link from "next/link"
+import { useState } from "react"
 
 export default function CategoriesPage() {
 
@@ -25,9 +27,9 @@ export default function CategoriesPage() {
 
 
 function AddCategory() {
+  const [isOpen, setIsOpen] = useState(false)
   return (
-    <div>
-      <Dialog>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger render={<Button size={'sm'}>Add Category</Button>}></DialogTrigger>
         <DialogContent>
           <DialogHeader>
@@ -36,10 +38,9 @@ function AddCategory() {
               Add a new category to the store.
             </DialogDescription>
           </DialogHeader>
-          <CreateCategoryForm />
+          <CreateCategoryForm setIsOpen={setIsOpen} />
         </DialogContent>
       </Dialog>
-    </div>
   )
 }
 
@@ -67,9 +68,18 @@ function CategoryTable() {
             <TableHead>
               <DropdownMenu>
               <DropdownMenuTrigger>
-                <Ellipsis />
+                  <Ellipsis size={16} className="ml-4"/>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
+                  <DropdownMenuItem>
+                    <Link
+                      href={`/dashboard/products/categories/${category.id}/attributes`}
+                      className="flex gap-2 items-center justify-between"
+                    >
+                      Attributes
+                      <ArrowRight />
+                    </Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem>Edit</DropdownMenuItem>
                 <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
               </DropdownMenuContent>

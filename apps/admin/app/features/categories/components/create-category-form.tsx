@@ -1,12 +1,12 @@
 import { useForm } from "@tanstack/react-form-nextjs";
 import { Button } from "@workspace/ui/components/button";
 import { DialogClose, DialogFooter } from "@workspace/ui/components/dialog";
-import { Field, FieldGroup, FieldLabel } from "@workspace/ui/components/field";
+import { Field, FieldGroup, FieldLabel, FieldError } from "@workspace/ui/components/field";
 import { Input } from "@workspace/ui/components/input";
 import { z } from "zod";
 import { useCreateCategory } from "../queries";
 
-export default function CreateCategoryForm() {
+export default function CreateCategoryForm({ setIsOpen }: { setIsOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
   const {mutate: createCategory, reset,isPending, isError} = useCreateCategory()
   const form = useForm({
     defaultValues: {
@@ -17,6 +17,7 @@ export default function CreateCategoryForm() {
         onSuccess: () => {
           reset()
           form.reset()
+          setIsOpen(false)
         },
       })
     },
@@ -53,7 +54,8 @@ export default function CreateCategoryForm() {
                       if (isError) reset()
                       field.handleChange(e.target.value)
                     }}
-                    />
+                  />
+                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
             </>
           )

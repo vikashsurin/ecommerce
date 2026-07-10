@@ -1,6 +1,6 @@
 import { useForm } from "@tanstack/react-form-nextjs";
 import { Button } from "@workspace/ui/components/button";
-import { Field, FieldGroup, FieldLabel } from "@workspace/ui/components/field";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@workspace/ui/components/field";
 import { Input } from "@workspace/ui/components/input";
 import { useCreateProduct } from "../queries";
 import { createProductSchema } from "../schema";
@@ -55,7 +55,8 @@ export default function CreateProductForm() {
                       if (isError) reset()
                       field.handleChange(e.target.value)
                     }}
-                    />
+                  />
+                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
             </>
           )
@@ -82,7 +83,8 @@ export default function CreateProductForm() {
                       if (isError) reset()
                       field.handleChange(e.target.value)
                     }}
-                    />
+                  />
+                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
             </>
           )
@@ -108,6 +110,7 @@ export default function CreateProductForm() {
                       field.handleChange(Number(e.target.value))
                     }}
                     />
+                     {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
             </>
           )
@@ -132,7 +135,8 @@ export default function CreateProductForm() {
                       if (isError) reset()
                       field.handleChange(Number(e.target.value))
                     }}
-                    />
+                  />
+                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
             </>
           )
@@ -156,7 +160,8 @@ export default function CreateProductForm() {
                       if (isError) reset()
                       field.handleChange(Number(e.target.value))
                     }}
-                    />
+                  />
+                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
             </>
           )
@@ -180,7 +185,8 @@ export default function CreateProductForm() {
                       if (isError) reset()
                       field.handleChange(Number(e.target.value))
                     }}
-                    />
+                  />
+                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
             </>
           )
@@ -204,7 +210,8 @@ export default function CreateProductForm() {
                       if (isError) reset()
                       field.handleChange(Number(e.target.value))
                     }}
-                    />
+                  />
+                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
             </>
           )

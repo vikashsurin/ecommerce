@@ -17,9 +17,14 @@ export const createCategoryApp = appFactory()
 
       try {
         const category = await createCategory({ name: data.name, slug })
-        return c.json(category)
+        return c.json({data:category})
       } catch (error) {
-        return c.json({ error: error instanceof Error ? error.message : String(error) }, 500)
+        return c.json({
+          error: {
+            code: 'internal_server_error',
+            message: error instanceof Error ? error.message : String(error),
+          },
+        }, 500)
       }
 
     }

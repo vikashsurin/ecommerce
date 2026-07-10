@@ -17,3 +17,13 @@ export const getCategories = async () => {
   const result = await parseResponse(response)
   return result.data
 }
+
+export const getAttributes = async (id: number) => {
+  const response = await apiClient.api.categories[`:id`].attributes.$get({
+    param: {
+      id: String(id),
+    }
+  })
+  const result = await parseResponse(response)
+  return result.data
+}
