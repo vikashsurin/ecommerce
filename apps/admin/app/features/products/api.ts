@@ -1,18 +1,12 @@
-import { apiClient } from "@/lib";
-import { parseResponse } from "hono/client";
-import { type CreateProductSchema } from "./schema";
-
-
+import { apiClient } from "@/lib"
+import { parseResponse } from "hono/client"
+import { CreateProductVariantSchema, type CreateProductSchema } from "./schema"
 
 export async function createProduct(data: CreateProductSchema) {
-
   const response = await apiClient.api.products.$post({
     json: {
       name: data.name,
-      price: data.price,
       description: data.description,
-      salePrice: data.salePrice,
-      stock: data.stock,
       categoryId: data.categoryId,
       brandId: data.brandId,
     },
@@ -20,7 +14,6 @@ export async function createProduct(data: CreateProductSchema) {
   const result = await parseResponse(response)
   return result.data
 }
-
 
 export const getProducts = async () => {
   try {
@@ -46,4 +39,65 @@ export const getProduct = async (id: string) => {
   }
 }
 
+export const generateSku = async (
+  productId: number,
+  attributes: Record<string, unknown>
+) => {
+  try {
+    const response = await apiClient.api.products[":productId"].variants[
+      "generate-sku"
+    ].$post({
+      param: {
+        productId: String(productId),
+      },
+      json: {
+        attributes,
+      },
+    })
+    const result = await parseResponse(response)
+    return result.data
+  } catch (error) {
+    console.error("Failed to generate SKU:", error)
+    throw error
+  }
+}
 
+export const createProductVariant = async (
+  data: CreateProductVariantSchema
+) => {
+  try {
+    const response = await apiClient.api.products[":productId"].variants.$post({
+      param: {
+        productId: String(data.productId),
+      },
+      json: {
+        productId: data.productId,
+        attributes: data.attributes,
+        price: data.price,
+        salePrice: data.salePrice,
+        stock: data.stock,
+        sku: data.sku,
+      },
+    })
+    const result = await parseResponse(response)
+    return result.data
+  } catch (error) {
+    console.error("Failed to create product variant:", error)
+    throw error
+  }
+}
+
+export const listProductVariants = async (productId: number) => {
+  try {
+    const response = await apiClient.api.products[":productId"].variants.$get({
+      param: {
+        productId: String(productId),
+      },
+    })
+    const result = await parseResponse(response)
+    return result.data
+  } catch (error) {
+    console.error("Failed to list product variants:", error)
+    throw error
+  }
+}

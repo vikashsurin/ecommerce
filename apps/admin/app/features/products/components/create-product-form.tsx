@@ -1,43 +1,62 @@
-import { useForm } from "@tanstack/react-form-nextjs";
-import { Button } from "@workspace/ui/components/button";
-import { Field, FieldError, FieldGroup, FieldLabel } from "@workspace/ui/components/field";
-import { Input } from "@workspace/ui/components/input";
-import { useCreateProduct } from "../queries";
-import { createProductSchema } from "../schema";
+import { useForm } from "@tanstack/react-form-nextjs"
+import { Button } from "@workspace/ui/components/button"
+import {
+  Field,
+  FieldContent,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@workspace/ui/components/field"
+import { Input } from "@workspace/ui/components/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@workspace/ui/components/select"
+import { redirect } from "next/navigation"
+import { useGetCategories } from "../../categories/queries"
+import { useCreateProduct } from "../queries"
+import { createProductSchema, Product } from "../schema"
 
 export default function CreateProductForm() {
+  const { data: categories, isLoading } = useGetCategories()
 
   const { mutate: createProduct, isError, reset } = useCreateProduct()
 
   const form = useForm({
     defaultValues: {
       name: "",
-      description: '',
-      price: 0,
-      salePrice: 0,
-      stock: 0,
+      description: "",
       categoryId: 0,
-      brandId:0,
+      brandId: 0,
     },
     validators: {
-      onSubmit:createProductSchema
+      onSubmit: createProductSchema,
     },
     onSubmit: async ({ value }) => {
-      console.log('submit', value)
-      createProduct(value)
-      reset()
-    }
-
+      createProduct(value, {
+        onSuccess: (data: Product) => {
+          const id = data?.id
+          console.log("succes", data)
+          reset()
+          form.reset()
+          redirect(`/dashboard/products/${id}`)
+        },
+      })
+    },
   })
   return (
     <form
       className="max-w-md"
       onSubmit={(e) => {
-      e.preventDefault();
-      form.handleSubmit()
-    }}>
+        e.preventDefault()
+        form.handleSubmit()
+      }}
+    >
       <FieldGroup>
-        <form.Field name='name'>
+        <form.Field name="name">
           {(field) => {
             const isInvalid =
               field.state.meta.isTouched && !field.state.meta.isValid
@@ -55,17 +74,16 @@ export default function CreateProductForm() {
                       if (isError) reset()
                       field.handleChange(e.target.value)
                     }}
+                    placeholder="Product name"
                   />
-                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
-            </>
-          )
+              </>
+            )
           }}
         </form.Field>
 
-
-
-        <form.Field name='description'>
+        <form.Field name="description">
           {(field) => {
             const isInvalid =
               field.state.meta.isTouched && !field.state.meta.isValid
@@ -83,116 +101,65 @@ export default function CreateProductForm() {
                       if (isError) reset()
                       field.handleChange(e.target.value)
                     }}
+                    placeholder="Product's description"
                   />
-                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
-            </>
-          )
+              </>
+            )
           }}
         </form.Field>
 
-        <form.Field name='price'>
+        <form.Field name="categoryId">
           {(field) => {
             const isInvalid =
               field.state.meta.isTouched && !field.state.meta.isValid
             return (
               <>
                 <Field>
-                  <FieldLabel>Price</FieldLabel>
-                  <Input
-                    type="number"
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => {
-                      if (isError) reset()
-                      field.handleChange(Number(e.target.value))
-                    }}
-                    />
-                     {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-            </>
-          )
-          }}
-        </form.Field>
+                  <FieldContent>
+                    <FieldLabel htmlFor="form-tanstack-select-category">
+                      Category
+                    </FieldLabel>
+                  </FieldContent>
 
-        <form.Field name='salePrice'>
-          {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid
-            return (
-              <>
-                <Field>
-                  <FieldLabel>SalePrice</FieldLabel>
-                  <Input
-                    type="number"
-                    id={field.name}
+                  <Select
                     name={field.name}
                     value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => {
-                      if (isError) reset()
-                      field.handleChange(Number(e.target.value))
+                    onValueChange={(val) => {
+                      field.handleChange(val ? Number(val) : 0)
                     }}
-                  />
-                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                  >
+                    <SelectTrigger
+                      id="form-tanstack-select-category"
+                      aria-invalid={isInvalid}
+                    >
+                      <SelectValue placeholder="Select">
+                        {
+                          categories?.find(
+                            (c) => String(c.id) === String(field.state.value)
+                          )?.name
+                        }
+                      </SelectValue>
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      {categories &&
+                        categories.map((category) => (
+                          <SelectItem key={category.id} value={category.id}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
-            </>
-          )
+              </>
+            )
           }}
         </form.Field>
-        <form.Field name='stock'>
-          {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid
-            return (
-              <>
-                <Field>
-                  <FieldLabel>Stock</FieldLabel>
-                  <Input
-                    type="number"
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => {
-                      if (isError) reset()
-                      field.handleChange(Number(e.target.value))
-                    }}
-                  />
-                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-            </>
-          )
-          }}
-        </form.Field>
-        <form.Field name='categoryId'>
-          {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid
-            return (
-              <>
-                <Field>
-                  <FieldLabel>Category Id</FieldLabel>
-                  <Input
-                    type="number"
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => {
-                      if (isError) reset()
-                      field.handleChange(Number(e.target.value))
-                    }}
-                  />
-                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-            </>
-          )
-          }}
-        </form.Field>
-        <form.Field name='brandId'>
+        <form.Field name="brandId">
           {(field) => {
             const isInvalid =
               field.state.meta.isTouched && !field.state.meta.isValid
@@ -207,20 +174,20 @@ export default function CreateProductForm() {
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => {
+                      const val = e.target.value
                       if (isError) reset()
-                      field.handleChange(Number(e.target.value))
+                      field.handleChange(Number(val))
                     }}
                   />
-                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
-            </>
-          )
+              </>
+            )
           }}
         </form.Field>
 
         <Button type="submit">Submit</Button>
       </FieldGroup>
-
-      </form>
-  );
+    </form>
+  )
 }

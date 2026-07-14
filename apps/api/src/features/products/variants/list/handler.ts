@@ -1,16 +1,17 @@
-import z from "zod";
-import { appFactory } from "../../../lib/factory";
-import { authMiddleware, validate } from "../../../middleware";
 import { db, productVariants } from "@repo/db";
 import { eq } from "drizzle-orm";
+import z from "zod";
+import { appFactory } from "../../../../lib/factory";
+import { authMiddleware, validate } from "../../../../middleware";
 
 export const listProductVariantsApp = appFactory()
-  .get('/', authMiddleware,
-    validate('json', z.object({
+  .get('/:productId/variants',
+    // authMiddleware,
+    validate('param', z.object({
       productId: z.coerce.number()
     })),
     async (c) => {
-      const { productId } = c.req.valid('json')
+      const { productId } = c.req.valid('param')
       const user = c.get('user')
 
       try {

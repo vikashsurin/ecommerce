@@ -1,9 +1,10 @@
 import { Hono } from "hono";
-import { createProductApp } from "./create-product/handler";
-import { deleteProductApp } from "./delete-product/handler";
-import { getProductApp } from "./get-product/handler";
-import { listProductsApp } from "./list-products/handler";
-import { updateProductApp } from "./update-product/handler";
+import { createProductApp } from "./create/handler";
+import { deleteProductApp } from "./delete/handler";
+import { getProductApp } from "./get/handler";
+import { listProductsApp } from "./list/handler";
+import { updateProductApp } from "./update/handler";
+import { productVariantsApp } from "./variants/index";
 
 export const productsApp = new Hono()
   .route('/', listProductsApp)
@@ -11,3 +12,4 @@ export const productsApp = new Hono()
   .route('/', deleteProductApp)
   .route('/', getProductApp)
   .route('/', updateProductApp)
+  .route('/', productVariantsApp)

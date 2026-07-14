@@ -3,7 +3,9 @@ import { appFactory } from "../../../lib/factory";
 import { authMiddleware } from "../../../middleware";
 
 export const listCategoriesApp = appFactory()
-  .get('/', authMiddleware, async (c) => {
+  .get('/',
+    // authMiddleware,
+    async (c) => {
 
     try {
       const categories = await selectCategories()

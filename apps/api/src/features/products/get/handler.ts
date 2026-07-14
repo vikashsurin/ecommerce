@@ -1,8 +1,7 @@
 import { Hono } from "hono";
 import { z } from "zod";
 import { validate } from "../../../middleware/validate";
-import { db, products } from "@repo/db";
-import { eq } from "drizzle-orm";
+import { getProductById } from "../shared";
 
 export const getProductApp = new Hono()
   .get("/:id",
@@ -30,13 +29,3 @@ export const getProductApp = new Hono()
         }, 500);
       }
     });
-
-
-async function getProductById(id: number) {
-  const product = await db
-    .select()
-    .from(products)
-    .where(eq(products.id, id))
-    .limit(1);
-  return product[0];
-}

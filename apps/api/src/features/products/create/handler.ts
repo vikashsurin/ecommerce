@@ -46,9 +46,6 @@ const insertProductWithUniqueSlug = async (data: z.infer<typeof createProductSch
       name: data.name,
       slug: slug,
       description: data.description,
-      price: data.price,
-      salePrice: data.salePrice,
-      stock: data.stock,
       categoryId: data.categoryId,
       brandId: data.brandId,
     })

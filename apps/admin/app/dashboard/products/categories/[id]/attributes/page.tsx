@@ -1,24 +1,32 @@
 'use client'
 
-import { AddAttributesForm } from "@/app/features/categories/components/add-attributes-form"
 import { useGetAttributes } from "@/app/features/categories/queries"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@workspace/ui/components/dropdown-menu"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table"
+import { Ellipsis } from "lucide-react"
 import { useParams } from "next/navigation"
+import { useState } from "react"
+import { AddAttributeDrawer } from "./add-attibute-drawer"
+import { EditAttributesDrawer } from "./update-attribute-drawer"
+import { DeleteAttributeDialog } from "./delete-attribute-dialog"
 
 export default function AttributesPage() {
-
  return (
     <>
       <div>
        <h1>Attributes Page</h1>
+       <AddAttributeDrawer />
        <AttributesTable />
-       <AddAttributesForm />
       </div>
     </>
   )
 }
 
 function AttributesTable() {
+  const [isOpen, setIsOpen] = useState(false)
+
+  const [isDelete, setIsDelete] = useState(false)
+
   const { id } = useParams<{id:string}>()
   const { data, isLoading, isError } = useGetAttributes(Number(id))
 
@@ -31,6 +39,7 @@ function AttributesTable() {
       <TableHeader>
         <TableRow className="bg-gray-100">
           <TableHead>Id</TableHead>
+          <TableHead>CategoryId</TableHead>
           <TableHead>Key</TableHead>
           <TableHead>Label</TableHead>
           <TableHead>Input Type</TableHead>
@@ -38,13 +47,16 @@ function AttributesTable() {
           <TableHead>Required</TableHead>
           <TableHead>SkuAbbr</TableHead>
           <TableHead>Sort Order</TableHead>
+          <TableHead>Actions</TableHead>
+
         </TableRow>
       </TableHeader>
 
       <TableBody>
         {data && data.map((attr) =>
           <TableRow key={attr.id}>
-            <TableCell>{attr.id}</TableCell>
+           <TableCell>{attr.id}</TableCell>
+           <TableCell>{attr.categoryId}</TableCell>
             <TableCell>{attr.key}</TableCell>
             <TableCell>{attr.label}</TableCell>
             <TableCell>{attr.inputType}</TableCell>
@@ -52,6 +64,37 @@ function AttributesTable() {
             <TableCell>{attr.required?.toString()}</TableCell>
             <TableCell>{attr.skuAbbreviation?.toString()}</TableCell>
             <TableCell>{attr.sortOrder}</TableCell>
+            <TableCell>
+              <DropdownMenu>
+              <DropdownMenuTrigger>
+                  <Ellipsis size={16} className="ml-4"/>
+              </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      e.preventDefault()
+                      setIsOpen(true)
+                    }}>Edit</DropdownMenuItem>
+
+
+                  <DropdownMenuItem variant="destructive"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      setIsDelete(true)
+                    }}>Delete</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            </TableCell>
+              <EditAttributesDrawer
+                isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              id={attr.id}
+              data={attr} />
+
+            <DeleteAttributeDialog
+              isOpen={isDelete}
+              setIsOpen={setIsDelete}
+              id={attr.id} />
           </TableRow>
         )}
       </TableBody>

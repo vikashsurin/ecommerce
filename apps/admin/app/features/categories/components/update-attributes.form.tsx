@@ -6,19 +6,14 @@ import { Input } from "@workspace/ui/components/input";
 import { RadioGroup, RadioGroupItem } from "@workspace/ui/components/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select";
 import { TagInput } from "@workspace/ui/components/TagInput";
-import { useParams } from "next/navigation";
-import { useCreateAttribute } from "../queries";
-import { createAttributeSchema } from "../schema";
+import { useUpdateAttribute } from "../queries";
+import { createAttributeSchema, type UpdateAttributeSchema } from "../schema";
 
 
-export function AddAttributesForm({ setIsOpen }: { setIsOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
-
-  const { id } = useParams<{ id: string }>()
-
-  console.log("from", id);
+export function UpdateAttributesForm({ setIsOpen, data, id }: { setIsOpen: React.Dispatch<React.SetStateAction<boolean>>, data: UpdateAttributeSchema, id: number }) {
 
 
-  const {mutate, isPending, isError, reset} = useCreateAttribute()
+  const {mutate,  isError, reset} = useUpdateAttribute()
 
   const boolOptions = [
     {id: 1, label: "Yes", value: true},
@@ -42,18 +37,17 @@ export function AddAttributesForm({ setIsOpen }: { setIsOpen: React.Dispatch<Rea
 
   const form = useForm({
     defaultValues: {
-      categoryId:Number(id),
-      key: '',
-      label: '',
-      inputType: '',
-      options: [] as string[],
-      required:false,
-      skuAbbreviation: false,
-      sortOrder:0,
+      categoryId: data.categoryId,
+      key: data.key,
+      label: data.label,
+      inputType: data.inputType,
+      options: data.options ?? [] as string[],
+      required: data.required ?? false,
+      skuAbbreviation: data.skuAbbreviation ?? false,
+      sortOrder: data.sortOrder ?? 0,
     },
     onSubmit: async ({ value }) => {
-      console.log({value})
-      mutate(value, {
+      mutate({id: Number(id), data: value}, {
         onSuccess: () => {
           reset()
           setIsOpen(false)

@@ -7,9 +7,6 @@ import { validate } from "../../../middleware/validate";
 const updateProductSchema = z.object({
   name: z.string().optional(),
   description: z.string().optional(),
-  price: z.number().optional(),
-  salePrice: z.number().optional(),
-  stock: z.number().optional(),
 });
 
 export const updateProductApp = new Hono()

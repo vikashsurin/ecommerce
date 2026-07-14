@@ -1,37 +1,51 @@
-'use client'
+"use client"
 
-import ProductItem from "@/app/features/products/components/ProductItem";
-import { useProducts } from "@/app/features/products/queries";
+import ProductItem from "@/app/features/products/components/product-item"
+import { useProducts } from "@/app/features/products/queries"
+import { Button } from "@workspace/ui/components/button"
+import { ArrowRight, Plus } from "lucide-react"
+import Link from "next/link"
+
 
 export default function ProductsPage() {
   return (
-    <div>
-      <h1 className="text-4xl font-serif font-bold">Products</h1>
+    <div className="p-4">
+      <h1>Products</h1>
 
-      <div className="flex gap-2">
-      <a href="/dashboard/products/new" className="underline">Add Product</a>
-      <a href="/dashboard/products/categories" className="underline">Categories</a>
+      <div className="flex gap-2 mt-4">
+        <Link href="/dashboard/products/new" className="underline">
+        <Button> <Plus />Add Products</Button>
+        </Link>
+        <Link href="/dashboard/products/categories" className="underline">
+          <Button variant={'secondary'}>Categories <ArrowRight /></Button>
+        </Link>
       </div>
 
-
-      <ProductList  />
+      <ProductList />
     </div>
-  );
+  )
 }
+
+
 
 function ProductList() {
   const { data: products, isLoading } = useProducts()
-  console.log({products})
+
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
+
+  if (!products || products.length === 0) {
+    return <div>No products found.</div>
+  }
+
   return (
     <>
-        {isLoading && <p>Loading...</p>}
-      <div className="flex gap-2">
-        {products && products.map((product) => (
-          <ProductItem
-            key={product.id}
-            product={product} />
-
-        ))}
+      <div className="mt-6 flex w-screen flex-wrap gap-2">
+        {products &&
+          products.map((product) => (
+            <ProductItem key={product.id} product={product} />
+          ))}
       </div>
     </>
   )
