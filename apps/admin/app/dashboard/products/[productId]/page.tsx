@@ -10,11 +10,11 @@ export default function ProductPage() {
   const { productId } = useParams<{ productId: string }>()
   const { data: product, isLoading } = useProduct(productId)
 
+  if (isLoading) return <div>Loading...</div>
   return (
     <>
-      {isLoading && <div>Loading...</div>}
-
-      <section className="flex justify-between gap-4">
+      <div className="m-4">
+        <section className="flex justify-between  gap-4">
         <div className="flex flex-col gap-4">
           {product && (
             <div className="flex w-max gap-4">
@@ -41,13 +41,6 @@ export default function ProductPage() {
                       {product.slug}
                     </p>
                   </div>
-
-                  {/* <div>
-                    <h6 className="text-sm font-semibold">Price:</h6>
-                    <p className="rounded border p-1 px-2 text-sm text-gray-600">
-                      {product.price}
-                    </p>
-                  </div> */}
                 </div>
               </div>
             </div>
@@ -59,11 +52,13 @@ export default function ProductPage() {
             <AddVariantDrawer categoryId={product.categoryId} />
           ) : (
             <div></div>
-          )}
-        </div>
-      </section>
+            )}
 
+
+          </div>
+        </section>
       <ProductVariantsTable />
+     </div>
     </>
   )
 }

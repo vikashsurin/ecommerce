@@ -23,7 +23,7 @@ export function AddAttributeDrawer() {
     >
       <DrawerTrigger
         render={
-          <Button>
+          <Button className={'mt-6'}>
             <Plus />
             Add Attribute
           </Button>

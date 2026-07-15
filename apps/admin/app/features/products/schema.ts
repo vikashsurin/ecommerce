@@ -35,3 +35,26 @@ export const createProductVariantSchema = z.object({
 export type CreateProductVariantSchema = z.infer<
   typeof createProductVariantSchema
 >
+
+
+export const updateProductVariantSchema = z
+  .object({
+    price: z.number().positive().optional(),
+    salePrice: z.number().positive().nullable().optional(),
+    stock: z.number().int().nonnegative().optional(),
+  })
+  .refine(
+    (data) => data.stock !== undefined || data.price !== undefined || data.salePrice !== undefined,
+    {
+      message: "You must provide either 'stock' or 'price' or 'salePrice' to update.",
+      path: ["stock"],
+    }
+  );
+
+export const updateSalePriceSchema = z
+  .object({
+    price: z.number().positive().optional(),
+    salePrice: z.number().positive().nullable().optional(),
+  })
+
+export type UpdateProductVariantSchema = z.infer<typeof updateProductVariantSchema>

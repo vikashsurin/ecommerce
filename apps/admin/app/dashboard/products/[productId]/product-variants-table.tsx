@@ -1,11 +1,11 @@
 import { useProductVariants } from "@/app/features/products/queries"
-import { Badge } from "@workspace/ui/components/badge"
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
+
 import {
   Table,
   TableBody,
@@ -14,8 +14,12 @@ import {
   TableHeader,
   TableRow,
 } from "@workspace/ui/components/table"
-import { Ellipsis, Link, ArrowRight } from "lucide-react"
+import { Ellipsis } from "lucide-react"
 import { useParams } from "next/dist/client/components/navigation"
+import { useState } from "react"
+import UpdatePricePopover from "./update-price-popover"
+import UpdateSalePricePopover from "./update-sale-price-popover"
+import UpdateStock from "./update-stock-popover"
 
 export default function ProductVariantsTable() {
   const { productId } = useParams<{ productId: string }>()
@@ -24,12 +28,17 @@ export default function ProductVariantsTable() {
     Number(productId)
   )
 
-  console.log({ productVariants })
+const [stockEditId, setStockEditId] = useState<number | null>(null)
+const [priceEditId, setPriceEditId] = useState<number | null>(null)
+const [salePriceEditId, setSalePriceEditId] = useState<number | null>(null)
+
   if (isLoading) return <div>Loading product variants...</div>
 
   return (
     <>
-      <h3>Product variants</h3>
+      <section className="mt-6">
+
+      <h2>Product variants</h2>
       <div>
         {productVariants && productVariants.length > 0 ? (
           <Table className="w-full border-collapse border border-gray-300">
@@ -61,9 +70,68 @@ export default function ProductVariantsTable() {
                       )
                     )}
                   </TableCell>
-                  <TableCell>{variant.price}</TableCell>
-                  <TableCell>{variant.salePrice}</TableCell>
-                  <TableCell>{variant.stock}</TableCell>
+
+                  {/*price*/}
+                  <TableCell
+                    onMouseOver={() => {
+                      setPriceEditId(variant.id)
+                    }}
+                  onMouseOut={() => {
+                    setPriceEditId(null)
+                  }}>
+                    <div className="relative  flex items-center gap-2 w-14">
+                      <span>
+                        {variant.price}
+                      </span>
+                      {priceEditId === variant.id &&
+                        <UpdatePricePopover
+                          productId={Number(productId)}
+                          variantId={variant.id}
+                          price={variant.price} />}
+                    </div>
+
+                  </TableCell>
+
+                  {/*sale price*/}
+                  <TableCell
+                    className=""
+                    onMouseOver={() => {
+                      setSalePriceEditId(variant.id)
+                    }}
+                    onMouseOut={() => {
+                      setSalePriceEditId(null)
+                    }}>
+                    <div className="relative flex items-center gap-2 w-14">
+                      <span>{variant.salePrice}</span>
+                      {salePriceEditId === variant.id &&
+                        <UpdateSalePricePopover
+                          productId={Number(productId)}
+                          variantId={variant.id}
+                          price={variant.price}
+                          salePrice={variant.salePrice}
+                        />
+                      }
+                    </div>
+                  </TableCell>
+
+                  {/*stock*/}
+                  <TableCell
+                    onMouseOver={() => {
+                      setStockEditId(variant.id)
+                    }}
+                    onMouseOut={() => {
+                      setStockEditId(null)
+                    }}>
+                    <div className="relative  flex items-center gap-2 w-14">
+                      <span>{variant.stock}</span>
+                      {stockEditId === variant.id &&
+                        <UpdateStock
+                         productId={Number(productId)}
+                          variantId={variant.id}
+                          stockValue={variant.stock}
+                        />}
+                    </div>
+                  </TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger>
@@ -85,6 +153,7 @@ export default function ProductVariantsTable() {
           <p>No variants found for this product.</p>
         )}
       </div>
+      </section>
     </>
   )
 }

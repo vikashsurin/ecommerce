@@ -7,8 +7,9 @@ import {
   getProduct,
   getProducts,
   listProductVariants,
+  updateProductVariant,
 } from "./api"
-import { CreateProductVariantSchema, type CreateProductSchema } from "./schema"
+import { CreateProductVariantSchema, UpdateProductVariantSchema, type CreateProductSchema } from "./schema"
 
 export const useCreateProduct = () => {
   return useMutation({
@@ -65,6 +66,32 @@ export const useCreateProductVariant = () => {
     },
     onError: (error) => {
       console.error("Failed to create product variant", error)
+    },
+  })
+}
+
+export const useUpdateProductVariant = () => {
+  return useMutation({
+    mutationFn: async ({
+      data,
+      productId,
+      variantId,
+    }: {
+      data: UpdateProductVariantSchema
+      productId: number
+      variantId: number
+    }) => {
+      return updateProductVariant({ data, productId, variantId })
+    },
+    onSuccess: (data) => {
+      if (data) {
+        queryClient.invalidateQueries({
+          queryKey: ["productVariants", data.productId],
+        })
+      }
+    },
+    onError: (error) => {
+      console.error("Failed to update product variant", error)
     },
   })
 }

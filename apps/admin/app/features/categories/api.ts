@@ -19,6 +19,16 @@ export const getCategories = async () => {
   return result.data
 }
 
+export const getCategory = async (id: number) => {
+  const response = await apiClient.api.categories[`:categoryId`].$get({
+    param: {
+      categoryId: String(id),
+    }
+  })
+  const result = await parseResponse(response)
+  return result.data
+}
+
 export const getAttributes = async (id: number) => {
   const response = await apiClient.api.categories[`:id`].attributes.$get({
     param: {

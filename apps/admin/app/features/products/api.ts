@@ -1,6 +1,10 @@
 import { apiClient } from "@/lib"
 import { parseResponse } from "hono/client"
-import { CreateProductVariantSchema, type CreateProductSchema } from "./schema"
+import {
+  CreateProductVariantSchema,
+  type CreateProductSchema,
+  type UpdateProductVariantSchema
+} from "./schema"
 
 export async function createProduct(data: CreateProductSchema) {
   const response = await apiClient.api.products.$post({
@@ -83,6 +87,37 @@ export const createProductVariant = async (
     return result.data
   } catch (error) {
     console.error("Failed to create product variant:", error)
+    throw error
+  }
+}
+
+
+export const updateProductVariant = async ({
+  data,
+  productId,
+  variantId,
+}: {
+  data: UpdateProductVariantSchema
+  productId: number
+  variantId: number
+}) => {
+  try {
+    const response = await apiClient.api.products[":productId"].variants[":variantId"].$put({
+      param: {
+        productId: String(productId),
+        variantId: String(variantId),
+      },
+      json: {
+        productId:productId,
+        stock: data.stock,
+        price: data.price,
+        salePrice: data.salePrice,
+      },
+    })
+    const result = await parseResponse(response)
+    return result.data
+  } catch (error) {
+    console.error("Failed to update product variant:", error)
     throw error
   }
 }

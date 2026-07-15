@@ -1,20 +1,25 @@
 'use client'
 
-import { useGetAttributes } from "@/app/features/categories/queries"
+import { useGetAttributes, useGetCategory } from "@/app/features/categories/queries"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@workspace/ui/components/dropdown-menu"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table"
 import { Ellipsis } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useState } from "react"
 import { AddAttributeDrawer } from "./add-attibute-drawer"
-import { EditAttributesDrawer } from "./update-attribute-drawer"
 import { DeleteAttributeDialog } from "./delete-attribute-dialog"
+import { EditAttributesDrawer } from "./update-attribute-drawer"
 
 export default function AttributesPage() {
+  const { categoryId } = useParams<{ categoryId: string }>()
+
+  const { data: category, isLoading } = useGetCategory(Number(categoryId))
+
  return (
     <>
-      <div>
-       <h1>Attributes Page</h1>
+      <div className="m-4">
+       <h1>{isLoading ? "Loading..." : category?.name}</h1>
+       <p className="mb-4 text-gray-600">These are the list of attributes for the category {category?.name}</p>
        <AddAttributeDrawer />
        <AttributesTable />
       </div>
@@ -27,15 +32,15 @@ function AttributesTable() {
 
   const [isDelete, setIsDelete] = useState(false)
 
-  const { id } = useParams<{id:string}>()
-  const { data, isLoading, isError } = useGetAttributes(Number(id))
+  const { categoryId } = useParams<{ categoryId: string }>()
+  const { data, isLoading, isError } = useGetAttributes(Number(categoryId))
 
   if (isLoading) return <p>Loading...</p>
   if (isError) return <p>Error loading attributes.</p>
 
 
   return (
-    <Table>
+    <Table className="mt-6 border-collapse border border-gray-300">
       <TableHeader>
         <TableRow className="bg-gray-100">
           <TableHead>Id</TableHead>
@@ -86,7 +91,7 @@ function AttributesTable() {
             </DropdownMenu>
             </TableCell>
               <EditAttributesDrawer
-                isOpen={isOpen}
+              isOpen={isOpen}
               setIsOpen={setIsOpen}
               id={attr.id}
               data={attr} />

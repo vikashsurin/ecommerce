@@ -4,6 +4,7 @@ import {
   createCategory,
   updateAttribute,
   deleteAttribute,
+  getCategory,
 } from "./api"
 
 export const useCreateCategory = () => {
@@ -29,6 +30,13 @@ export const useGetCategories = () => {
   return useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
+  })
+}
+
+export const useGetCategory = (id: number) => {
+  return useQuery({
+    queryKey: ["category", id],
+    queryFn: () => getCategory(id),
   })
 }
 

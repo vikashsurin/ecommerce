@@ -13,9 +13,8 @@ import { createAttributeSchema } from "../schema";
 
 export function AddAttributesForm({ setIsOpen }: { setIsOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
 
-  const { id } = useParams<{ id: string }>()
+  const { categoryId } = useParams<{ categoryId: string }>()
 
-  console.log("from", id);
 
 
   const {mutate, isPending, isError, reset} = useCreateAttribute()
@@ -42,7 +41,7 @@ export function AddAttributesForm({ setIsOpen }: { setIsOpen: React.Dispatch<Rea
 
   const form = useForm({
     defaultValues: {
-      categoryId:Number(id),
+      categoryId: Number(categoryId),
       key: '',
       label: '',
       inputType: '',
