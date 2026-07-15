@@ -1,4 +1,4 @@
-import { UpdateStockForm } from "@/app/features/products/components/update-stock-form";
+import { UpdateStockForm } from "@/app/features/products/variants/components/update-stock-form";
 import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger } from "@workspace/ui/components/popover";
 import { SquarePen } from "lucide-react";
 import { useState } from "react";

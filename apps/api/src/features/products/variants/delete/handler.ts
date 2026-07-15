@@ -25,7 +25,7 @@ export const deleteProductVariantApp = appFactory()
             }
           }, 404)
         }
-        return c.json({ data:deleted.id});
+        return c.json({ data:deleted});
       } catch (error) {
         return c.json({
           error: {

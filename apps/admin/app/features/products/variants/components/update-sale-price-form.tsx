@@ -37,7 +37,6 @@ export function UpdateSalePriceForm({
       onSubmit: updateProductVariantSchema,
     },
 
-
     onSubmit: async ({ value }) => {
       mutate(
         { data: value, productId, variantId },
@@ -46,21 +45,21 @@ export function UpdateSalePriceForm({
             setOpen(false)
           },
           onError: () => {
-            toast.error("Failed to update stock")
+            toast.error("Error updating sale price")
           },
         }
       )
     },
   })
 
+    console.log(form.getFieldValue("salePrice"))
 
-  console.log(form.state)
 
   useEffect(() => {
     if (!onSale) {
       form.setFieldValue("salePrice", null)
     } else {
-      form.setFieldValue("salePrice", salePrice ?? price)
+      form.setFieldValue("salePrice", salePrice ?? price - 1)
     }
   }, [onSale, form, salePrice, price])
 
@@ -73,6 +72,9 @@ export function UpdateSalePriceForm({
     >
       <form.Field name="salePrice">
         {(field) => {
+          const isError = field.state.meta.errors
+
+          console.log({isError})
           return (
             <>
               <div className="my-2 flex items-start justify-between gap-2 rounded-lg border p-2">
@@ -122,8 +124,9 @@ export function UpdateSalePriceForm({
                     if (current >= price) {
                       toast.error('Sale Price cannot be greater than the regular price')
                       return
-                    }
+                    } else {
                     field.handleChange(current + 1)
+                    }
                   }}
                 >
                   <Plus size={16} />
@@ -138,7 +141,7 @@ export function UpdateSalePriceForm({
           Cancel
         </Button>
         <Button type="submit" variant="default" size={"xs"}>
-          {isPending ? "Updating..." : "Update"}
+          {onSale ? "Update" : onSale === false? "Remove sale": isPending ? "Updating..." : ''}
         </Button>
       </div>
     </form>

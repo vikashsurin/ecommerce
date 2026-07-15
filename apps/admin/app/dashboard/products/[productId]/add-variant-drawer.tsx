@@ -1,4 +1,4 @@
-import AddVariantForm from "@/app/features/products/components/create-variant-form"
+import AddVariantForm from "@/app/features/products/variants/components/create-variant-form"
 import { Button } from "@workspace/ui/components/button"
 import {
   Drawer,

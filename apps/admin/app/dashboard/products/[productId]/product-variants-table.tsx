@@ -1,10 +1,4 @@
-import { useProductVariants } from "@/app/features/products/queries"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
+import { useProductVariants } from "@/app/features/products/variants/queries"
 
 import {
   Table,
@@ -14,9 +8,9 @@ import {
   TableHeader,
   TableRow,
 } from "@workspace/ui/components/table"
-import { Ellipsis } from "lucide-react"
 import { useParams } from "next/dist/client/components/navigation"
 import { useState } from "react"
+import { ProductVariantActionMenu } from "./product-variant-action-menu"
 import UpdatePricePopover from "./update-price-popover"
 import UpdateSalePricePopover from "./update-sale-price-popover"
 import UpdateStock from "./update-stock-popover"
@@ -133,17 +127,10 @@ const [salePriceEditId, setSalePriceEditId] = useState<number | null>(null)
                     </div>
                   </TableCell>
                   <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger>
-                        <Ellipsis size={16} className="ml-4" />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuItem variant="destructive">
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <ProductVariantActionMenu
+                      productId={Number(productId)}
+                      variant={variant}
+                    />
                   </TableCell>
                 </TableRow>
               ))}

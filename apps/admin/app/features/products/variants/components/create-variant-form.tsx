@@ -18,7 +18,7 @@ import {
 } from "@workspace/ui/components/select"
 import { Info } from "lucide-react"
 import { useParams } from "next/navigation"
-import { useGetAttributes } from "../../categories/queries"
+import { useGetAttributes } from "../../../categories/queries"
 import { useCreateProductVariant, useGenerateSku } from "../queries"
 import { createProductVariantSchema } from "../schema"
 
