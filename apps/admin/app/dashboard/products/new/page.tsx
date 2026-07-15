@@ -3,7 +3,7 @@ import CreateProductForm from "@/app/features/products/components/create-product
 
 export default function NewProductPage() {
   return (
-    <div>
+    <div className="m-4">
       <h1 className="font-bold font-serif text-4xl">New Product</h1>
       <CreateProductForm />
     </div>

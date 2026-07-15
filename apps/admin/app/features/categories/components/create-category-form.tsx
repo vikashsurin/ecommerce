@@ -1,10 +1,12 @@
 import { useForm } from "@tanstack/react-form-nextjs";
 import { Button } from "@workspace/ui/components/button";
 import { DialogClose, DialogFooter } from "@workspace/ui/components/dialog";
-import { Field, FieldGroup, FieldLabel, FieldError } from "@workspace/ui/components/field";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@workspace/ui/components/field";
 import { Input } from "@workspace/ui/components/input";
+import { toast } from "sonner";
 import { z } from "zod";
 import { useCreateCategory } from "../queries";
+import { Category } from "../schema";
 
 export default function CreateCategoryForm({ setIsOpen }: { setIsOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
   const {mutate: createCategory, reset,isPending, isError} = useCreateCategory()
@@ -14,10 +16,12 @@ export default function CreateCategoryForm({ setIsOpen }: { setIsOpen: React.Dis
     },
     onSubmit: async ({value}) => {
       createCategory(value, {
-        onSuccess: () => {
+        onSuccess: (data: any) => {
+          const category = data as Category
           reset()
           form.reset()
           setIsOpen(false)
+          toast.success(<p> Category <b>{category.name}</b> created successfully</p>)
         },
       })
     },
@@ -62,7 +66,7 @@ export default function CreateCategoryForm({ setIsOpen }: { setIsOpen: React.Dis
           }}
         </form.Field>
       </FieldGroup>
-      <DialogFooter>
+      <DialogFooter className="mt-4">
         <DialogClose>Cancel</DialogClose>
         <Button type="submit">
           {isPending ? 'Submitting...' : 'Submit'}

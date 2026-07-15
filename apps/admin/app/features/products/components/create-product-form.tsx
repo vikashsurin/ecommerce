@@ -49,7 +49,7 @@ export default function CreateProductForm() {
   })
   return (
     <form
-      className="max-w-md"
+      className="max-w-md mt-6"
       onSubmit={(e) => {
         e.preventDefault()
         form.handleSubmit()

@@ -33,9 +33,7 @@ export function DeleteCategoryDialog({ open, setOpen, category }: {
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
             Delete <b className='text-black'>{category.name}</b>?
-            <p>
             This action cannot be undone.
-            </p>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
