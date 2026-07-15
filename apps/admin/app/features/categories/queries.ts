@@ -2,9 +2,10 @@ import { useMutation } from "@tanstack/react-query"
 import {
   createAttribute,
   createCategory,
-  updateAttribute,
   deleteAttribute,
+  deleteCategory,
   getCategory,
+  updateAttribute,
 } from "./api"
 
 export const useCreateCategory = () => {
@@ -39,6 +40,25 @@ export const useGetCategory = (id: number) => {
     queryFn: () => getCategory(id),
   })
 }
+
+
+export const useDeleteCategory = () => {
+  return useMutation({
+    mutationFn: async (id: number) => {
+      return deleteCategory(id)
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      })
+      console.log("Successfully deleted category", data)
+    },
+    onError: (error) => {
+      console.error("Failed to delete category", error)
+    },
+  })
+}
+
 
 import { getAttributes } from "./api"
 import { CreateAttributeSchema, UpdateAttributeSchema } from "./schema"

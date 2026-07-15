@@ -29,6 +29,17 @@ export const getCategory = async (id: number) => {
   return result.data
 }
 
+
+export const deleteCategory = async (id: number) => {
+  const response = await apiClient.api.categories[`:id`].$delete({
+    param: {
+      id: String(id),
+    }
+  })
+  const result = await parseResponse(response)
+  return result.data
+}
+
 export const getAttributes = async (id: number) => {
   const response = await apiClient.api.categories[`:id`].attributes.$get({
     param: {
@@ -38,6 +49,7 @@ export const getAttributes = async (id: number) => {
   const result = await parseResponse(response)
   return result.data
 }
+
 
 export const createAttribute = async (data:CreateAttributeSchema ) => {
 

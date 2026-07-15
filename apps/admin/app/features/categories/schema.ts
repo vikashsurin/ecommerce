@@ -28,3 +28,8 @@ export const updateAttributeSchema = z.object({
 });
 
 export type UpdateAttributeSchema = z.infer<typeof updateAttributeSchema>;
+
+
+type CategoryResponse = InferResponseType<typeof apiClient.api.categories[':categoryId']['$get'], 200>
+
+export type Category = CategoryResponse['data']
