@@ -6,6 +6,7 @@ import { Input } from "@workspace/ui/components/input"
 import { Minus, Plus } from "lucide-react"
 import { useUpdateProductVariant } from '../queries'
 import { updateProductVariantSchema } from '../schema'
+import { toast } from 'sonner'
 
 export function UpdatePriceForm({ productId, variantId, price, setOpen }: { productId: number; variantId: number; price?: number; setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
 
@@ -23,9 +24,10 @@ export function UpdatePriceForm({ productId, variantId, price, setOpen }: { prod
       mutate({ data: value, productId, variantId }, {
         onSuccess: () => {
           setOpen(false)
+          toast.success("Price Updated")
         },
         onError: () => {
-          alert('Failed to update stock')
+          toast.error("Failed to update price")
         },
       })
     },

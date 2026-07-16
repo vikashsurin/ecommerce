@@ -4,6 +4,7 @@ import { Button } from "@workspace/ui/components/button"
 import { ButtonGroup } from "@workspace/ui/components/button-group"
 import { Input } from "@workspace/ui/components/input"
 import { Minus, Plus } from "lucide-react"
+import { toast } from 'sonner'
 import { useUpdateProductVariant } from '../queries'
 import { updateProductVariantSchema } from '../schema'
 
@@ -22,9 +23,10 @@ export function UpdateStockForm({ productId, variantId, stockValue, setOpen }: {
       mutate({ data: value, productId, variantId }, {
         onSuccess: () => {
           setOpen(false)
+          toast.success("Stock Quantity Updated")
         },
         onError: () => {
-          alert('Failed to update stock')
+          toast.error("Failed to update stock")
         },
       })
     },

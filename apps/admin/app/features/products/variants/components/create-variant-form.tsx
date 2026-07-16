@@ -1,26 +1,33 @@
+import { type Attribute } from "@/app/features/categories/schema"
 import { useForm } from "@tanstack/react-form-nextjs"
 import { Button } from "@workspace/ui/components/button"
 import { DrawerClose, DrawerFooter } from "@workspace/ui/components/drawer"
 import {
-    Field,
-    FieldDescription,
-    FieldError,
-    FieldGroup,
-    FieldLabel,
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
 } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@workspace/ui/components/select"
 import { Info } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useGetAttributes } from "../../../categories/queries"
 import { useCreateProductVariant, useGenerateSku } from "../queries"
 import { createProductVariantSchema } from "../schema"
+
+function getOptionsList(options: any): string[] {
+  if (!Array.isArray(options)) return []
+  return options.filter((opt): opt is string => typeof opt === "string")
+}
+
 
 export default function AddVariantForm({
   categoryId,
@@ -45,12 +52,15 @@ export default function AddVariantForm({
   )
 }
 
+
+// R
+
 function VariantFormFields({
   categoryAttributes,
   productId,
   setIsOpen,
 }: {
-  categoryAttributes: any[]
+  categoryAttributes: Attribute[]
   productId: number
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
@@ -94,7 +104,6 @@ function VariantFormFields({
       { productId, attributes: form.state.values.attributes },
       {
         onSuccess: (sku) => {
-          console.log("Generated SKU:", sku)
           form.setFieldValue("sku", sku)
         },
       }
@@ -112,44 +121,48 @@ function VariantFormFields({
     >
       <FieldGroup>
         {categoryAttributes
-          .sort((a, b) => a.sortOrder - b.sortOrder)
+          .sort((a, b) => a.sortOrder - b.sortOrder )
           .map((attribute) => (
             <form.Field
               key={attribute.id}
               name={`attributes.${attribute.key}` as const}
               validators={{
+                // TODO: Review this section
                 onChange: attribute.required
                   ? ({ value }) =>
                       !value ? `${attribute.label} is required` : undefined
                   : undefined,
               }}
             >
-              {(field) => (
-                <div className="flex flex-col gap-1">
-                  <label htmlFor={field.name}>{attribute.label}</label>
+              {(field) => {
+                const options = getOptionsList(attribute.options)
+                return (
+                  <div className="flex flex-col gap-1">
+                    <label htmlFor={field.name}>{attribute.label}</label>
 
-                  {attribute.inputType === "select" ? (
-                    <Select
-                      value={field.state.value}
-                      onValueChange={(val) => field.handleChange(val)}
-                    >
-                      <SelectTrigger id={field.name}>
-                        <SelectValue
-                          placeholder={`Select ${attribute.label}`}
-                        />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {attribute.options?.map((opt) => (
-                          <SelectItem key={opt} value={opt}>
-                            {opt}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <Input
-                      id={field.name}
-                      type={
+                    {attribute.inputType === "select" ? (
+                      <Select
+                        value={field.state.value}
+                        onValueChange={(val) => field.handleChange(val)}
+                      >
+                        <SelectTrigger id={field.name}>
+                          <SelectValue
+                            placeholder={`Select ${attribute.label}`}
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+
+                          {options.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <Input
+                        id={field.name}
+                        type={
                         attribute.inputType === "number" ? "number" : "text"
                       }
                       value={field.state.value}
@@ -165,6 +178,7 @@ function VariantFormFields({
                   )}
                 </div>
               )}
+              }
             </form.Field>
           ))}
 

@@ -33,3 +33,11 @@ export type UpdateAttributeSchema = z.infer<typeof updateAttributeSchema>;
 type CategoryResponse = InferResponseType<typeof apiClient.api.categories[':categoryId']['$get'], 200>
 
 export type Category = CategoryResponse['data']
+
+
+// Extract Attributes Type
+type AttributesResponse = InferResponseType<typeof apiClient.api.categories[':id']['attributes']['$get'],200>
+
+ type AttributesSuccess = Extract<AttributesResponse, { data: unknown }>
+
+export type Attribute = AttributesSuccess['data'][number]

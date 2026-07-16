@@ -43,6 +43,7 @@ export function UpdateSalePriceForm({
         {
           onSuccess: () => {
             setOpen(false)
+            toast.success("Sale Price Updated")
           },
           onError: () => {
             toast.error("Error updating sale price")
