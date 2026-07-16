@@ -1,7 +1,14 @@
-import { boolean, integer, jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core";
-import { categories } from "./categories";
+import {
+  boolean,
+  integer,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core"
+import { categories } from "./categories"
 
-export const categoryAttributes = pgTable('category_attributes', {
+export const categoryAttributes = pgTable("category_attributes", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   categoryId: integer("category_id")
     .notNull()
@@ -11,8 +18,8 @@ export const categoryAttributes = pgTable('category_attributes', {
   inputType: text("input_type").notNull(),
   options: jsonb("options"),
   skuAbbreviation: boolean("sku_abbreviation").default(true),
-  required: boolean("required").default(false),
-  sortOrder: integer("sort_order").default(0),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  required: boolean("required").notNull().default(false),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })

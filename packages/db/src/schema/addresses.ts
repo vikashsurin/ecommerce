@@ -1,5 +1,5 @@
-import { integer, pgTable, text, timestamp } from "drizzle-orm/pg-core";
-import { users } from "./users";
+import { integer, pgTable, text, timestamp } from "drizzle-orm/pg-core"
+import { users } from "./users"
 
 export const addresses = pgTable("addresses", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
@@ -12,6 +12,6 @@ export const addresses = pgTable("addresses", {
   zip: text("zip").notNull(),
   country: text("country").notNull(),
   type: text("type").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})

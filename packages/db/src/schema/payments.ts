@@ -1,5 +1,5 @@
-import { integer, pgTable, text, timestamp } from "drizzle-orm/pg-core";
-import { orders } from "./orders";
+import { integer, pgTable, text, timestamp } from "drizzle-orm/pg-core"
+import { orders } from "./orders"
 
 export const payments = pgTable("payments", {
   id: integer("id").primaryKey().notNull(),
@@ -10,6 +10,6 @@ export const payments = pgTable("payments", {
   amount: integer("amount").notNull(),
   provider: text("provider").notNull(),
   status: text("status").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
