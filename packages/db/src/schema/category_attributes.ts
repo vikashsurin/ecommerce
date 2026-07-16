@@ -17,7 +17,7 @@ export const categoryAttributes = pgTable("category_attributes", {
   label: text("label").notNull(),
   inputType: text("input_type").notNull(),
   options: jsonb("options"),
-  skuAbbreviation: boolean("sku_abbreviation").default(true),
+  skuAbbreviation: boolean("sku_abbreviation").notNull().default(true),
   required: boolean("required").notNull().default(false),
   sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),

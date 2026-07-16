@@ -14,7 +14,7 @@ export const sessions = table(
     ipAddress: t.text("ip_address").notNull(),
     userAgent: t.text("user_agent"),
     refreshToken: t.text("refresh_token"),
-    isActive: t.boolean("is_active").default(true),
+    isActive: t.boolean("is_active").notNull().default(true),
     lastActivity: t.timestamp("last_activity").defaultNow(),
     expiresAt: t.timestamp("expires_at").notNull(),
     createdAt: t.timestamp("created_at").defaultNow(),
