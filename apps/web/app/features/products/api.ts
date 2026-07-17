@@ -1,5 +1,5 @@
+import { apiClient } from "@/lib/api-client"
 import { parseResponse } from "hono/client"
-import { apiClient } from "../../../lib/api-client"
 
 export const getProducts = async () => {
   try {

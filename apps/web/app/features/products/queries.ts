@@ -15,3 +15,5 @@ export const useProduct = (id: string) => {
     queryFn: () => getProduct(id),
   })
 }
+
+

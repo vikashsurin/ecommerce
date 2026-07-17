@@ -97,7 +97,7 @@ function VariantFormFields({
     },
   })
 
-  const { mutate: generateSku } = useGenerateSku()
+  const { mutate: generateSku, isPending: isGenerateSkuPending } = useGenerateSku()
 
   function handleGenerateSku() {
     generateSku(
@@ -121,7 +121,7 @@ function VariantFormFields({
     >
       <FieldGroup>
         {categoryAttributes
-          .sort((a, b) => a.sortOrder - b.sortOrder )
+          .sort((a, b) => a.sortOrder - b.sortOrder)
           .map((attribute) => (
             <form.Field
               key={attribute.id}
@@ -130,7 +130,7 @@ function VariantFormFields({
                 // TODO: Review this section
                 onChange: attribute.required
                   ? ({ value }) =>
-                      !value ? `${attribute.label} is required` : undefined
+                    !value ? `${attribute.label} is required` : undefined
                   : undefined,
               }}
             >
@@ -163,21 +163,22 @@ function VariantFormFields({
                       <Input
                         id={field.name}
                         type={
-                        attribute.inputType === "number" ? "number" : "text"
-                      }
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      onBlur={field.handleBlur}
-                    />
-                  )}
+                          attribute.inputType === "number" ? "number" : "text"
+                        }
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        onBlur={field.handleBlur}
+                      />
+                    )}
 
-                  {field.state.meta.errors.length > 0 && (
-                    <span className="text-sm text-destructive">
-                      {field.state.meta.errors.join(", ")}
-                    </span>
-                  )}
-                </div>
-              )}
+                    {field.state.meta.errors.length > 0 && (
+                      <span className="text-sm text-destructive">
+                        {field.state.meta.errors.join(", ")}
+                      </span>
+                    )}
+                  </div>
+                )
+              }
               }
             </form.Field>
           ))}
@@ -287,7 +288,7 @@ function VariantFormFields({
                       placeholder="NAME-COLOR-SIZE"
                     />
                     <Button variant="secondary" onClick={handleGenerateSku}>
-                      Generate
+                      {isGenerateSkuPending ? 'Generating...' : 'Generate'}
                     </Button>
                   </div>
 

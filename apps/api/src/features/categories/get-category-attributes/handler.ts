@@ -15,7 +15,7 @@ export const getCategoryAttributes = appFactory()
 
       try {
         const attributes = await selectAttributesById(Number(id))
-        return c.json({data:attributes})
+        return c.json({ data: attributes })
       } catch (error) {
         return c.json({
           error: {

@@ -13,11 +13,11 @@ export default function ProductsPage() {
       <h1>Products</h1>
 
       <div className="flex gap-2 mt-4">
-        <Link href="/dashboard/products/new" className="underline">
-        <Button> <Plus />Add Products</Button>
-        </Link>
         <Link href="/dashboard/products/categories" className="underline">
           <Button variant={'secondary'}>Categories <ArrowRight /></Button>
+        </Link>
+        <Link href="/dashboard/products/new" className="underline">
+          <Button> <Plus />Add Products</Button>
         </Link>
       </div>
 

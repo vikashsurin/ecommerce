@@ -1,6 +1,6 @@
 'use client'
 
-import { useProducts } from '../features/products/queries'
+import { useProducts } from '@/app/features/products/queries'
 import Item from '../features/products/components/Item'
 
 export default function ProductsPage() {

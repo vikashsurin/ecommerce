@@ -53,7 +53,6 @@ export function UpdateSalePriceForm({
     },
   })
 
-    console.log(form.getFieldValue("salePrice"))
 
 
   useEffect(() => {
@@ -73,9 +72,6 @@ export function UpdateSalePriceForm({
     >
       <form.Field name="salePrice">
         {(field) => {
-          const isError = field.state.meta.errors
-
-          console.log({isError})
           return (
             <>
               <div className="my-2 flex items-start justify-between gap-2 rounded-lg border p-2">
