@@ -134,6 +134,13 @@
       "when": 1784186393960,
       "tag": "0018_whole_rattler",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1784298247612,
+      "tag": "0019_lowly_killraven",
+      "breakpoints": true
     }
   ]
 }

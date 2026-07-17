@@ -5,6 +5,7 @@ export const categories = pgTable("categories", {
   name: text("name").notNull(),
   slug: text("slug").notNull(),
   parentId: integer("parent_id"),
+  specificationsLabel: text("specifications_label").notNull().default('Specifications'),
   image: text("image"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),

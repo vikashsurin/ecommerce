@@ -7,7 +7,7 @@ export const products = pgTable("products", {
   description: text("description").notNull(),
   categoryId: integer("category_id").notNull(),
   brandId: integer("brand_id"),
-  metadata: jsonb("metadata"),
+  specifications: jsonb("specifications"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
