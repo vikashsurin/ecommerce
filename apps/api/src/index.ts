@@ -21,7 +21,7 @@ const app = new Hono<Env>()
 app.use('*', logger())
 app.use("*", cors({
   origin: ["http://localhost:3000", "http://localhost:3001"],
-  allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   credentials: true,
 }))
 

@@ -16,6 +16,8 @@ export const addToCartApp = appFactory()
         const cartId = await findOrCreateCart(user.id)
         const cartItem = await addItemToCart(cartId, parsedData)
 
+        console.log({ cartItem })
+
         return c.json({ data: cartItem }, 201)
 
       } catch (error) {

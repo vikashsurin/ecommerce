@@ -1,5 +1,5 @@
 import { cartItems, carts, db } from "@repo/db";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { type AddToCartSchema } from "../add-to-cart/schema";
 
 export async function addItemToCart(cartId: number, data: AddToCartSchema) {
@@ -10,10 +10,17 @@ export async function addItemToCart(cartId: number, data: AddToCartSchema) {
       productVariantId: data.productVariantId,
       quantity: data.quantity,
     })
+    .onConflictDoUpdate({
+      target: [cartItems.cartId, cartItems.productVariantId],
+      set: {
+        quantity: sql`${cartItems.quantity} + ${data.quantity}`,
+        updatedAt: new Date(),
+      },
+    })
     .returning()
+
   return cartItem[0] ?? null
 }
-
 
 export async function findOrCreateCart(userId: number) {
   const [cart] = await db
@@ -34,6 +41,5 @@ export async function findOrCreateCart(userId: number) {
 
     return newCart.id
   }
-
   return cart.id
 }

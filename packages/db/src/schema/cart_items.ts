@@ -1,4 +1,4 @@
-import { integer, pgTable, timestamp } from "drizzle-orm/pg-core"
+import { integer, pgTable, timestamp, unique } from "drizzle-orm/pg-core"
 import { carts } from "./carts"
 import { productVariants } from "./product_variants"
 
@@ -13,4 +13,7 @@ export const cartItems = pgTable("cart_items", {
   quantity: integer("quantity").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-})
+},
+  (table) => [
+    unique('cart_variant_unique').on(table.cartId, table.productVariantId)
+  ])

@@ -1,0 +1,2 @@
+ALTER TABLE "cart_items" DROP CONSTRAINT "cart_items_product_variant_id_unique";--> statement-breakpoint
+ALTER TABLE "cart_items" ADD CONSTRAINT "cart_variant_unique" UNIQUE("cart_id","product_variant_id");

@@ -4,17 +4,17 @@ import { DialogClose, DialogFooter } from "@workspace/ui/components/dialog";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@workspace/ui/components/field";
 import { Input } from "@workspace/ui/components/input";
 import { toast } from "sonner";
-import { z } from "zod";
 import { useCreateCategory } from "../queries";
-import { Category } from "../schema";
+import { Category, createCategorySchema } from "../schema";
 
 export default function CreateCategoryForm({ setIsOpen }: { setIsOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
-  const {mutate: createCategory, reset,isPending, isError} = useCreateCategory()
+  const { mutate: createCategory, reset, isPending, isError } = useCreateCategory()
   const form = useForm({
     defaultValues: {
       name: '',
+      specificationsLabel: '',
     },
-    onSubmit: async ({value}) => {
+    onSubmit: async ({ value }) => {
       createCategory(value, {
         onSuccess: (data: any) => {
           const category = data as Category
@@ -25,17 +25,16 @@ export default function CreateCategoryForm({ setIsOpen }: { setIsOpen: React.Dis
         },
       })
     },
+
     validators: {
-      onSubmit: z.object({
-        name: z.string().min(3),
-      })
+      onSubmit: createCategorySchema
     }
 
   })
   return (
-      <form
-        className="max-w-md"
-        onSubmit={(e) => {
+    <form
+      className="max-w-md"
+      onSubmit={(e) => {
         e.preventDefault();
         form.handleSubmit()
       }}>
@@ -59,10 +58,35 @@ export default function CreateCategoryForm({ setIsOpen }: { setIsOpen: React.Dis
                       field.handleChange(e.target.value)
                     }}
                   />
-                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
-            </>
-          )
+              </>
+            )
+          }}
+        </form.Field>
+        <form.Field name='specificationsLabel'>
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid
+            return (
+              <>
+                <Field>
+                  <FieldLabel>Specifications Label</FieldLabel>
+                  <Input
+                    type="text"
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => {
+                      if (isError) reset()
+                      field.handleChange(e.target.value)
+                    }}
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              </>
+            )
           }}
         </form.Field>
       </FieldGroup>

@@ -7,10 +7,7 @@ const cookieName = Bun.env.COOKIE_NAME ?? null
 
 export const authMiddleware = createMiddleware(async (c, next) => {
 
-  // const token = _tokenFromHeader(c)
-
   const token = _tokenFromCookie(c)
-  console.log('req', c.req)
 
   if (!token) {
     return c.json({
@@ -33,6 +30,15 @@ export const authMiddleware = createMiddleware(async (c, next) => {
   }
 
   const user = await getUserService(session.userId)
+
+  if (!user) {
+    return c.json({
+      error: {
+        code: 'invalid_request',
+        message: 'Unauthorized'
+      }
+    }, 401);
+  }
 
   c.set('user', user)
 

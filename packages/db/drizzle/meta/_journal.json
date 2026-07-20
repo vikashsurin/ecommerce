@@ -141,6 +141,20 @@
       "when": 1784298247612,
       "tag": "0019_lowly_killraven",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1784537682070,
+      "tag": "0020_fair_mole_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1784568889605,
+      "tag": "0021_organic_blue_marvel",
+      "breakpoints": true
     }
   ]
 }

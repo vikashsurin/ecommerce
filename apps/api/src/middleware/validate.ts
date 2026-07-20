@@ -2,7 +2,7 @@ import { zValidator } from "@hono/zod-validator";
 import { type ValidationTargets } from "hono";
 import { ZodType } from "zod";
 
-let cycle = 0;
+// let cycle = 0;
 
 export const validate = <
   T extends ZodType,
@@ -12,9 +12,10 @@ export const validate = <
   schema: T,
 ) => {
   return zValidator(target, schema, (result, ctx) => {
-    console.info(`#ZodValidation_${cycle++}`, result);
+    // console.info(`#ZodValidation_${cycle++}`, result);
 
     if (!result.success) {
+      console.info(`#ZodValidationError`, result);
       return ctx.json(
         {
           success: false,

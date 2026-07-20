@@ -27,8 +27,7 @@ export default function ProductPage() {
 
   const [selected, setSelected] = useState<VariantAttributes>({})
 
-  // Variants load asynchronously, so set the default selection once they arrive.
-  // Guarded so it only runs once (won't stomp a selection the user has already made).
+
   useEffect(() => {
     if (!variants || variants.length === 0) return
     setSelected((prev) => {
@@ -66,23 +65,30 @@ export default function ProductPage() {
 
         {selectedVariant && (
           <div className="mt-4 text-sm">
-            <h6>{selectedVariant.sku}</h6>
+
+            <h6 className="my-2">{selectedVariant.sku}</h6>
 
             {/*price*/}
             {selectedVariant.salePrice &&
-            selectedVariant.salePrice < selectedVariant.price ? (
+              selectedVariant.salePrice < selectedVariant.price ? (
               <p>
-                <span className="line-through">₹{selectedVariant.price}</span> ₹
-                {selectedVariant.salePrice}
+                <span className="line-through">₹{selectedVariant.price}</span>
+                <span className="text-2xl font-semibold ml-2">
+                  ₹{selectedVariant.salePrice}
+                </span>
               </p>
             ) : (
-              <p>₹{selectedVariant.price}</p>
+              <p>
+                <span className="text-2xl font-semibold">
+                  ₹{selectedVariant.price}
+                </span>
+              </p>
             )}
-            <p className="text-muted-foreground">
+            <div className="text-muted-foreground">
               {selectedVariant.stock > 0
-                ? `${selectedVariant.stock} in stock`
-                : "Out of stock"}
-            </p>
+                ? <span className="text-green-500 text-sm">in stock</span>
+                : <span>out of stock</span>}
+            </div>
           </div>
         )}
 
@@ -95,15 +101,12 @@ export default function ProductPage() {
             />
           )}
         </div>
+        <div data-separator className="border my-6 border-gray-600"></div>
+
+        <AddToCartButton
+          variant={selectedVariant}
+        />
       </div>
-      <AddToCartButton
-        variant={selectedVariant}
-        onAddToCart={(variantId) => {
-          console.log("add to cart:", variantId)
-          // actual mutation call goes here once you build the cart endpoint
-        }}
-      />
-      <div>{/* AddToCart goes here */}</div>
     </div>
   )
 }

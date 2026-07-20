@@ -11,12 +11,12 @@ export function AddCategory() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger
-      className={'mt-4'}
+        className={'mt-4'}
         render={
           <Button>
             <Plus />  Add Category
           </Button>
-        }/>
+        } />
       <DialogContent>
         <DialogHeader>
           <DialogTitle> Add Category</DialogTitle>

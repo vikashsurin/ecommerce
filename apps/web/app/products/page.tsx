@@ -15,9 +15,9 @@ export default function ProductsPage() {
   if (isSuccess) {
     return (
       <>
-        <div>
+        <div className='m-4'>
           <h1>Products</h1>
-          <div className='flex flex-wrap gap-2'>
+          <div className='flex flex-wrap gap-2 mt-6'>
             {data.map((product) => {
               return (
                 <Item key={product.id} product={product} />

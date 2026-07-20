@@ -54,7 +54,7 @@ export function VariantSelector({
       {attributeKeys.map((key) => (
         <div key={key}>
           <p className="text-sm mb-2 capitalize">
-            {key}: <span className="font-medium">{selected[key] ?? "Select"}</span>
+            {key}: <span className="font-semibold">{selected[key] ?? "Select"}</span>
           </p>
           <div className="flex gap-2">
             {getUniqueAttributeValues(variants, key).map((value) => {

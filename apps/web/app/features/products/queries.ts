@@ -16,4 +16,3 @@ export const useProduct = (id: string) => {
   })
 }
 
-

@@ -7,10 +7,12 @@ import {
   getCategory,
   updateAttribute,
 } from "./api"
+import { CreateCategorySchema } from "./schema"
 
 export const useCreateCategory = () => {
   return useMutation({
-    mutationFn: async (data: { name: string }) => createCategory(data),
+    mutationFn: async (data: CreateCategorySchema) => createCategory(data),
+
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: ["categories"],

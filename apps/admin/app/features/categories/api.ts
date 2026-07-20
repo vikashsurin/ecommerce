@@ -1,11 +1,12 @@
 import { apiClient } from "@/lib/api-client"
 import { parseResponse } from "hono/client"
-import { UpdateAttributeSchema, type CreateAttributeSchema } from "./schema"
+import { CreateCategorySchema, UpdateAttributeSchema, type CreateAttributeSchema } from "./schema"
 
-export const createCategory = async (data: {name:string}) => {
+export const createCategory = async (data: CreateCategorySchema) => {
   const response = await apiClient.api.categories.$post({
     json: {
       name: data.name,
+      specificationsLabel: data.specificationsLabel,
     },
   })
   const result = await parseResponse(response)
@@ -51,7 +52,7 @@ export const getAttributes = async (id: number) => {
 }
 
 
-export const createAttribute = async (data:CreateAttributeSchema ) => {
+export const createAttribute = async (data: CreateAttributeSchema) => {
 
   const response = await apiClient.api.categories.attributes.$post({
     json: {
@@ -64,7 +65,7 @@ export const createAttribute = async (data:CreateAttributeSchema ) => {
 
 
 export const updateAttribute = async (id: number, data: UpdateAttributeSchema) => {
-console.log({id, data})
+  console.log({ id, data })
 
   const response = await apiClient.api.categories.attributes[`:id`].$put({
     param: {

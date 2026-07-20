@@ -2,8 +2,15 @@ import { z } from "zod";
 import { InferResponseType } from "hono/client";
 import { apiClient } from "@/lib";
 
+export const createCategorySchema = z.object({
+  name: z.string().min(3, 'Name cannot be empty'),
+  specificationsLabel: z.string()
+});
+
+export type CreateCategorySchema = z.infer<typeof createCategorySchema>;
+
 export const createAttributeSchema = z.object({
-  categoryId:z.number(),
+  categoryId: z.number(),
   key: z.string(),
   label: z.string(),
   inputType: z.string(),
@@ -17,7 +24,7 @@ export type CreateAttributeSchema = z.infer<typeof createAttributeSchema>;
 
 
 export const updateAttributeSchema = z.object({
-  categoryId:z.number(),
+  categoryId: z.number(),
   key: z.string().optional(),
   label: z.string().optional(),
   inputType: z.string().optional(),
@@ -36,8 +43,8 @@ export type Category = CategoryResponse['data']
 
 
 // Extract Attributes Type
-type AttributesResponse = InferResponseType<typeof apiClient.api.categories[':id']['attributes']['$get'],200>
+type AttributesResponse = InferResponseType<typeof apiClient.api.categories[':id']['attributes']['$get'], 200>
 
- type AttributesSuccess = Extract<AttributesResponse, { data: unknown }>
+type AttributesSuccess = Extract<AttributesResponse, { data: unknown }>
 
 export type Attribute = AttributesSuccess['data'][number]
