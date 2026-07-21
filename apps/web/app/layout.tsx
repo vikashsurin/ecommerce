@@ -2,7 +2,6 @@ import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
 
 import Header from "@/components/Header"
-import { ThemeProvider } from "@/components/theme-provider"
 import "@workspace/ui/globals.css"
 import { cn } from "@workspace/ui/lib/utils"
 import { Toaster } from 'sonner'
@@ -34,7 +33,7 @@ export default function RootLayout({
         <Providers>
           <div className="root">
             <Header />
-            <ThemeProvider>{children}</ThemeProvider>
+            {children}
             <Toaster />
           </div>
         </Providers>
