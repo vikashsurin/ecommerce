@@ -5,9 +5,8 @@ import { Loader, ShoppingBag } from 'lucide-react'
 import Link from 'next/link'
 
 export default function Cart() {
-  const { data, isLoading } = useCart()
+  const { data: cart, isLoading } = useCart()
 
-  console.log({ data })
 
   return (
     <>
@@ -16,7 +15,7 @@ export default function Cart() {
           {isLoading ?
             <Loader size={'16'} className='animate-spin' /> :
             <div className='bg-gray-50 rounded-full p-1 flex items-center justify-center h-6 w-6'>
-              {data?.cart?.items?.length ?? 0}
+              {cart?.items?.length ?? 0}
             </div>}
 
           <ShoppingBag />

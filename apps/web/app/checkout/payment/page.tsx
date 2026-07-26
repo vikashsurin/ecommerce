@@ -49,7 +49,7 @@ export default function PaymentPage() {
               credit or debit card
             </span>
           </label>
-          {paymentMethod === "card" && <CardDetailForm />}
+          {/*{paymentMethod === "card" && <CardDetailForm />}*/}
         </div>
 
         <Link

@@ -3,6 +3,7 @@ import { addressApp } from "./features/address";
 import { authApp } from "./features/auth";
 import { cartsApp } from "./features/carts";
 import { categoriesApp } from "./features/categories";
+import { checkoutApp } from "./features/checkout";
 import { ordersApp } from "./features/orders";
 import { productsApp } from "./features/products";
 import { usersApp } from "./features/users";
@@ -17,3 +18,4 @@ export const apiRoutes = new Hono()
   .route('/orders', ordersApp)
   .route('/categories', categoriesApp)
   .route('/addresses', addressApp)
+  .route('/checkout', checkoutApp)

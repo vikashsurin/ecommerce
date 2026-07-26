@@ -1,0 +1,1 @@
+ALTER TABLE "checkout_sessions" RENAME COLUMN "sub_total" TO "subtotal";

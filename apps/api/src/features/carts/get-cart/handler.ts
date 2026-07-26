@@ -9,9 +9,11 @@ export const getCartApp = appFactory()
     async (c) => {
       const user = c.get('user')
       try {
-        const cart = await selectCartByUserId(user.id)
+        const result = await selectCartByUserId(user.id)
 
-        const total = cart.reduce((acc, item) => {
+        if (!result) return c.json({ data: null }, 200)
+
+        const total = result.items.reduce((acc, item) => {
           const price = item.productVariant.salePrice ?? item.productVariant.price
           const qty = item.cartItem.quantity;
 
@@ -22,10 +24,9 @@ export const getCartApp = appFactory()
         return c.json({
           data:
           {
-            cart: {
-              items: cart,
-              total: total
-            }
+            ...result.cart,
+            items: result.items,
+            total: total
           }
         }, 200)
 
@@ -40,14 +41,16 @@ export const getCartApp = appFactory()
     },
   )
 
+
 async function selectCartByUserId(userId: number) {
   const [cart] = await db
     .select()
     .from(carts)
-    .where(eq(carts.userId, userId))
-  if (!cart) return []
+    .where(eq(carts.userId, userId));
 
-  const rows = await db
+  if (!cart) return null;
+
+  const items = await db
     .select({
       cartItem: cartItems,
       productVariant: productVariants,
@@ -55,7 +58,7 @@ async function selectCartByUserId(userId: number) {
     .from(cartItems)
     .innerJoin(productVariants, eq(cartItems.productVariantId, productVariants.id))
     .where(eq(cartItems.cartId, cart.id))
-    .orderBy(asc(cartItems.id))
+    .orderBy(asc(cartItems.id));
 
-  return rows
+  return { cart, items };
 }

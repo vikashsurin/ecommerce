@@ -1,0 +1,1 @@
+ALTER TABLE "checkout_sessions" ALTER COLUMN "payment_gateway" SET DEFAULT 'razorpay';

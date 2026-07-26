@@ -17,6 +17,7 @@
     "@repo/db": "workspace:*",
     "drizzle-orm": "^0.45.2",
     "hono": "^4.12.25",
+    "razorpay": "^2.9.8",
     "zod": "^4.4.3"
   }
 }

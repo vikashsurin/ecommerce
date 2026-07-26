@@ -9,14 +9,14 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function CartPage() {
-  const { data, isLoading } = useCart()
+  const { data: cart, isLoading } = useCart()
 
   if (isLoading) return <div>Loading...</div>
 
   return (
     <>
       <div className="m-4">
-        {data && data?.cart?.items?.map((item) => (
+        {cart && cart?.items?.map((item) => (
           <div key={item.cartItem.id} className="grid grid-cols-12 border  gap-4 p-2">
 
             <Image
@@ -47,7 +47,7 @@ export default function CartPage() {
 
           </div>
         ))}
-        <SubTotal total={data?.cart?.total ?? 0} />
+        <SubTotal total={cart?.total ?? 0} />
       </div>
     </>
   )

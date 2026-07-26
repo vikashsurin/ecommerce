@@ -268,10 +268,6 @@ export default function CreateAddressForm() {
           }}
         </form.Field>
         <Button type='submit'>Save Address</Button>
-
-        <Link href='/checkout/payment'>
-          <Button>Continue <ArrowRight /></Button>
-        </Link>
       </FieldGroup>
     </form>
   )
