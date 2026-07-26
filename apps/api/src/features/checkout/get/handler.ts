@@ -1,15 +1,36 @@
-import z from "zod";
+import { checkoutSessions, db } from "@repo/db";
+import { eq } from "drizzle-orm";
 import { appFactory } from "../../../lib/factory";
-import { authMiddleware, validate } from "../../../middleware";
+import { authMiddleware } from "../../../middleware";
 
-export const getRazorpayOrderApp = appFactory()
-  .get("/:sessionId/payment/get-order",
+export const getCheckoutSession = appFactory()
+  .get("/",
     authMiddleware,
-    validate('param', z.object({
-      sessionId: z.string(),
-    })),
     async (c) => {
       const user = c.get("user");
-      const { sessionId } = c.req.param();
-      return c.json({ data: '' })
+      try {
+        const checkoutSession = await selectCheckoutSessionByUserId(user.id)
+        console.log(checkoutSession)
+        if (!checkoutSession) {
+          return c.json({ data: null })
+        }
+        return c.json({ data: checkoutSession })
+
+      } catch (error) {
+        return c.json({
+          error: {
+            code: "internal_server_error",
+            message: "Internal Server Error",
+          }
+        }, 500)
+      }
     });
+
+async function selectCheckoutSessionByUserId(userId: number) {
+
+  const row = await db
+    .select()
+    .from(checkoutSessions)
+    .where(eq(checkoutSessions.userId, userId))
+  return row[0] ?? null
+}

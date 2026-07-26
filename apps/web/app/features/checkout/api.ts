@@ -12,12 +12,8 @@ export const createCheckoutSession = async (data: CreateCheckoutSessionSchema) =
   return result.data
 }
 
-export const getRazorpayOrder = async (sessionId: number) => {
-  const res = await apiClient.api.checkout[":sessionId"]["payment"]["get-order"].$get({
-    param: {
-      sessionId: String(sessionId)
-    }
-  });
+export const getCurrentCheckoutSession = async () => {
+  const res = await apiClient.api.checkout.$get()
   const result = await parseResponse(res)
   return result.data
 }

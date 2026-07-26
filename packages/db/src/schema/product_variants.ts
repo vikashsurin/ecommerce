@@ -18,7 +18,7 @@ export const productVariants = pgTable(
       .notNull()
       .references(() => products.id, { onDelete: "cascade" }),
     sku: text("sku").notNull().unique(),
-    attributes: jsonb("attributes"),
+    attributes: jsonb("attributes").$type<Record<string, string>>(),
     price: integer("price").notNull(),
     salePrice: integer("sale_price"),
     stock: integer("stock").notNull(),

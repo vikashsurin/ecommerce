@@ -1,6 +1,6 @@
 import { queryClient } from "@/lib";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { createCheckoutSession, getRazorpayOrder } from "./api";
+import { createCheckoutSession, getCurrentCheckoutSession } from "./api";
 import { type CreateCheckoutSessionSchema } from "./schema";
 
 
@@ -21,11 +21,11 @@ export const useCreateCheckoutSession = () => {
   });
 }
 
-export const useRazorPayOrder = (sessionId: number) => {
+export const useCheckoutSession = () => {
   return useQuery({
-    queryKey: ["razorpay-order", sessionId],
+    queryKey: ["checkout-session"],
     queryFn: async () => {
-      return await getRazorpayOrder(sessionId);
+      return await getCurrentCheckoutSession();
     },
   });
 }
