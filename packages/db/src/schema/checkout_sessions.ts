@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   integer,
   jsonb,
@@ -10,7 +11,11 @@ import {
 } from "drizzle-orm/pg-core";
 import { addresses } from "./addresses";
 import { carts } from "./carts";
-import { paymentStatusEnum } from "./enums";
+import {
+  paymentGatewayEnum,
+  paymentMethodEnum,
+  paymentStatusEnum
+} from "./enums";
 import { users } from "./users";
 
 export const checkoutStatusEnum = pgEnum("checkout_status", [
@@ -23,27 +28,13 @@ export const checkoutStatusEnum = pgEnum("checkout_status", [
 ]);
 
 
-export const paymentGatewayEnum = pgEnum("payment_gateway", [
-  "stripe",
-  "razorpay",
-  "paypal",
-]);
-
-export const paymentMethodEnum = pgEnum("payment_method", [
-  "card",
-  "upi",
-  "netbanking",
-  "wallet",
-]);
-
-// Snapshot type — frozen at session creation, independent of live cart/product state
 export type CheckoutSessionItem = {
   productId: number;
   variantId?: number;
   name: string;
   sku?: string;
   attributes?: Record<string, string>;
-  unitPrice: number; // price at time of checkout, not live product price
+  unitPrice: number;
   originalUnitPrice: number;
   quantity: number;
   imageUrl?: string;
@@ -55,17 +46,14 @@ export const checkoutSessions = pgTable(
     id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
     userId: integer("user_id")
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" })
-      .unique(),
+      .references(() => users.id, { onDelete: "cascade" }),
     cartId: integer("cart_id")
       .notNull()
-      .references(() => carts.id, { onDelete: "cascade" })
-      .unique(),
+      .references(() => carts.id, { onDelete: "cascade" }),
     addressId: integer("address_id").references(() => addresses.id, {
       onDelete: "set null",
     }),
 
-    // Frozen snapshot of what's being purchased — review/order pages read from here, never from live cart
     items: jsonb("items").notNull().$type<CheckoutSessionItem[]>(),
 
     paymentGateway: paymentGatewayEnum("payment_gateway")
@@ -75,14 +63,13 @@ export const checkoutSessions = pgTable(
     gatewayOrderId: text("gateway_order_id"),
     gatewayPaymentId: text("gateway_payment_id"),
 
-    // Raw webhook/response payload from the gateway — useful for dispute/debugging without depending on their dashboard retention
+
     gatewayResponse: jsonb("gateway_response"),
 
     paymentStatus: paymentStatusEnum("payment_status")
       .notNull()
       .default("pending"),
 
-    // Prevents duplicate session creation on retry/double-click before a gateway order exists
     idempotencyKey: text("idempotency_key"),
 
     currency: varchar("currency", { length: 3 }).notNull().default("INR"),
@@ -110,6 +97,6 @@ export const checkoutSessions = pgTable(
     uniqueIndex("checkout_sessions_user_id_cart_id_idx").on(
       table.userId,
       table.cartId
-    ),
+    ).where(sql`status NOT IN ('completed', 'abandoned', 'expired')`),
   ]
 );

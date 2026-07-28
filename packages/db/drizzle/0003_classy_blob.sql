@@ -1,0 +1,2 @@
+DROP INDEX "checkout_sessions_user_id_cart_id_idx";--> statement-breakpoint
+CREATE UNIQUE INDEX "checkout_sessions_user_id_cart_id_idx" ON "checkout_sessions" USING btree ("user_id","cart_id") WHERE status NOT IN ('completed', 'abandoned', 'expired');
