@@ -1,8 +1,8 @@
-import { apiClient } from "@/lib/api-client";
+import { rpcClient } from "@/lib/rpc-client";
 import { LoginSchema, RegisterSchema } from "./schema";
 
 export async function loginUser({ email, password }: LoginSchema) {
-  const res = await apiClient.api.auth.login.$post({
+  const res = await rpcClient.api.auth.login.$post({
     json: {
       email,
       password,
@@ -15,7 +15,7 @@ export async function loginUser({ email, password }: LoginSchema) {
 
 export async function registerUser({ name, email, password, phone }: RegisterSchema) {
 
-  const res = await apiClient.api.auth.register.$post({
+  const res = await rpcClient.api.auth.register.$post({
     json: {
       name,
       email,

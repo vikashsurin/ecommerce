@@ -8,6 +8,7 @@ export const removeFromCartApp = appFactory()
   .delete("/items/:cartItemId",
     authMiddleware,
     validate("param", z.object({ cartItemId: z.coerce.number() })), async (c) => {
+      const user = c.get('user')
       const { cartItemId } = c.req.valid('param')
 
       try {

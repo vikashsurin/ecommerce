@@ -4,9 +4,10 @@ import { useCart, useDeleteCartItem, useUpdateCartItemQuantity } from "@/app/fea
 import { Button } from "@workspace/ui/components/button";
 import { ButtonGroup } from "@workspace/ui/components/button-group";
 import { Field, FieldLabel } from "@workspace/ui/components/field";
-import { ArrowRight, Minus, Plus, Trash2 } from "lucide-react";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { CheckoutButton } from "../features/checkout/components/checkout-items-button";
 
 export default function CartPage() {
   const { data: cart, isLoading } = useCart()
@@ -47,7 +48,10 @@ export default function CartPage() {
 
           </div>
         ))}
-        <SubTotal total={cart?.total ?? 0} />
+
+        {cart &&
+          <SubTotal cartId={cart.id} total={cart?.total ?? 0} />
+        }
       </div>
     </>
   )
@@ -117,7 +121,10 @@ function Quantity({ cartItemId, quantity }: {
 }
 
 
-function SubTotal({ total }: { total: number }) {
+function SubTotal({ total, cartId }: {
+  total: number;
+  cartId: number
+}) {
   return (
     <div className="py-6 flex flex-col items-end bg-amber-100 px-4">
       <div className="py-2">
@@ -127,7 +134,7 @@ function SubTotal({ total }: { total: number }) {
         </span>
       </div>
       <Link href="/checkout/address">
-        <Button>Checkout <ArrowRight /></Button>
+        <CheckoutButton cartId={cartId} />
       </Link>
     </div>
   )

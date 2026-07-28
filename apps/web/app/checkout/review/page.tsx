@@ -1,10 +1,9 @@
 'use client'
 
+import { RazorpayButton } from "@/app/features/checkout/components/payment-btn";
 import { useCheckoutSession } from "@/app/features/checkout/queries";
 import { calculatePercentageDiscount } from "@/lib/percentage";
-import { Button } from "@workspace/ui/components/button";
 import Image from "next/image";
-import Link from "next/link";
 
 export default function ReviewOrderPage() {
 
@@ -12,7 +11,6 @@ export default function ReviewOrderPage() {
 
   const items = checkoutSession?.items
 
-  console.log(checkoutSession)
   if (isLoading) return <div>Loading...</div>
 
   return (
@@ -60,11 +58,11 @@ export default function ReviewOrderPage() {
                 {item.originalUnitPrice > item.unitPrice ?
                   <div className="flex flex-col items-end gap-2">
                     <div>
-                      <span className="text-sm font-semibold bg-red-500 p-1 line-through mr-2 rounded text-white">
+                      <span className="text-sm font-semibold bg-red-600 p-1 line-through mr-2 rounded text-white">
                         {calculatePercentageDiscount(item.originalUnitPrice, item.unitPrice)} %
                       </span>
 
-                      <span className="font-bold text-xl">
+                      <span className="font-bold text-2xl">
                         {item.unitPrice}
                       </span>
 
@@ -90,7 +88,12 @@ export default function ReviewOrderPage() {
       </section>
 
       <section className="flex justify-end py-2">
-        <Button className="w-sm">Place Order</Button>
+        <RazorpayButton
+          checkoutSessionId={checkoutSession?.id}
+          userName={'vikas'}
+          userEmail={'vikas@gmail.com'}
+          userPhone={'7304985028934'}
+        />
       </section>
 
     </div>

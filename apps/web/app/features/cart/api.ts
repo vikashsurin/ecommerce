@@ -1,9 +1,9 @@
-import { apiClient } from "@/lib";
+import { rpcClient } from "@/lib";
 import { parseResponse } from "hono/client";
 import { type AddToCartSchema } from "./schema";
 
 export const addToCart = async (data: AddToCartSchema) => {
-  const res = await apiClient.api.cart.$post({
+  const res = await rpcClient.api.cart.$post({
     json: {
       productVariantId: data.productVariantId,
       quantity: data.quantity,
@@ -16,7 +16,7 @@ export const addToCart = async (data: AddToCartSchema) => {
 
 
 export const getCart = async () => {
-  const res = await apiClient.api.cart.$get()
+  const res = await rpcClient.api.cart.$get()
   const result = await parseResponse(res)
   return result.data
 }
@@ -25,7 +25,7 @@ export const updateCartItemQuantity = async (
   cartItemId: number,
   quantity: number) => {
 
-  const res = await apiClient.api.cart.items[':cartItemId'].$patch({
+  const res = await rpcClient.api.cart.items[':cartItemId'].$patch({
     param: {
       cartItemId: String(cartItemId)
     },
@@ -41,7 +41,7 @@ export const updateCartItemQuantity = async (
 }
 
 export const deleteCartItem = async (cartItemId: number) => {
-  const res = await apiClient.api.cart.items[':cartItemId'].$delete({
+  const res = await rpcClient.api.cart.items[':cartItemId'].$delete({
     param: {
       cartItemId: String(cartItemId)
     },

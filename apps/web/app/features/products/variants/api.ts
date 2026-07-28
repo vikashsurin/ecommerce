@@ -1,9 +1,9 @@
-import { apiClient } from "@/lib/api-client"
+import { rpcClient } from "@/lib/rpc-client"
 import { parseResponse } from "hono/client"
 
 export const listProductVariants = async (productId: number) => {
   try {
-    const response = await apiClient.api.products[":productId"].variants.$get({
+    const response = await rpcClient.api.products[":productId"].variants.$get({
       param: {
         productId: String(productId),
       },

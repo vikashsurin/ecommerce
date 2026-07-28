@@ -1,5 +1,5 @@
-import { apiClient } from "./api-client";
 import Providers from "./Provider";
 import { queryClient } from "./query-client";
+import { rpcClient } from "./rpc-client";
 
-export { apiClient, Providers, queryClient };
+export { Providers, queryClient, rpcClient };

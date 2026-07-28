@@ -1,9 +1,9 @@
-import { apiClient } from "@/lib"
+import { rpcClient } from "@/lib"
 import { parseResponse } from "hono/client"
 import { type UpdateAddressSchema, type CreateAddressSchema } from "./schema"
 
 export const createAddress = async (data: CreateAddressSchema) => {
-  const response = await apiClient.api.addresses.$post({
+  const response = await rpcClient.api.addresses.$post({
     json: data
   })
 
@@ -13,13 +13,13 @@ export const createAddress = async (data: CreateAddressSchema) => {
 
 
 export const getAddresses = async () => {
-  const response = await apiClient.api.addresses.$get()
+  const response = await rpcClient.api.addresses.$get()
   const result = await parseResponse(response)
   return result.data
 }
 
 export const updateAddress = async (id: number, data: UpdateAddressSchema) => {
-  const response = await apiClient.api.addresses[':id'].$patch({
+  const response = await rpcClient.api.addresses[':id'].$patch({
     param: {
       id: String(id)
     },
@@ -31,7 +31,7 @@ export const updateAddress = async (id: number, data: UpdateAddressSchema) => {
 
 
 export const deleteAddress = async (id: number) => {
-  const response = await apiClient.api.addresses[':id'].$delete({
+  const response = await rpcClient.api.addresses[':id'].$delete({
     param: {
       id: String(id)
     }

@@ -15,14 +15,14 @@ import { users } from "./users";
 export const checkoutStatusEnum = pgEnum("checkout_status", [
   "in_progress",
   "address_selected",
-  "payment_pending",
-  "payment_confirmed",
+  "ready_for_payment",
   "completed",
   "abandoned",
+  "expired",
 ]);
 
 export const paymentStatusEnum = pgEnum("payment_status", [
-  "pending", // created
+  "pending",
   "authorized",
   "captured",
   "failed",
@@ -61,10 +61,12 @@ export const checkoutSessions = pgTable(
     id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
     userId: integer("user_id")
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
+      .references(() => users.id, { onDelete: "cascade" })
+      .unique(),
     cartId: integer("cart_id")
       .notNull()
-      .references(() => carts.id, { onDelete: "cascade" }),
+      .references(() => carts.id, { onDelete: "cascade" })
+      .unique(),
     addressId: integer("address_id").references(() => addresses.id, {
       onDelete: "set null",
     }),
@@ -110,6 +112,10 @@ export const checkoutSessions = pgTable(
     ),
     uniqueIndex("checkout_sessions_idempotency_key_idx").on(
       table.idempotencyKey
+    ),
+    uniqueIndex("checkout_sessions_user_id_cart_id_idx").on(
+      table.userId,
+      table.cartId
     ),
   ]
 );

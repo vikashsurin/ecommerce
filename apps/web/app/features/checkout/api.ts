@@ -1,37 +1,45 @@
-import { apiClient } from "@/lib";
+import { rpcClient } from "@/lib";
 import { parseResponse } from "hono/client";
-import { type CreateCheckoutSessionSchema } from "./schema";
+import {
+  type AddCheckoutAddressSchema,
+  type AddCheckoutItemsSchema
+} from "./schema";
 
-export const createCheckoutSession = async (data: CreateCheckoutSessionSchema) => {
-  const res = await apiClient.api.checkout.$post({
+export const addCheckoutItems = async (data: AddCheckoutItemsSchema) => {
+  const res = await rpcClient.api.checkout['add-items'].$post({
     json: {
-      ...data,
+      cartId: data.cartId,
     }
   });
   const result = await parseResponse(res)
   return result.data
 }
+
+
+export const addCheckoutAddress = async (data: AddCheckoutAddressSchema) => {
+  const res = await rpcClient.api.checkout['add-address'].$post({
+    json: {
+      addressId: data.addressId,
+      checkoutSessionId: data.checkoutSessionId,
+    }
+  });
+  const result = await parseResponse(res)
+  return result.data
+}
+
 
 export const getCurrentCheckoutSession = async () => {
-  const res = await apiClient.api.checkout.$get()
+  const res = await rpcClient.api.checkout.$get()
   const result = await parseResponse(res)
   return result.data
 }
 
-
-export const verifyRazorpayOrder = async (sessionId: number, razorpay_order_id: string,
-  razorpay_payment_id: string,
-  razorpay_signature: string) => {
-  const res = await apiClient.api.checkout[":sessionId"]["payment"]["verify"].$post({
+export const getCheckoutSession = async (sessionId: number) => {
+  const res = await rpcClient.api.checkout[":cksessionId"].$get({
     param: {
-      sessionId: String(sessionId)
-    },
-    json: {
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature
+      cksessionId: String(sessionId)
     }
-  });
+  })
   const result = await parseResponse(res)
   return result.data
 }

@@ -4,6 +4,7 @@ import { validate } from "../../../middleware/validate";
 import { addItemToCart, findOrCreateCart } from "../services/add-to-cart";
 import { addToCartSchema } from "./schema";
 
+
 export const addToCartApp = appFactory()
   .post('/',
     authMiddleware,
@@ -16,11 +17,19 @@ export const addToCartApp = appFactory()
         const cartId = await findOrCreateCart(user.id)
         const cartItem = await addItemToCart(cartId, parsedData)
 
-        console.log({ cartItem })
+        if (!cartItem) {
+          return c.json({
+            error: {
+              code: 'internal_server_error',
+              message: 'Failed to add item to cart'
+            }
+          }, 500)
+        }
 
         return c.json({ data: cartItem }, 201)
 
       } catch (error) {
+        console.log({ error })
         return c.json({
           error: {
             code: "internal_server_error",

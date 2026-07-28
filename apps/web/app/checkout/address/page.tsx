@@ -1,7 +1,7 @@
 'use client'
 
 import CreateAddressForm from '@/app/features/address/components/create-address-form'
-import SelectAddressForm from '@/app/features/checkout/components/select-address-form'
+import SelectAddressForm from '@/app/checkout/address/select-address-form'
 import { Button } from '@workspace/ui/components/button'
 import { Label } from '@workspace/ui/components/label'
 import { RadioGroup, RadioGroupItem } from '@workspace/ui/components/radio-group'

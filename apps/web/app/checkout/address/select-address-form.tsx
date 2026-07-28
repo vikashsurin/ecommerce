@@ -1,16 +1,18 @@
 import { useAddresses } from "@/app/features/address/queries";
+import { SaveAddressButton } from "@/app/features/checkout/components/checkout-address-button";
 import { Label } from "@workspace/ui/components/label";
 import {
   RadioGroup,
   RadioGroupItem
 } from "@workspace/ui/components/radio-group";
 import Link from "next/link";
+import { useState } from "react";
 
-export default function ListAddress({ selectedAddressId, setSelectedAddressId }: {
-  selectedAddressId: number | null;
-  setSelectedAddressId: React.Dispatch<React.SetStateAction<number | null>>;
-}) {
+export default function SelectAddressForm() {
   const { data: addresses, isLoading } = useAddresses()
+  const [manualAddressId, setManualAddressId] = useState<number | undefined>(undefined)
+
+  const selectedAddressId = manualAddressId ?? (addresses?.[0]?.id ?? 0)
 
   if (isLoading) {
     return <div>Loading...</div>
@@ -20,7 +22,8 @@ export default function ListAddress({ selectedAddressId, setSelectedAddressId }:
     <div className="mt-6">
       <RadioGroup
         className={'flex flex-col gap-6'}
-        onValueChange={(value) => setSelectedAddressId(value)}
+        value={selectedAddressId}
+        onValueChange={(value) => setManualAddressId(value)}
       >
         {addresses && addresses.map((address) => (
           <div key={address.id} className="flex  flex-col">
@@ -55,7 +58,9 @@ export default function ListAddress({ selectedAddressId, setSelectedAddressId }:
         ))
         }
       </RadioGroup >
-
+      <div className="flex items-center mt-4 gap-4">
+        <SaveAddressButton addressId={selectedAddressId} />
+      </div>
     </div >
   )
 }

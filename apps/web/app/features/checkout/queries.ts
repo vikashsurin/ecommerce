@@ -1,31 +1,24 @@
-import { queryClient } from "@/lib";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { createCheckoutSession, getCurrentCheckoutSession } from "./api";
-import { type CreateCheckoutSessionSchema } from "./schema";
+import { useQuery } from "@tanstack/react-query";
+import {
+  getCheckoutSession,
+  getCurrentCheckoutSession
+} from "./api";
 
-
-
-
-export const useCreateCheckoutSession = () => {
-  return useMutation({
-    mutationFn: (data: CreateCheckoutSessionSchema) => {
-      return createCheckoutSession(data)
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["checkout-session"] });
-      console.log(data);
-    },
-    onError: (error) => {
-      console.error(error);
-    },
-  });
-}
 
 export const useCheckoutSession = () => {
   return useQuery({
     queryKey: ["checkout-session"],
     queryFn: async () => {
       return await getCurrentCheckoutSession();
+    },
+  });
+}
+
+export const useRazorpayOrder = (sessionId: number) => {
+  return useQuery({
+    queryKey: ["razorpay-order", sessionId],
+    queryFn: async () => {
+      return await getCheckoutSession(sessionId);
     },
   });
 }

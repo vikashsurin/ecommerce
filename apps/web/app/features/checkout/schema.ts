@@ -1,19 +1,13 @@
 import { z } from "zod";
 
-export const createCheckoutSessionSchema = z.object({
+export const addCheckoutItemsSchema = z.object({
   cartId: z.number(),
-  addressId: z.number(),
-  paymentMethod: z.enum(['card', 'upi', 'netbanking', 'wallet']),
-  total: z.number(),
-  status: z.enum([
-    "in_progress",
-    "address_selected",
-    "payment_pending",
-    "payment_confirmed",
-    "completed",
-    "abandoned",
-  ]),
 });
 
+export const addCheckoutAddressSchema = z.object({
+  addressId: z.number(),
+  checkoutSessionId: z.number()
+});
 
-export type CreateCheckoutSessionSchema = z.infer<typeof createCheckoutSessionSchema>;
+export type AddCheckoutItemsSchema = z.infer<typeof addCheckoutItemsSchema>;
+export type AddCheckoutAddressSchema = z.infer<typeof addCheckoutAddressSchema>;

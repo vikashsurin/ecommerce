@@ -1,6 +1,6 @@
-import { apiClient } from "@/lib";
+import { rpcClient } from "@/lib";
 import { InferResponseType } from "hono";
 
-type ProductVariantsResponse = InferResponseType<typeof apiClient.api.products[':productId']['variants']['$get'], 200>
+type ProductVariantsResponse = InferResponseType<typeof rpcClient.api.products[':productId']['variants']['$get'], 200>
 
 export type ProductVariant = ProductVariantsResponse['data'][number]

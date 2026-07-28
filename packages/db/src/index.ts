@@ -20,4 +20,4 @@ export const db = drizzle({ client, schema, casing: "snake_case" })
 
 export * from "./schema"
 
-export type DB_TX = BunSQLDatabase<typeof schema> | PgTransaction<any, any, any>
+export type Transaction = BunSQLDatabase<typeof schema> | PgTransaction<any, any, any>

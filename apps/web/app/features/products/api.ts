@@ -1,9 +1,9 @@
-import { apiClient } from "@/lib/api-client"
+import { rpcClient } from "@/lib/rpc-client"
 import { parseResponse } from "hono/client"
 
 export const getProducts = async () => {
   try {
-    const response = await apiClient.api.products.$get()
+    const response = await rpcClient.api.products.$get()
     const result = await parseResponse(response)
     return result.data
   } catch (error) {
@@ -14,7 +14,7 @@ export const getProducts = async () => {
 
 export const getProduct = async (id: string) => {
   try {
-    const response = await apiClient.api.products[":id"].$get({
+    const response = await rpcClient.api.products[":id"].$get({
       param: { id },
     })
     const result = await parseResponse(response)
