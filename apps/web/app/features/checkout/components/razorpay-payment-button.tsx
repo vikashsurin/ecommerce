@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { rpcClient } from "@/lib"; // your Hono RPC client
 import Script from "next/script";
+import { redirect } from "next/navigation";
 
 declare global {
   interface Window {
@@ -79,8 +80,11 @@ export function RazorpayButton({
         await verifyPayment.mutateAsync({
           ...response,
           checkoutSessionId,
+        }, {
+          onSuccess: () => {
+            redirect("/checkout/order-confirmation");
+          }
         });
-        // redirect to order confirmation page here
       },
       modal: {
         ondismiss: () => {

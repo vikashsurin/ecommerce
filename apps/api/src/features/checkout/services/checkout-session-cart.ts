@@ -6,10 +6,10 @@ import {
   productVariants,
   products
 } from "@repo/db";
-import { eq, sql } from "drizzle-orm";
+import { eq, notInArray, sql } from "drizzle-orm";
 
 
-export async function updateCheckoutItems(
+export async function checkoutSessionCart(
   userId: number,
   cartId: number,
   tx: Transaction = db,
@@ -45,7 +45,9 @@ export async function updateCheckoutItems(
 
   const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
 
-  const row = await db
+
+  // TODO: CHECK IF THE sessionid filter is necessary.
+  const row = await tx
     .insert(checkoutSessions)
     .values({
       userId,
@@ -59,6 +61,8 @@ export async function updateCheckoutItems(
     })
     .onConflictDoUpdate({
       target: [checkoutSessions.userId, checkoutSessions.cartId],
+      targetWhere: notInArray(checkoutSessions.status,
+        ["completed", "abandoned", "expired"]),
       set: {
         subtotal,
         total: subtotal,

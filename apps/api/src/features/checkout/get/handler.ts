@@ -1,15 +1,15 @@
 import { checkoutSessions, db } from "@repo/db";
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq, notInArray } from "drizzle-orm";
 import { z } from "zod";
 import { appFactory } from "../../../lib/factory";
 import { authMiddleware, validate } from "../../../middleware";
 
 export const getCheckoutSessionApp = appFactory()
-  .get('/:cartId',
+  .get('/:id',
     authMiddleware,
-    validate('param', z.object({ cartId: z.coerce.number() })),
+    validate('param', z.object({ id: z.coerce.number() })),
     async (c) => {
-      const cartId = c.req.param('cartId')
+      const { id } = c.req.valid('param')
       const user = c.get("user");
       const userId = user.id;
       try {
@@ -18,7 +18,7 @@ export const getCheckoutSessionApp = appFactory()
           .from(checkoutSessions)
           .where(
             and(
-              eq(checkoutSessions.cartId, Number(cartId)),
+              eq(checkoutSessions.id, id),
               eq(checkoutSessions.userId, userId),
             )
           )
@@ -46,7 +46,17 @@ export const getCheckoutSessionApp = appFactory()
         const [checkoutSession] = await db
           .select()
           .from(checkoutSessions)
-          .where(eq(checkoutSessions.userId, user.id))
+          .where(
+            and(
+              eq(checkoutSessions.userId, user.id),
+              notInArray(checkoutSessions.status, [
+                "completed",
+                "abandoned",
+                "expired",
+              ]),
+            )
+          )
+          .orderBy(desc(checkoutSessions.createdAt))
           .limit(1)
 
         if (!checkoutSession) {

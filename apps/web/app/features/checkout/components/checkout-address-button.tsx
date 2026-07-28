@@ -4,12 +4,13 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { useCart } from "../../cart/queries"
 import { addCheckoutAddress } from "../api"
+import { useCheckoutSession } from "../queries"
 
 
 export const SaveAddressButton = ({ addressId }: { addressId: number }) => {
 
   const router = useRouter()
-  const { data: cart } = useCart()
+  const { data: checkoutSession } = useCheckoutSession()
 
   const { mutate } = useMutation({
     mutationFn: addCheckoutAddress,
@@ -24,10 +25,10 @@ export const SaveAddressButton = ({ addressId }: { addressId: number }) => {
 
   return (
     <Button onClick={() => {
-      if (!cart) throw new Error("No checkout session")
+      if (!checkoutSession) throw new Error("No checkout session")
       mutate({
         addressId,
-        cartId: cart?.id
+        checkoutSessionId: checkoutSession.id
       })
     }}>Save Address</Button>
   )

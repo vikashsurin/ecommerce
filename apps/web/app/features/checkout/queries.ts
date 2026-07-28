@@ -4,21 +4,20 @@ import {
 } from "./api";
 
 
-export const useCheckoutSession = (cartId: number | undefined | null) => {
+export const useCheckoutSession = () => {
   return useQuery({
-    queryKey: ["checkout-session", cartId],
+    queryKey: ["checkout-session",],
     queryFn: async () => {
-      return await getCheckoutSession(cartId as number);
+      return await getCheckoutSession();
     },
-    enabled: !!cartId,
   });
 }
 
-export const useRazorpayOrder = (sessionId: number) => {
-  return useQuery({
-    queryKey: ["razorpay-order", sessionId],
-    queryFn: async () => {
-      return await getCheckoutSession(sessionId);
-    },
-  });
-}
+// export const useRazorpayOrder = (sessionId: number) => {
+//   return useQuery({
+//     queryKey: ["razorpay-order", sessionId],
+//     queryFn: async () => {
+//       return await getCheckoutSession(sessionId);
+//     },
+//   });
+// }

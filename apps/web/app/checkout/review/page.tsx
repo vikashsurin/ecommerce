@@ -1,8 +1,7 @@
 'use client'
 
-import { useCart } from "@/app/features/cart/queries";
 import { setReadyForPayment } from "@/app/features/checkout/api";
-import { RazorpayButton } from "@/app/features/checkout/components/checkout-payment-button";
+import { RazorpayButton } from "@/app/features/checkout/components/razorpay-payment-button";
 import { useCheckoutSession } from "@/app/features/checkout/queries";
 import { calculatePercentageDiscount } from "@/lib/percentage";
 import { useMutation } from "@tanstack/react-query";
@@ -11,23 +10,19 @@ import { useEffect } from "react";
 
 export default function ReviewOrderPage() {
 
-  const { data: cart, isLoading: isCartLoading } = useCart()
-  const cartId = cart?.id
-  const { data: checkoutSession, isLoading: isSessionLoading } = useCheckoutSession(cartId)
-
-  const isLoading = isCartLoading || (!!cartId && isSessionLoading)
+  const { data: checkoutSession, isLoading } = useCheckoutSession()
 
   const items = checkoutSession?.items
-  console.log({ items })
+
   const { mutate } = useMutation({
     mutationFn: setReadyForPayment,
   })
 
 
   useEffect(() => {
-    if (isCartLoading || !cart) return
-    mutate(cart.id)
-  }, [cart, isCartLoading, mutate])
+    if (isLoading || !checkoutSession) return
+    mutate(checkoutSession.id)
+  }, [checkoutSession, isLoading, mutate])
 
 
   if (isLoading) return <div>Loading...</div>

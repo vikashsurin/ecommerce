@@ -6,8 +6,9 @@ import {
 import { and, eq } from "drizzle-orm";
 
 
-export async function finalizeCheckout(
-  cartId: number,
+export async function checkoutSessionAddress(
+  addressId: number,
+  checkoutSessionId: number,
   userId: number,
   tx: Transaction = db,
 ) {
@@ -17,13 +18,14 @@ export async function finalizeCheckout(
   const row = await tx
     .update(checkoutSessions)
     .set({
-      status: "ready_for_payment",
+      addressId: addressId,
+      status: "address_selected",
       expiresAt,
       updatedAt: new Date(),
     })
     .where(
       and(
-        eq(checkoutSessions.cartId, cartId),
+        eq(checkoutSessions.id, checkoutSessionId),
         eq(checkoutSessions.userId, userId),
       )
     )

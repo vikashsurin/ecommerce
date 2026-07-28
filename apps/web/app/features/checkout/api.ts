@@ -20,17 +20,23 @@ export const addCheckoutAddress = async (data: AddCheckoutAddressSchema) => {
   const res = await rpcClient.api.checkout['add-address'].$post({
     json: {
       addressId: data.addressId,
-      cartId: data.cartId,
+      checkoutSessionId: data.checkoutSessionId,
     }
   });
   const result = await parseResponse(res)
   return result.data
 }
 
-export const getCheckoutSession = async (cartId: number) => {
-  const res = await rpcClient.api.checkout[":cartId"].$get({
+export const getCheckoutSession = async () => {
+  const res = await rpcClient.api.checkout.$get()
+  const result = await parseResponse(res)
+  return result.data
+}
+
+export const getCheckoutSessionById = async (checkoutSessionId: number) => {
+  const res = await rpcClient.api.checkout[":id"].$get({
     param: {
-      cartId: String(cartId)
+      id: String(checkoutSessionId)
     }
   })
   const result = await parseResponse(res)
@@ -38,10 +44,10 @@ export const getCheckoutSession = async (cartId: number) => {
 }
 
 
-export const setReadyForPayment = async (cartId: number) => {
+export const setReadyForPayment = async (checkoutSessionId: number) => {
   const res = await rpcClient.api.checkout['finalize'].$post({
     json: {
-      cartId: cartId,
+      checkoutSessionId: checkoutSessionId,
     }
   })
   const result = await parseResponse(res)
