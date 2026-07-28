@@ -10,6 +10,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { addresses } from "./addresses";
 import { carts } from "./carts";
+import { paymentStatusEnum } from "./enums";
 import { users } from "./users";
 
 export const checkoutStatusEnum = pgEnum("checkout_status", [
@@ -21,13 +22,6 @@ export const checkoutStatusEnum = pgEnum("checkout_status", [
   "expired",
 ]);
 
-export const paymentStatusEnum = pgEnum("payment_status", [
-  "pending",
-  "authorized",
-  "captured",
-  "failed",
-  "refunded",
-]);
 
 export const paymentGatewayEnum = pgEnum("payment_gateway", [
   "stripe",

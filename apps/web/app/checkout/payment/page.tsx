@@ -12,10 +12,6 @@ export default function PaymentPage() {
 
   const [paymentMethod, setPaymentMethod] = useState("card");
 
-
-
-  console.log({ paymentMethod })
-
   return (
 
     <div className="m-6">

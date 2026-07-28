@@ -1,16 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import {
-  getCheckoutSession,
-  getCurrentCheckoutSession
+  getCheckoutSession
 } from "./api";
 
 
-export const useCheckoutSession = () => {
+export const useCheckoutSession = (cartId: number | undefined | null) => {
   return useQuery({
-    queryKey: ["checkout-session"],
+    queryKey: ["checkout-session", cartId],
     queryFn: async () => {
-      return await getCurrentCheckoutSession();
+      return await getCheckoutSession(cartId as number);
     },
+    enabled: !!cartId,
   });
 }
 

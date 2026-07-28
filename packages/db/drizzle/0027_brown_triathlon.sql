@@ -1,1 +1,0 @@
-ALTER TABLE "checkout_sessions" RENAME COLUMN "subtotal" TO "subTotal";

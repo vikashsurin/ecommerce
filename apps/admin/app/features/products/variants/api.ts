@@ -32,6 +32,8 @@ export const generateSku = async (
 export const createProductVariant = async (
   data: CreateProductVariantSchema
 ) => {
+
+  console.log({ data })
   try {
     const response = await apiClient.api.products[":productId"].variants.$post({
       param: {
@@ -71,7 +73,7 @@ export const updateProductVariant = async ({
         variantId: String(variantId),
       },
       json: {
-        productId:productId,
+        productId: productId,
         stock: data.stock,
         price: data.price,
         salePrice: data.salePrice,

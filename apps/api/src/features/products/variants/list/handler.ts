@@ -6,7 +6,7 @@ import { authMiddleware, validate } from "../../../../middleware";
 
 export const listProductVariantsApp = appFactory()
   .get('/:productId/variants',
-    // authMiddleware,
+    authMiddleware,
     validate('param', z.object({
       productId: z.coerce.number()
     })),

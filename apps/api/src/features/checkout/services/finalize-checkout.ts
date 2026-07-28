@@ -6,8 +6,7 @@ import {
 import { and, eq } from "drizzle-orm";
 
 
-export async function updateCheckoutAddress(
-  addressId: number,
+export async function finalizeCheckout(
   cartId: number,
   userId: number,
   tx: Transaction = db,
@@ -18,8 +17,7 @@ export async function updateCheckoutAddress(
   const row = await tx
     .update(checkoutSessions)
     .set({
-      addressId: addressId,
-      status: "address_selected",
+      status: "ready_for_payment",
       expiresAt,
       updatedAt: new Date(),
     })

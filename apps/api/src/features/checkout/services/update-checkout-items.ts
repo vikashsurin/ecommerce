@@ -15,23 +15,31 @@ export async function updateCheckoutItems(
   tx: Transaction = db,
 ) {
 
+  const pv = productVariants;
   const snapshot = await tx
     .select({
-      productId: productVariants.productId,
-      variantId: productVariants.id,
+      productId: pv.productId,
+      variantId: pv.id,
       name: products.name,
-      sku: productVariants.sku,
-      attributes: sql<Record<string, string> | undefined>`${productVariants.attributes}`,
-      unitPrice: sql<number>`coalesce(${productVariants.salePrice}, ${productVariants.price})`,
-      originalUnitPrice: sql<number>`${productVariants.price}`,
+      sku: pv.sku,
+      attributes: pv.attributes,
+      unitPrice: sql<number>`coalesce(${pv.salePrice}, ${pv.price})`,
+      originalUnitPrice: sql<number>`${pv.price}`,
       quantity: cartItems.quantity,
     })
     .from(cartItems)
-    .innerJoin(productVariants,
-      eq(cartItems.productVariantId, productVariants.id))
+    .innerJoin(pv,
+      eq(cartItems.productVariantId, pv.id))
     .innerJoin(products,
-      eq(productVariants.productId, products.id))
+      eq(pv.productId, products.id))
     .where(eq(cartItems.cartId, cartId))
+
+  const sanitizedSnapshot = snapshot.map(item => ({
+    ...item,
+    attributes: typeof item.attributes === 'string'
+      ? JSON.parse(item.attributes)
+      : item.attributes,
+  }));
 
   const subtotal = snapshot.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
 
@@ -44,7 +52,7 @@ export async function updateCheckoutItems(
       cartId,
       subtotal: subtotal,
       total: subtotal,
-      items: snapshot,
+      items: sanitizedSnapshot,
       status: "in_progress",
       expiresAt,
       updatedAt: new Date(),
@@ -54,7 +62,7 @@ export async function updateCheckoutItems(
       set: {
         subtotal,
         total: subtotal,
-        items: snapshot,
+        items: sanitizedSnapshot,
         expiresAt,
         updatedAt: new Date(),
       },

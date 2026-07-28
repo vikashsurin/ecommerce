@@ -12,7 +12,7 @@ declare global {
 }
 
 type Props = {
-  checkoutSessionId: string;
+  checkoutSessionId: number;
   userName: string;
   userEmail: string;
   userPhone?: string;
@@ -44,7 +44,7 @@ export function RazorpayButton({
       razorpay_order_id: string;
       razorpay_payment_id: string;
       razorpay_signature: string;
-      checkoutSessionId: string;
+      checkoutSessionId: number;
     }) => {
       const res = await rpcClient.api.checkout["verify-payment"].$post({
         json: payload,

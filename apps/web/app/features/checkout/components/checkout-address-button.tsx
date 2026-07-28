@@ -2,14 +2,14 @@ import { useMutation } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { useCart } from "../../cart/queries"
 import { addCheckoutAddress } from "../api"
-import { useCheckoutSession } from "../queries"
 
 
 export const SaveAddressButton = ({ addressId }: { addressId: number }) => {
 
   const router = useRouter()
-  const { data: checkoutSession } = useCheckoutSession()
+  const { data: cart } = useCart()
 
   const { mutate } = useMutation({
     mutationFn: addCheckoutAddress,
@@ -24,10 +24,10 @@ export const SaveAddressButton = ({ addressId }: { addressId: number }) => {
 
   return (
     <Button onClick={() => {
-      if (!checkoutSession) throw new Error("No checkout session")
+      if (!cart) throw new Error("No checkout session")
       mutate({
         addressId,
-        checkoutSessionId: checkoutSession?.id
+        cartId: cart?.id
       })
     }}>Save Address</Button>
   )

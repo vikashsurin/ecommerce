@@ -6,7 +6,7 @@ export const addCheckoutItemsSchema = z.object({
 
 export const addCheckoutAddressSchema = z.object({
   addressId: z.number(),
-  checkoutSessionId: z.number()
+  cartId: z.number()
 });
 
 export type AddCheckoutItemsSchema = z.infer<typeof addCheckoutItemsSchema>;

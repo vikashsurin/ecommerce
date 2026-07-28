@@ -26,13 +26,12 @@ export const createRazorpayOrderApp = appFactory()
           }, 404)
         }
 
-        console.log({ session })
 
         if (session.status !== 'ready_for_payment') {
           return c.json({
             error: {
               code: 'invalid_status',
-              message: "Session status must be 'payment_pending'"
+              message: "Session status must be 'ready_for_payment'"
             }
           }, 400)
         }
@@ -57,7 +56,7 @@ export const createRazorpayOrderApp = appFactory()
           notes: { checkoutSessionId: session.id, userId }
         })
 
-        const updated = await updateSession(order.id,
+        const updated = await updateCheckoutOrder(order.id,
           checkoutSessionId, userId)
 
 
@@ -96,7 +95,7 @@ async function selectSessionById(sessionId: number, userId: number) {
 }
 
 
-async function updateSession(
+async function updateCheckoutOrder(
   orderId: any,
   sessionId: number,
   userId: number,
@@ -106,7 +105,8 @@ async function updateSession(
     .set({
       gatewayOrderId: orderId,
       paymentGateway: 'razorpay',
-      status: 'ready_for_payment'
+      status: 'ready_for_payment',
+      paymentStatus: 'pending',
     })
     .where(and(
       eq(checkoutSessions.id, sessionId),

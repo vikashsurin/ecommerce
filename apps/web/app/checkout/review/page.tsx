@@ -1,17 +1,37 @@
 'use client'
 
-import { RazorpayButton } from "@/app/features/checkout/components/payment-btn";
+import { useCart } from "@/app/features/cart/queries";
+import { setReadyForPayment } from "@/app/features/checkout/api";
+import { RazorpayButton } from "@/app/features/checkout/components/checkout-payment-button";
 import { useCheckoutSession } from "@/app/features/checkout/queries";
 import { calculatePercentageDiscount } from "@/lib/percentage";
+import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
+import { useEffect } from "react";
 
 export default function ReviewOrderPage() {
 
-  const { data: checkoutSession, isLoading } = useCheckoutSession()
+  const { data: cart, isLoading: isCartLoading } = useCart()
+  const cartId = cart?.id
+  const { data: checkoutSession, isLoading: isSessionLoading } = useCheckoutSession(cartId)
+
+  const isLoading = isCartLoading || (!!cartId && isSessionLoading)
 
   const items = checkoutSession?.items
+  console.log({ items })
+  const { mutate } = useMutation({
+    mutationFn: setReadyForPayment,
+  })
+
+
+  useEffect(() => {
+    if (isCartLoading || !cart) return
+    mutate(cart.id)
+  }, [cart, isCartLoading, mutate])
+
 
   if (isLoading) return <div>Loading...</div>
+
 
   return (
     <div className="m-4">
@@ -35,7 +55,7 @@ export default function ReviewOrderPage() {
               </div>
 
               <div className="mt-4">
-                {Object.entries(JSON.parse(item.attributes) as Record<string, string>).map(([key, value]) => (
+                {Object.entries(item.attributes ?? {}).map(([key, value]) => (
                   <div key={key} className="text-sm text-gray-600">
                     <span className="font-bold ">
                       {key} : {' '}
@@ -88,12 +108,13 @@ export default function ReviewOrderPage() {
       </section>
 
       <section className="flex justify-end py-2">
-        <RazorpayButton
-          checkoutSessionId={checkoutSession?.id}
-          userName={'vikas'}
-          userEmail={'vikas@gmail.com'}
-          userPhone={'7304985028934'}
-        />
+        {checkoutSession?.id &&
+          <RazorpayButton
+            checkoutSessionId={Number(checkoutSession.id)}
+            userName={''}
+            userEmail={''}
+            userPhone={''}
+          />}
       </section>
 
     </div>

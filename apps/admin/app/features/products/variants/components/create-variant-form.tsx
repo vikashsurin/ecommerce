@@ -53,7 +53,6 @@ export default function AddVariantForm({
 }
 
 
-// R
 
 function VariantFormFields({
   categoryAttributes,

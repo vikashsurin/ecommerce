@@ -3,7 +3,7 @@ import { Button } from "@workspace/ui/components/button"
 import { ArrowRight } from "lucide-react"
 import { addCheckoutItems } from "../api"
 
-export const CheckoutButton = ({ cartId }: { cartId: number }) => {
+export const CheckoutItemsButton = ({ cartId }: { cartId: number }) => {
   const { mutate } = useMutation({
     mutationFn: addCheckoutItems
   })

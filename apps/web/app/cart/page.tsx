@@ -7,7 +7,7 @@ import { Field, FieldLabel } from "@workspace/ui/components/field";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { CheckoutButton } from "../features/checkout/components/checkout-items-button";
+import { CheckoutItemsButton } from "../features/checkout/components/checkout-items-button";
 
 export default function CartPage() {
   const { data: cart, isLoading } = useCart()
@@ -134,7 +134,7 @@ function SubTotal({ total, cartId }: {
         </span>
       </div>
       <Link href="/checkout/address">
-        <CheckoutButton cartId={cartId} />
+        <CheckoutItemsButton cartId={cartId} />
       </Link>
     </div>
   )

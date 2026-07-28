@@ -1,1 +1,0 @@
-ALTER TABLE "wishlist" ADD CONSTRAINT "wishlist_product_id_unique" UNIQUE("product_id");
