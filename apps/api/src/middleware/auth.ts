@@ -1,55 +1,62 @@
-import { getCookie } from "hono/cookie";
-import { createMiddleware } from "hono/factory";
-import { getSession } from "../features/sessions";
-import { getUserService } from "../features/users";
+import { getCookie } from "hono/cookie"
+import { createMiddleware } from "hono/factory"
+import { getSession } from "../features/sessions"
+import { getUserService } from "../features/users"
 
 const cookieName = Bun.env.COOKIE_NAME ?? null
 
 export const authMiddleware = createMiddleware(async (c, next) => {
-
   const token = _tokenFromCookie(c)
 
   if (!token) {
-    return c.json({
-      error: {
-        code: 'invalid_request',
-        message: 'Missing or malformed Authorization'
-      }
-    }, 401);
+    return c.json(
+      {
+        error: {
+          code: "invalid_request",
+          message: "Missing or malformed Authorization",
+        },
+      },
+      401
+    )
   }
 
   const session = await getSession(token)
 
   if (!session) {
-    return c.json({
-      error: {
-        code: 'invalid_request',
-        message: 'Unauthorized'
-      }
-    }, 401);
+    return c.json(
+      {
+        error: {
+          code: "invalid_request",
+          message: "Unauthorized",
+        },
+      },
+      401
+    )
   }
 
   const user = await getUserService(session.userId)
 
   if (!user) {
-    return c.json({
-      error: {
-        code: 'invalid_request',
-        message: 'Unauthorized'
-      }
-    }, 401);
+    return c.json(
+      {
+        error: {
+          code: "invalid_request",
+          message: "Unauthorized",
+        },
+      },
+      401
+    )
   }
 
-  c.set('user', user)
+  c.set("user", user)
 
   await next()
-});
-
+})
 
 function _tokenFromHeader(c: any) {
-  const authHeader = c.req.header('Authorization')
+  const authHeader = c.req.header("Authorization")
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return null
   }
 
@@ -62,12 +69,10 @@ function _tokenFromHeader(c: any) {
   return token
 }
 
-
 function _tokenFromCookie(c: any) {
-
   if (!cookieName) {
-    console.error('COOKIE_NAME not set')
-    return null
+    console.error("COOKIE_NAME env not set")
+    
   }
 
   const token = getCookie(c, cookieName)
