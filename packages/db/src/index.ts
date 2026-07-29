@@ -2,6 +2,9 @@ import { SQL } from "bun"
 import { BunSQLDatabase, drizzle } from "drizzle-orm/bun-sql"
 import type { PgTransaction } from "drizzle-orm/pg-core"
 import * as schema from "./schema"
+import { config } from "dotenv"
+
+config({ path: "../../.env" })
 
 const globalForDb = globalThis as unknown as {
   conn: SQL | undefined
@@ -20,4 +23,5 @@ export const db = drizzle({ client, schema, casing: "snake_case" })
 
 export * from "./schema"
 
-export type Transaction = BunSQLDatabase<typeof schema> | PgTransaction<any, any, any>
+export type Transaction =
+  BunSQLDatabase<typeof schema> | PgTransaction<any, any, any>
