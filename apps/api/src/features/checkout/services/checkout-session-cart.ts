@@ -4,18 +4,16 @@ import {
   checkoutSessions,
   db,
   productVariants,
-  products
-} from "@repo/db";
-import { eq, notInArray, sql } from "drizzle-orm";
-
+  products,
+} from "@repo/db"
+import { eq, notInArray, sql } from "drizzle-orm"
 
 export async function checkoutSessionCart(
   userId: number,
   cartId: number,
-  tx: Transaction = db,
+  tx: Transaction = db
 ) {
-
-  const pv = productVariants;
+  const pv = productVariants
   const snapshot = await tx
     .select({
       productId: pv.productId,
@@ -28,25 +26,25 @@ export async function checkoutSessionCart(
       quantity: cartItems.quantity,
     })
     .from(cartItems)
-    .innerJoin(pv,
-      eq(cartItems.productVariantId, pv.id))
-    .innerJoin(products,
-      eq(pv.productId, products.id))
+    .innerJoin(pv, eq(cartItems.productVariantId, pv.id))
+    .innerJoin(products, eq(pv.productId, products.id))
     .where(eq(cartItems.cartId, cartId))
 
-  const sanitizedSnapshot = snapshot.map(item => ({
+  const sanitizedSnapshot = snapshot.map((item) => ({
     ...item,
-    attributes: typeof item.attributes === 'string'
-      ? JSON.parse(item.attributes)
-      : item.attributes,
-  }));
+    attributes:
+      typeof item.attributes === "string"
+        ? JSON.parse(item.attributes)
+        : item.attributes,
+  }))
 
-  const subtotal = snapshot.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
+  const subtotal = snapshot.reduce(
+    (sum, item) => sum + item.unitPrice * item.quantity,
+    0
+  )
 
-  const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
+  const expiresAt = new Date(Date.now() + 30 * 60 * 1000)
 
-
-  // TODO: CHECK IF THE sessionid filter is necessary.
   const row = await tx
     .insert(checkoutSessions)
     .values({
@@ -61,8 +59,11 @@ export async function checkoutSessionCart(
     })
     .onConflictDoUpdate({
       target: [checkoutSessions.userId, checkoutSessions.cartId],
-      targetWhere: notInArray(checkoutSessions.status,
-        ["completed", "abandoned", "expired"]),
+      targetWhere: notInArray(checkoutSessions.status, [
+        "completed",
+        "abandoned",
+        "expired",
+      ]),
       set: {
         subtotal,
         total: subtotal,
@@ -71,7 +72,7 @@ export async function checkoutSessionCart(
         updatedAt: new Date(),
       },
     })
-    .returning();
+    .returning()
 
   return row[0] ?? null
 }

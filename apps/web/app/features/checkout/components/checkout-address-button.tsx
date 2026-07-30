@@ -12,6 +12,8 @@ export const SaveAddressButton = ({ addressId }: { addressId: number }) => {
   const router = useRouter()
   const { data: checkoutSession } = useCheckoutSession()
 
+  console.log({checkoutSession})
+
   const { mutate } = useMutation({
     mutationFn: addCheckoutAddress,
     onSuccess: () => {

@@ -1,23 +1,23 @@
-"use client";
+"use client"
 
-import { useState, useCallback } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { rpcClient } from "@/lib"; // your Hono RPC client
-import Script from "next/script";
-import { redirect } from "next/navigation";
+import { useState, useCallback } from "react"
+import { useMutation } from "@tanstack/react-query"
+import { queryClient, rpcClient } from "@/lib" // your Hono RPC client
+import Script from "next/script"
+import { redirect } from "next/navigation"
 
 declare global {
   interface Window {
-    Razorpay: any;
+    Razorpay: any
   }
 }
 
 type Props = {
-  checkoutSessionId: number;
-  userName: string;
-  userEmail: string;
-  userPhone?: string;
-};
+  checkoutSessionId: number
+  userName: string
+  userEmail: string
+  userPhone?: string
+}
 
 export function RazorpayButton({
   checkoutSessionId,
@@ -25,40 +25,39 @@ export function RazorpayButton({
   userEmail,
   userPhone,
 }: Props) {
-  const [scriptLoaded, setScriptLoaded] = useState(false);
-
+  const [scriptLoaded, setScriptLoaded] = useState(false)
 
   const createOrder = useMutation({
     mutationFn: async () => {
       const res = await rpcClient.api.checkout["create-order"].$post({
         json: { checkoutSessionId },
-      });
+      })
       console.log({ res })
-      if (!res.ok) throw new Error("Failed to create order");
-      const { data } = await res.json();
-      return data;
+      if (!res.ok) throw new Error("Failed to create order")
+      const { data } = await res.json()
+      return data
     },
-  });
+  })
 
   const verifyPayment = useMutation({
     mutationFn: async (payload: {
-      razorpay_order_id: string;
-      razorpay_payment_id: string;
-      razorpay_signature: string;
-      checkoutSessionId: number;
+      razorpay_order_id: string
+      razorpay_payment_id: string
+      razorpay_signature: string
+      checkoutSessionId: number
     }) => {
       const res = await rpcClient.api.checkout["verify-payment"].$post({
         json: payload,
-      });
-      if (!res.ok) throw new Error("Payment verification failed");
-      return res.json();
+      })
+      if (!res.ok) throw new Error("Payment verification failed")
+      return res.json()
     },
-  });
+  })
 
   const handlePay = useCallback(async () => {
-    if (!scriptLoaded) return;
+    if (!scriptLoaded) return
 
-    const order = await createOrder.mutateAsync();
+    const order = await createOrder.mutateAsync()
 
     const rzp = new window.Razorpay({
       key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -73,18 +72,25 @@ export function RazorpayButton({
         contact: userPhone,
       },
       handler: async (response: {
-        razorpay_order_id: string;
-        razorpay_payment_id: string;
-        razorpay_signature: string;
+        razorpay_order_id: string
+        razorpay_payment_id: string
+        razorpay_signature: string
       }) => {
-        await verifyPayment.mutateAsync({
-          ...response,
-          checkoutSessionId,
-        }, {
-          onSuccess: () => {
-            redirect("/checkout/order-confirmation");
+        await verifyPayment.mutateAsync(
+          {
+            ...response,
+            checkoutSessionId,
+          },
+          {
+            onSuccess: ({ data }) => {
+              queryClient.invalidateQueries({
+                queryKey: ["cart"],
+              })
+
+              redirect(`/checkout/order/${data?.orderId}`)
+            },
           }
-        });
+        )
       },
       modal: {
         ondismiss: () => {
@@ -92,15 +98,23 @@ export function RazorpayButton({
         },
       },
       theme: { color: "#111111" },
-    });
+    })
 
     rzp.on("payment.failed", (resp: any) => {
-      console.error("Payment failed", resp.error);
+      console.error("Payment failed", resp.error)
       // surface toast, keep session in awaiting_payment for retry
-    });
+    })
 
-    rzp.open();
-  }, [scriptLoaded, createOrder, verifyPayment, checkoutSessionId, userName, userEmail, userPhone]);
+    rzp.open()
+  }, [
+    scriptLoaded,
+    createOrder,
+    verifyPayment,
+    checkoutSessionId,
+    userName,
+    userEmail,
+    userPhone,
+  ])
 
   return (
     <>
@@ -117,5 +131,5 @@ export function RazorpayButton({
         {createOrder.isPending ? "Preparing payment..." : "Pay now"}
       </button>
     </>
-  );
+  )
 }

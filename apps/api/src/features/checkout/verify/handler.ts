@@ -138,6 +138,7 @@ export const verifyRazorpayApp = appFactory().post(
           if (!order) {
             throw new Error("Failed to create order")
           }
+
           return order
         } catch (error: any) {
           if (error.code === "23505") {
@@ -147,12 +148,20 @@ export const verifyRazorpayApp = appFactory().post(
         }
       })
 
+      // Remove cart_items
+      await deleteCartItems(session.cartId)
+
       if (result === ALREADY_PROCESSED) {
+        const [existingOrder] = await db
+          .select()
+          .from(orders)
+          .where(eq(orders.checkoutSessionId, session.id))
+
         return c.json(
           {
             data: {
+              orderId: existingOrder?.id,
               alreadyProcessed: true,
-              orderId: 33,
             },
           },
           200
@@ -161,8 +170,8 @@ export const verifyRazorpayApp = appFactory().post(
 
       return c.json({
         data: {
+          orderId: result.id,
           alreadyProcessed: false,
-          orderId: 33,
         },
       })
     } catch (error) {
@@ -180,7 +189,10 @@ export const verifyRazorpayApp = appFactory().post(
 )
 
 async function deleteCartItems(cartId: number) {
-  const rows = await db.delete(cartItems).where(eq(cartItems.id, cartId))
+  const rows = await db
+    .delete(cartItems)
+    .where(eq(cartItems.cartId, cartId))
+    .returning()
 
   return rows
 }
