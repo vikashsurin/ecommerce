@@ -13,14 +13,13 @@ export default function AddressPage() {
     },
   });
 
-  console.log({ addresses });
   return (
     <section>
       <h1>Address Page</h1>
       <div className="flex gap-4">
         <div
           onClick={() => {
-            // do something
+            console.log('hello there');
           }}
           className="border w-xs items-center flex justify-center p-4 "
         >

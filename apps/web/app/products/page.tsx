@@ -1,7 +1,7 @@
 'use client'
 
 import { useProducts } from '@/app/features/products/queries'
-import Item from '../features/products/components/Item'
+import Item from './ProductItem'
 
 export default function ProductsPage() {
   const { data, isLoading, isError, isSuccess } = useProducts()
