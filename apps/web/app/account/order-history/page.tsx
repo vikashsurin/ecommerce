@@ -22,7 +22,7 @@ export default function OrderHistoryPage() {
       <div className="flex flex-col gap-8">
         {orders && orders.map((order) => (
           <div key={order.id}>
-            <div className="font-semibold text-sm text-gray-400 py-1 flex gap-2">
+            <div className="font-semibold text-xs text-gray-400 py-1 flex gap-2">
               <p>Order ID: {order.id}</p>
               <p>Total:{order.total}</p>
               <p>Date: {formatDate(order.createdAt)}</p>
@@ -50,15 +50,17 @@ function OrderItems({ items }: { items: any[] }) {
           />
 
           <div className="mt-2">
-            <p className="font-semibold">{item.name}</p>
+            <p className="font-semibold text-sm">{item.name}</p>
             <div>
               {Object.entries(item.attributes as unknown as { [key: string]: unknown }[]).map(([key, value]: [string, unknown]) => (
                 <div key={key} className="text-sm">
                   <p>
-                    <span className="font-semibold text-gray-400">
+                    <span className="font-semibold text-xs text-gray-400">
                       {key} : {' '}
                     </span>
-                    {value as string}
+                    <span className="font-semibold text-gray-600 text-xs">
+                      {value as string}
+                    </span>
                   </p>
                 </div>
               ))}
