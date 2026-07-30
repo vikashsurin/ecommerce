@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { sql } from "drizzle-orm"
 import {
   integer,
   jsonb,
@@ -8,15 +8,15 @@ import {
   timestamp,
   uniqueIndex,
   varchar,
-} from "drizzle-orm/pg-core";
-import { addresses } from "./addresses";
-import { carts } from "./carts";
+} from "drizzle-orm/pg-core"
+import { addresses } from "./addresses"
+import { carts } from "./carts"
 import {
   paymentGatewayEnum,
   paymentMethodEnum,
-  paymentStatusEnum
-} from "./enums";
-import { users } from "./users";
+  paymentStatusEnum,
+} from "./enums"
+import { users } from "./users"
 
 export const checkoutStatusEnum = pgEnum("checkout_status", [
   "in_progress",
@@ -25,20 +25,19 @@ export const checkoutStatusEnum = pgEnum("checkout_status", [
   "completed",
   "abandoned",
   "expired",
-]);
-
+])
 
 export type CheckoutSessionItem = {
-  productId: number;
-  variantId?: number;
-  name: string;
-  sku?: string;
-  attributes?: Record<string, string>;
-  unitPrice: number;
-  originalUnitPrice: number;
-  quantity: number;
-  imageUrl?: string;
-};
+  productId: number
+  variantId?: number
+  name: string
+  sku?: string
+  attributes?: Record<string, string>
+  unitPrice: number
+  originalUnitPrice: number
+  quantity: number
+  imageUrl?: string
+}
 
 export const checkoutSessions = pgTable(
   "checkout_sessions",
@@ -53,7 +52,7 @@ export const checkoutSessions = pgTable(
     addressId: integer("address_id").references(() => addresses.id, {
       onDelete: "set null",
     }),
-
+    shippingAddress: text("shipping_address"),
     items: jsonb("items").notNull().$type<CheckoutSessionItem[]>(),
 
     paymentGateway: paymentGatewayEnum("payment_gateway")
@@ -62,7 +61,6 @@ export const checkoutSessions = pgTable(
     paymentMethod: paymentMethodEnum("payment_method"),
     gatewayOrderId: text("gateway_order_id"),
     gatewayPaymentId: text("gateway_payment_id"),
-
 
     gatewayResponse: jsonb("gateway_response"),
 
@@ -94,9 +92,8 @@ export const checkoutSessions = pgTable(
     uniqueIndex("checkout_sessions_idempotency_key_idx").on(
       table.idempotencyKey
     ),
-    uniqueIndex("checkout_sessions_user_id_cart_id_idx").on(
-      table.userId,
-      table.cartId
-    ).where(sql`status NOT IN ('completed', 'abandoned', 'expired')`),
+    uniqueIndex("checkout_sessions_user_id_cart_id_idx")
+      .on(table.userId, table.cartId)
+      .where(sql`status NOT IN ('completed', 'abandoned', 'expired')`),
   ]
-);
+)

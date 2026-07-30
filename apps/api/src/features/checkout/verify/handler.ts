@@ -124,7 +124,7 @@ export const verifyRazorpayApp = appFactory().post(
               taxAmount: 33,
               discountAmount: 3,
               total: 334,
-              shippingAddress: "",
+              shippingAddress: updatedSession.shippingAddress!,
               status: "pending",
               paymentStatus: updatedSession.paymentStatus,
               paymentGateway: updatedSession.paymentGateway,
