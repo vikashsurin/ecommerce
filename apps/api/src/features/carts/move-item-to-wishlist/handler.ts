@@ -1,6 +1,3 @@
-import { appFactory } from "../../../lib/factory";
+import { appFactory } from "../../../lib/factory"
 
-export const moveItemToWishlistApp = appFactory()
-  .post('/move-to-wishlist',
-
-  )
+export const moveItemToWishlistApp = appFactory().post("/move-to-wishlist")

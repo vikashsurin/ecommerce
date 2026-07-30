@@ -1,29 +1,31 @@
-import { addresses, db } from "@repo/db";
-import { eq } from "drizzle-orm";
-import { appFactory } from "../../../lib/factory";
-import { authMiddleware } from "../../../middleware";
+import { addresses, db } from "@repo/db"
+import { eq } from "drizzle-orm"
+import { appFactory } from "../../../lib/factory"
+import { authMiddleware } from "../../../middleware"
 
-export const listAddressApp = appFactory()
-  .get('/',
-    authMiddleware,
-    async (c) => {
-      const user = c.get('user');
+export const listAddressApp = appFactory().get(
+  "/",
+  authMiddleware,
+  async (c) => {
+    const user = c.get("user")
 
-      try {
-        const addresses = await selectAddresses(user.id);
+    try {
+      const addresses = await selectAddresses(user.id)
 
-        return c.json({ data: addresses })
-
-      } catch (error) {
-        return c.json({
+      return c.json({ data: addresses })
+    } catch (error) {
+      return c.json(
+        {
           error: {
-            code: 'internal_server_error',
-            message: 'Failed to save address',
-          }
-        }, 500);
-      }
-    })
-
+            code: "internal_server_error",
+            message: "Failed to save address",
+          },
+        },
+        500
+      )
+    }
+  }
+)
 
 async function selectAddresses(userId: number) {
   const rows = await db
