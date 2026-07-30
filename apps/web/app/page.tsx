@@ -1,4 +1,6 @@
-import { Button } from "@workspace/ui/components/button"
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Button } from "@workspace/ui/components/button";
+import { getAddresses } from "./features/address/api";
 
 export default function Page() {
   return (
@@ -6,6 +8,17 @@ export default function Page() {
       <Button variant="destructive" className="px-12">
         Click me
       </Button>
+
+      <div>
+        <LinkButton />
+      </div>
     </div>
-  )
+  );
+}
+
+function LinkButton() {
+  return (
+    <div>
+    </div>
+  );
 }
