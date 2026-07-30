@@ -7,26 +7,21 @@ import Link from "next/link"
 export default function Cart() {
   const { data: cart, isLoading } = useCart()
 
-  if (isLoading) {
-    return (
-      <div>
-        <Loader></Loader>
-      </div>
-    )
-  }
 
   return (
     <>
       <Link href="/cart">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 border-2 border-amber-700 rounded-md p-1 ">
           {isLoading ? (
-            <Loader size={"16"} className="animate-spin" />
+            <span className="p-1">
+              <Loader size={"16"} className="animate-spin text-amber-700" />
+            </span>
           ) : (
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-50 p-1">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full text-amber-700 p-1">
               {cart?.items?.length ?? 0}
             </div>
           )}
-          <ShoppingBag />
+          <ShoppingBag className=""  />
         </div>
       </Link>
     </>

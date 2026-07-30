@@ -53,7 +53,7 @@ export default function ProductPage() {
           alt={data.name}
           width={300}
           height={300}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover rounded-md"
         />
       </div>
 

@@ -3,7 +3,6 @@
 import { getAddresses } from "@/app/features/address/api";
 import { IconPlus } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "@workspace/ui/components/button";
 
 export default function AddressPage() {
   const { data: addresses } = useQuery({
@@ -14,25 +13,25 @@ export default function AddressPage() {
   });
 
   return (
-    <section>
+    <section className="m-8">
       <h1>Address Page</h1>
-      <div className="flex gap-4">
+      <div className="flex gap-4 mt-6">
         <div
           onClick={() => {
             console.log('hello there');
           }}
-          className="border w-xs items-center flex justify-center p-4 "
+          className="p-4 flex flex-col text-gray-500 hover:text-blue-600 border-dashed items-center justify-center h-50 w-50 gap-2  border rounded-lg"
         >
-          <IconPlus /> Add New Address
+          <IconPlus /> Add New
         </div>
         {addresses
           && addresses.map((address) => (
-            <div key={address.id} className="p-4 border rounded-lg w-xs">
-              <div className="flex gap-2 justify-between">
-                <p className="font-bold">{address.type}</p>
-                <Button variant="ghost" size="sm">
+            <div key={address.id} className="p-4 flex flex-col  h-50 w-50 gap-2 border rounded-lg ">
+              <div className="flex items-start justify-between  gap-2">
+                <p className="font-semibold text-sm">{address.type}</p>
+                <button className="text-xs text-gray-500 bg-gray-100 hover:bg-gray-50 hover:text-blue-600  py-0.5 px-1 rounded-sm font-semibold">
                   Edit
-                </Button>
+                </button>
               </div>
               <div className="text-sm">
                 <p>{address.street}</p>

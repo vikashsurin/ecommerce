@@ -30,34 +30,36 @@ export function AddToCartButton({
     <div>
       <Field>
         <FieldLabel>Select Quantity</FieldLabel>
-        <ButtonGroup className="">
-          <Button
-            disabled={disabled}
-            size={'icon'}
-            variant={'secondary'}
-            onClick={() => {
-              if (quantity > 1) setQuantity(quantity - 1)
-            }}>
-            <Minus />
-          </Button>
+        <div>
+          <ButtonGroup className="border w-max rounded-lg">
+            <Button
+              disabled={disabled}
+              size={'icon'}
+              variant={'secondary'}
+              onClick={() => {
+                if (quantity > 1) setQuantity(quantity - 1)
+              }}>
+              <Minus />
+            </Button>
 
-          <Button
-            disabled={disabled}
-            size={'icon'} variant={'ghost'}
-          >
-            <span>{quantity}</span>
-          </Button>
+            <Button
+              disabled={disabled}
+              size={'icon'} variant={'ghost'}
+            >
+              <span>{quantity}</span>
+            </Button>
 
-          <Button
-            disabled={disabled}
-            size={'icon'}
-            variant={'secondary'}
-            onClick={() =>
-              setQuantity(quantity + 1)
-            }>
-            <Plus />
-          </Button>
-        </ButtonGroup>
+            <Button
+              disabled={disabled}
+              size={'icon'}
+              variant={'secondary'}
+              onClick={() =>
+                setQuantity(quantity + 1)
+              }>
+              <Plus />
+            </Button>
+          </ButtonGroup>
+        </div>
       </Field>
 
       <Button
