@@ -1,12 +1,11 @@
-import { getCookie } from "hono/cookie"
 import { createMiddleware } from "hono/factory"
 import { getSession } from "../features/sessions"
 import { getUserService } from "../features/users"
+import { cookieFromContext } from "../lib/cookie-from-context"
 
-const cookieName = Bun.env.COOKIE_NAME ?? null
 
 export const authMiddleware = createMiddleware(async (c, next) => {
-  const token = _tokenFromCookie(c)
+  const token = cookieFromContext(c)
 
   if (!token) {
     return c.json(
@@ -53,35 +52,35 @@ export const authMiddleware = createMiddleware(async (c, next) => {
   await next()
 })
 
-function _tokenFromHeader(c: any) {
-  const authHeader = c.req.header("Authorization")
+// function _tokenFromHeader(c: any) {
+//   const authHeader = c.req.header("Authorization")
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return null
-  }
+//   if (!authHeader || !authHeader.startsWith("Bearer ")) {
+//     return null
+//   }
 
-  const token = authHeader.substring(7)
+//   const token = authHeader.substring(7)
 
-  if (!token) {
-    return null
-  }
+//   if (!token) {
+//     return null
+//   }
 
-  return token
-}
+//   return token
+// }
 
-function _tokenFromCookie(c: any) {
-  if (!cookieName) {
-    console.error("COOKIE_NAME env not set")
-    
-  }
+//  function _tokenFromCookie(c: any) {
+//   if (!cookieName) {
+//     console.error("COOKIE_NAME env not set")
 
-  const token = getCookie(c, cookieName)
+//   }
 
-  if (!token) {
-    return null
-  }
+//   const token = getCookie(c, cookieName)
 
-  // delete cookie on unauthorized
+//   if (!token) {
+//     return null
+//   }
 
-  return token
-}
+//   // delete cookie on unauthorized
+
+//   return token
+// }
