@@ -1,6 +1,6 @@
 'use client'
 
-import CreateAddressForm from '@/app/features/address/components/create-address-form'
+import CreateOrUpdateAddressForm from '@/app/features/address/components/create-or-update-address-form'
 import SelectAddressForm from '@/app/checkout/address/select-address-form'
 import { Button } from '@workspace/ui/components/button'
 import { Label } from '@workspace/ui/components/label'
@@ -37,12 +37,11 @@ export default function AddressPage() {
           <Label>New Address</Label>
         </div>
       </RadioGroup>
-      {type === 'new' && <CreateAddressForm />}
+      {type === 'new' && <CreateOrUpdateAddressForm />}
       {type === 'existing' &&
         <SelectAddressForm />}
 
 
-      {/*<Button onClick={handleClick}>Continue <ArrowRight /></Button>*/}
 
 
     </div >

@@ -18,6 +18,16 @@ export const getAddresses = async () => {
   return result.data
 }
 
+export const getAddressById = async (addressId: number) => {
+  const response = await rpcClient.api.addresses[":addressId"].$get({
+    param: {
+      addressId: String(addressId)
+    }
+  })
+  const result = await parseResponse(response)
+  return result.data
+}
+
 export const updateAddress = async (id: number, data: UpdateAddressSchema) => {
   const response = await rpcClient.api.addresses[':id'].$patch({
     param: {

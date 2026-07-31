@@ -4,38 +4,59 @@ import { useForm } from '@tanstack/react-form-nextjs'
 import { Button } from '@workspace/ui/components/button'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@workspace/ui/components/field'
 import { Input } from '@workspace/ui/components/input'
-import { ArrowRight } from 'lucide-react'
-import Link from 'next/link'
 import { toast } from 'sonner'
-import { useCreateAddress } from '../queries'
+import { useCreateAddress, useUpdateAddress } from '../queries'
 import { createAddressSchema } from '../schema'
+import { useQuery } from '@tanstack/react-query'
+import { getAddressById } from '../api'
 
-export default function CreateAddressForm() {
+export default function CreateOrUpdateAddressForm({ addressId, isUpdate = false, callbackAction }: { addressId?: any, isUpdate?: boolean, callbackAction?: () => void }) {
+
+  const { data } = useQuery({
+    queryKey: ['address', addressId],
+    enabled: !!addressId,
+    queryFn: () => getAddressById(addressId),
+  })
+
 
   const { mutate: saveAddress, reset } = useCreateAddress()
+  const { mutate: updateAddress } = useUpdateAddress()
 
   const form = useForm({
     defaultValues: {
       address: '',
-      street: '',
-      landmark: '',
-      city: '',
-      state: '',
-      pincode: '',
-      country: '',
-      type: ''
+      street: data?.street ?? '',
+      city: data?.city ?? '',
+      state: data?.state ?? '',
+      pincode: data?.zip ?? '',
+      country: data?.country ?? '',
+      type: data?.type ?? ''
     },
     onSubmit: async ({ value }) => {
-      saveAddress(value, {
-        onSuccess: () => {
-          form.reset()
-          reset()
-          toast.success("Address created successfully")
-        },
-        onError: () => {
-          toast.error("Failed to create address")
-        },
-      })
+      if (isUpdate) {
+        updateAddress({ id: addressId, data: value }, {
+          onSuccess: () => {
+            form.reset()
+            toast.success("Address updated successfully")
+            callbackAction?.()
+          },
+          onError: () => {
+            toast.error("Failed to update address")
+          },
+        })
+      } else {
+        saveAddress(value, {
+          onSuccess: () => {
+            form.reset()
+            reset()
+            toast.success("Address created successfully")
+            callbackAction?.()
+          },
+          onError: () => {
+            toast.error("Failed to create address")
+          },
+        })
+      }
     },
     validators: {
       onSubmit: createAddressSchema,
@@ -109,7 +130,7 @@ export default function CreateAddressForm() {
             )
           }}
         </form.Field>
-        <form.Field name='landmark'>
+        {/*<form.Field name='landmark'>
           {(field) => {
             const isInvalid =
               field.state.meta.isTouched && !field.state.meta.isValid
@@ -134,7 +155,7 @@ export default function CreateAddressForm() {
               </>
             )
           }}
-        </form.Field>
+        </form.Field>*/}
         <form.Field name='city'>
           {(field) => {
             const isInvalid =
@@ -267,7 +288,9 @@ export default function CreateAddressForm() {
             )
           }}
         </form.Field>
-        <Button type='submit'>Save Address</Button>
+        <Button type='submit'>
+          {isUpdate ? 'Update Address' : 'Save Address'}
+        </Button>
       </FieldGroup>
     </form>
   )
