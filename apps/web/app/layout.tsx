@@ -1,22 +1,22 @@
-import { Geist, Geist_Mono } from "next/font/google"
-import "./globals.css"
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
 
-import Header from "@/components/Header"
-import "@workspace/ui/globals.css"
-import { cn } from "@workspace/ui/lib/utils"
-import { Toaster } from 'sonner'
-import Providers from "../lib/Provider"
-const geist = Geist({ subsets: ["latin"], variable: "--font-sans" })
+import Header from "@/components/Header";
+import "@workspace/ui/globals.css";
+import { cn } from "@workspace/ui/lib/utils";
+import { Toaster } from "sonner";
+import Providers from "../lib/Provider";
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
-})
+});
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html
@@ -26,7 +26,7 @@ export default function RootLayout({
         "antialiased",
         fontMono.variable,
         "font-sans",
-        geist.variable
+        geist.variable,
       )}
     >
       <body>
@@ -39,5 +39,5 @@ export default function RootLayout({
         </Providers>
       </body>
     </html>
-  )
+  );
 }

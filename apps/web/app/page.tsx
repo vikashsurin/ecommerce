@@ -1,6 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@workspace/ui/components/button";
-import { getAddresses } from "./features/address/api";
 
 export default function Page() {
   return (
