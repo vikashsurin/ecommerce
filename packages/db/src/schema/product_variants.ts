@@ -30,5 +30,8 @@ export const productVariants = pgTable(
       "sale_price_lower_check",
       sql`${table.salePrice} IS NULL OR ${table.salePrice} < ${table.price}`
     ),
+    check(
+      "stock_is_non_negative",
+      sql`${table.stock} >= 0` ),
   ]
 )
