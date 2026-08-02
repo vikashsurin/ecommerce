@@ -5,6 +5,7 @@ const envSchema = z.object({
   DATABASE_URL: z.string(),
   RUSTFS_ACCESS_KEY: z.string(),
   RUSTFS_SECRET_KEY: z.string(),
+  RUSTFS_PUBLIC_URL:z.string(),
   STORAGE_BUCKET_NAME: z.string(),
 });
 

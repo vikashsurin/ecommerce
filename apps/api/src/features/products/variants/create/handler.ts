@@ -1,11 +1,8 @@
-import { db, productVariants } from "@repo/db"
-import { z } from "zod"
-import { appFactory } from "../../../../lib/factory"
-import { authMiddleware, validate } from "../../../../middleware"
-import {
-  type CreateProductVariantSchema,
-  createProductVariantSchema,
-} from "./schema"
+import { db, productVariants } from "@repo/db";
+import { z } from "zod";
+import { appFactory } from "../../../../lib/factory";
+import { authMiddleware, validate } from "../../../../middleware";
+import { type CreateProductVariantSchema, createProductVariantSchema } from "./schema";
 
 export const createProductVariantApp = appFactory().post(
   "/:productId/variants",
@@ -13,14 +10,14 @@ export const createProductVariantApp = appFactory().post(
   validate("param", z.object({ productId: z.coerce.number() })),
   validate("json", createProductVariantSchema),
   async (c) => {
-    const { productId } = c.req.valid("param")
-    const data = c.req.valid("json")
+    const { productId } = c.req.valid("param");
+    const data = c.req.valid("json");
 
     try {
-      const variant = await insertProductVariant(data)
+      const variant = await insertProductVariant(data);
 
-      console.log({ variant })
-      return c.json({ data: variant }, 201)
+      console.log({ variant });
+      return c.json({ data: variant }, 201);
     } catch (error) {
       return c.json(
         {
@@ -29,13 +26,13 @@ export const createProductVariantApp = appFactory().post(
             message: "Internal server error",
           },
         },
-        500
-      )
+        500,
+      );
     }
-  }
-)
+  },
+);
 
 async function insertProductVariant(data: CreateProductVariantSchema) {
-  const row = await db.insert(productVariants).values(data).returning()
-  return row[0] ?? null
+  const row = await db.insert(productVariants).values(data).returning();
+  return row[0] ?? null;
 }

@@ -1,10 +1,23 @@
+import { buildImageKey } from "./build-image-key";
 import { rustfs_client } from "./client";
-import { uploadFile } from "./upload-file";
+import { createBucket } from "./create-bucket";
 import { deleteBucket } from "./delete-bucket";
+import { getImageUrl } from "./get-image-url";
+import { getObject } from "./get-object";
+import { getPresignedUploadUrl } from "./get-presigned-upload-url";
 import { listBuckets } from "./list-buckets";
 import { listObjects } from "./list-objects";
-import { getObject } from "./get-object";
-import { createBucket } from "./create-bucket";
+import { uploadObject } from "./upload-object";
 
-export {rustfs_client, uploadFile, deleteBucket,listBuckets, listObjects, getObject, createBucket}
-
+export {
+  buildImageKey,
+  createBucket,
+  deleteBucket,
+  getImageUrl,
+  getObject,
+  getPresignedUploadUrl,
+  listBuckets,
+  listObjects,
+  rustfs_client,
+  uploadObject,
+};
