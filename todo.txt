@@ -1,0 +1,2 @@
+create separte url/ routeApp for uploading and creating products and variants.
+modify buildImage key and related function to handle variantid = undefined. 
