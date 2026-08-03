@@ -1,64 +1,69 @@
-"use client"
+"use client";
 
-import { useProduct } from "@/app/features/products/queries"
-import Image from "next/image"
-import { useParams } from "next/navigation"
-import AddVariantDrawer from "./add-variant-drawer"
-import ProductVariantsTable from "./product-variants-table"
+import { UploadImageButton } from "@/app/features/products/components/upload-image-button";
+import { useProduct, useUploadImage } from "@/app/features/products/queries";
+import Image from "next/image";
+import { useParams } from "next/navigation";
+import AddVariantDrawer from "./add-variant-drawer";
+import ProductVariantsTable from "./product-variants-table";
 
 export default function ProductPage() {
-  const { productId } = useParams<{ productId: string }>()
-  const { data: product, isLoading } = useProduct(productId)
+  const { productId } = useParams<{ productId: string }>();
+  const { data: product, isLoading } = useProduct(productId);
 
-  if (isLoading) return <div>Loading...</div>
+  function handleUpload() {}
+  if (isLoading) return <div>Loading...</div>;
   return (
     <>
       <div className="m-4">
-        <section className="flex justify-between  gap-4">
-        <div className="flex flex-col gap-4">
-          {product && (
-            <div className="flex w-max gap-4">
-              <Image
-                src={"https://picsum.photos/200"}
-                width={200}
-                height={200}
-                alt={product.name}
-                className="h-70 w-70 border object-cover"
-              />
-              <div>
-                <div className="flex flex-col gap-3 rounded-md">
-                  <h3>{product.name}</h3>
-                  <div>
-                    <h6 className="text-sm font-semibold">Description:</h6>
-                    <p className="rounded border p-1 px-2 text-sm text-gray-600">
-                      {product.description}
-                    </p>
-                  </div>
+        <section className="flex justify-between gap-4">
+          <div className="flex flex-col gap-4">
+            {product && (
+              <div className="flex w-max gap-4">
+                <div
+                  data-image
+                  className="flex h-50 w-50 items-center justify-center border"
+                >
+                  {
+                    /* <input
+                    type="file"
+                    id="image"
+                    name="image"
+                    accept="image/png, image/jpeg, image/jpg"
+                    className="w-full border"
+                  /> */
+                  }
+                </div>
 
-                  <div>
-                    <h6 className="text-sm font-semibold">Slug:</h6>
-                    <p className="rounded border p-1 px-2 text-sm text-gray-600">
-                      {product.slug}
-                    </p>
+                <div>
+                  <div className="flex flex-col gap-3 rounded-md">
+                    <h3>{product.name}</h3>
+                    <div>
+                      <h6 className="text-sm font-semibold">Description:</h6>
+                      <p className="rounded border p-1 px-2 text-sm text-gray-600">
+                        {product.description}
+                      </p>
+                    </div>
+
+                    <div>
+                      <h6 className="text-sm font-semibold">Slug:</h6>
+                      <p className="rounded border p-1 px-2 text-sm text-gray-600">
+                        {product.slug}
+                      </p>
+                    </div>
                   </div>
                 </div>
+                <UploadImageButton productId={productId} onUpload={handleUpload} />
               </div>
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-col gap-4 p-4">
-          {product && product.categoryId ? (
-            <AddVariantDrawer categoryId={product.categoryId} />
-          ) : (
-            <div></div>
             )}
+          </div>
 
-
+          <div className="flex flex-col gap-4 p-4">
+            {product && product.categoryId ? <AddVariantDrawer categoryId={product.categoryId} /> : <div></div>}
           </div>
         </section>
-      <ProductVariantsTable />
-     </div>
+        <ProductVariantsTable />
+      </div>
     </>
-  )
+  );
 }
