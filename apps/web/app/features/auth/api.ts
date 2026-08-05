@@ -12,9 +12,7 @@ export async function loginUser({ email, password }: LoginSchema) {
   return res.json()
 }
 
-
-export async function registerUser({ name, email, password, phone }: RegisterSchema) {
-
+export async function registeruser({ name, email, password, phone }: RegisterSchema) {
   const res = await rpcClient.api.auth.register.$post({
     json: {
       name,

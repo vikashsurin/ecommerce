@@ -2,11 +2,10 @@
 
 import { UploadImageButton } from "@/app/features/products/components/upload-product-img-btn";
 import { useProduct } from "@/app/features/products/queries";
+import { useProductImage } from "@/app/features/products/queries";
 import { useParams } from "next/navigation";
 import AddVariantDrawer from "./add-variant-drawer";
 import ProductVariantsTable from "./product-variants-table";
-import { useProductImage } from "@/app/features/products/queries";
-import Image from "next/image";
 
 export default function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
@@ -14,8 +13,8 @@ export default function ProductPage() {
 
   const { data: productImage, isLoading: isLoadingImage } = useProductImage(productId);
 
-  console.log('productImage', productImage)
-  
+  console.log("productImage", productImage);
+
   if (isLoading || isLoadingImage) return <div>Loading...</div>;
   return (
     <>
@@ -28,7 +27,7 @@ export default function ProductPage() {
                   data-image
                   className="flex h-50 w-50 items-center justify-center border"
                 >
-                <img src={productImage.url} className='h-50 w-50 object-cover' />
+                  <img src={productImage.url} className="h-50 w-50 object-cover" />
                 </div>
 
                 <div>
@@ -53,8 +52,7 @@ export default function ProductPage() {
               </div>
             )}
           </div>
-
-          <div className="flex flex-col gap-4 p-4">
+          <div className="flex-col gap-4 p-4">
             {product && product.categoryId ? <AddVariantDrawer categoryId={product.categoryId} /> : <div></div>}
           </div>
         </section>

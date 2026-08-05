@@ -5,7 +5,7 @@ import { useProducts } from "@/app/features/products/queries"
 import { Button } from "@workspace/ui/components/button"
 import { ArrowRight, Plus } from "lucide-react"
 import Link from "next/link"
-
+import Image from 'next/image'
 
 export default function ProductsPage() {
   return (

@@ -13,7 +13,6 @@ export default function Page() {
     </div>
   );
 }
-
 function LinkButton() {
   return (
     <div>
