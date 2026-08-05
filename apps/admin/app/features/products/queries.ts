@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { createProduct, getProduct, getProducts, uploadVariantImages } from "./api";
-import { type CreateProductSchema, type UploadImageSchema } from "./schema";
+import { createProduct, getProduct, getProductImage, getProducts, uploadProductImages, uploadVariantImages } from "./api";
+import { type CreateProductSchema } from "./schema";
 
 export const useCreateProduct = () => {
   return useMutation({
@@ -28,9 +28,21 @@ export const useProduct = (id: string) => {
   });
 };
 
-export const useUploadImage = () => {
+export const useUploadProductImages = () => {
   return useMutation({
-    mutationFn: async (data: { productId: number; variantId?: number; files: File[] }) =>
-      uploadVariantImages(data.variantId, data.variantId, data.files),
+    mutationFn: async (data: { productId: number; files: File[] }) => uploadProductImages(data.productId, data.files),
+  });
+};
+
+export const useUploadVariantImages = () => {
+  return useMutation({
+    mutationFn: async (data: { variantId: number; files: File[] }) => uploadVariantImages(data.variantId, data.files),
+  });
+};
+
+export const useProductImage = (productId: string) => {
+  return useQuery({
+    queryKey: ["product-image", productId],
+    queryFn: () => getProductImage(productId),
   });
 };

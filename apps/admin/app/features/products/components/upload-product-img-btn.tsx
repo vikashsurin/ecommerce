@@ -1,13 +1,13 @@
-import { useUploadImage } from "@/app/features/products/queries";
+import { useUploadProductImages } from "@/app/features/products/queries";
 import { useForm } from "@tanstack/react-form-nextjs";
 
-export function UploadImageButton(productId, variantId: { productId: string; variantId?: string | undefined }) {
-  const { mutate: uploadImage } = useUploadImage();
+export function UploadImageButton({productId}: { productId: string; variantId?: string | undefined }) {
+  const { mutate: uploadImage } = useUploadProductImages();
 
   const form = useForm({
     defaultValues: { images: [] as File[] },
     onSubmit: async ({ value }) => {
-      uploadImage({ productId: Number(productId), variantId: Number(variantId) ?? undefined, files: value.images }, {});
+      uploadImage({ productId: Number(productId),  files: value.images }, {});
     },
   });
   return (
@@ -29,7 +29,7 @@ export function UploadImageButton(productId, variantId: { productId: string; var
         }}
         className="border"
       />
-      <button type="submit" onClick={form.handleSubmit}>
+      <button type="submit">
         Upload
       </button>
     </form>

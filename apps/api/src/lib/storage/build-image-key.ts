@@ -1,4 +1,12 @@
-export function buildImageKey({ productId, variantId, filename }: { productId: number; variantId: number; filename: string }) {
-  const ext = filename.split(".").pop();
-  return `products/${productId}/variants/${variantId}/${crypto.randomUUID()}.${ext}`;
+export function buildImageKey(params: {
+  productId: number;
+  variantId?: number; // undefined for product-level images
+  filename: string;
+}): string {
+  const ext = params.filename.split(".").pop();
+  const uniqueName = `${crypto.randomUUID()}.${ext}`;
+
+  return params.variantId
+    ? `products/${params.productId}/variants/${params.variantId}/${uniqueName}`
+    : `products/${params.productId}/${uniqueName}`;
 }

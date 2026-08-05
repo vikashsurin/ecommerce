@@ -1,8 +1,8 @@
 import z from "zod"
-import { appFactory } from "../../../../lib/factory"
-import { authMiddleware, validate } from "../../../../middleware"
-import { getProductById } from "../../shared"
-import { generateSku } from "../../utils/generate-sku"
+import { appFactory } from "@/lib/factory"
+import { authMiddleware, validate } from "@/middleware"
+import { getProductById } from "../../products/shared"
+import { generateSku } from "@/utils/generate-sku"
 import { generateSkuSchema } from "./schema"
 
 export const generateSkuApp = appFactory().post(

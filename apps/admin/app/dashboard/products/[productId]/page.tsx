@@ -1,18 +1,22 @@
 "use client";
 
-import { UploadImageButton } from "@/app/features/products/components/upload-image-button";
-import { useProduct, useUploadImage } from "@/app/features/products/queries";
-import Image from "next/image";
+import { UploadImageButton } from "@/app/features/products/components/upload-product-img-btn";
+import { useProduct } from "@/app/features/products/queries";
 import { useParams } from "next/navigation";
 import AddVariantDrawer from "./add-variant-drawer";
 import ProductVariantsTable from "./product-variants-table";
+import { useProductImage } from "@/app/features/products/queries";
+import Image from "next/image";
 
 export default function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
   const { data: product, isLoading } = useProduct(productId);
 
-  function handleUpload() {}
-  if (isLoading) return <div>Loading...</div>;
+  const { data: productImage, isLoading: isLoadingImage } = useProductImage(productId);
+
+  console.log('productImage', productImage)
+  
+  if (isLoading || isLoadingImage) return <div>Loading...</div>;
   return (
     <>
       <div className="m-4">
@@ -24,15 +28,7 @@ export default function ProductPage() {
                   data-image
                   className="flex h-50 w-50 items-center justify-center border"
                 >
-                  {
-                    /* <input
-                    type="file"
-                    id="image"
-                    name="image"
-                    accept="image/png, image/jpeg, image/jpg"
-                    className="w-full border"
-                  /> */
-                  }
+                <img src={productImage.url} className='h-50 w-50 object-cover' />
                 </div>
 
                 <div>
@@ -53,7 +49,7 @@ export default function ProductPage() {
                     </div>
                   </div>
                 </div>
-                <UploadImageButton productId={productId} onUpload={handleUpload} />
+                <UploadImageButton productId={productId} />
               </div>
             )}
           </div>

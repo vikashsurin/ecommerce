@@ -7,15 +7,18 @@ import { checkoutApp } from "./features/checkout";
 import { ordersApp } from "./features/orders";
 import { productsApp } from "./features/products";
 import { usersApp } from "./features/users";
+import { productVariantsApp } from "./features/variants";
 import { wishlistApp } from "./features/wishlist";
 
 export const apiRoutes = new Hono()
-  .route('/products', productsApp)
-  .route('/users', usersApp)
-  .route('/auth', authApp)
-  .route('/wishlist', wishlistApp)
-  .route('/cart', cartsApp)
-  .route('/orders', ordersApp)
-  .route('/categories', categoriesApp)
-  .route('/addresses', addressApp)
-  .route('/checkout', checkoutApp)
+  .route("/products", productsApp)
+  .route("/variants", productVariantsApp)
+  .route("/users", usersApp)
+  .route("/auth", authApp)
+  .route("/wishlist", wishlistApp)
+  .route("/cart", cartsApp)
+  .route("/orders", ordersApp)
+  .route("/categories", categoriesApp)
+  .route("/addresses", addressApp)
+  .route("/checkout", checkoutApp);
+
