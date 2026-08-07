@@ -1,14 +1,14 @@
 import { db, productVariants } from "@repo/db"
 import { and, eq } from "drizzle-orm"
 import { z } from "zod"
-import { appFactory } from "@/lib/factory"
-import { validate } from "@/middleware"
+import { appFactory } from "../../../lib/factory"
+import { validate } from "../../../middleware"
 import {
   type UpdateProductVariantSchema,
   updateProductVariantSchema,
 } from "./schema"
 
-export const updateProductVariantApp = appFactory().put(
+export const updateProductVariantApp = appFactory.put(
   "/:productId/variants/:variantId",
   // authMiddleware,
   validate(

@@ -4,7 +4,7 @@ import z from "zod"
 import { appFactory } from "../../../lib/factory"
 import { authMiddleware, validate } from "../../../middleware"
 
-export const getCategoryApp = appFactory().get(
+export const getCategoryApp = appFactory.get(
   "/:categoryId",
   // authMiddleware,
   validate("param", z.object({ categoryId: z.coerce.number() })),

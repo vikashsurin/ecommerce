@@ -3,7 +3,7 @@ import { appFactory } from "../../../lib/factory"
 import { authMiddleware, validate } from "../../../middleware"
 import { addToWishlistSchema } from "./schema"
 
-export const addToWishlistHandler = appFactory().post(
+export const addToWishlistHandler = appFactory.post(
   "/",
   authMiddleware,
   validate("json", addToWishlistSchema),

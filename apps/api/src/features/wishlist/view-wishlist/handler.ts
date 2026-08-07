@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm"
 import { appFactory } from "../../../lib/factory"
 import { authMiddleware } from "../../../middleware"
 
-export const viewWishlistApp = appFactory().get(
+export const viewWishlistApp = appFactory.get(
   "/",
   authMiddleware,
   async (c) => {

@@ -4,7 +4,7 @@ import { authMiddleware } from "../../../middleware"
 import { validate } from "../../../middleware/validate"
 import { deleteFromWishlist } from "../services/delete-from-wishlist.service"
 
-export const removeFromWishlistApp = appFactory().delete(
+export const removeFromWishlistApp = appFactory.delete(
   "/:productVariantId",
   authMiddleware,
   validate("param", z.object({ itemId: z.coerce.number() })),

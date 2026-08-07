@@ -3,7 +3,7 @@ import { asc, eq } from "drizzle-orm"
 import { appFactory } from "../../../lib/factory"
 import { authMiddleware } from "../../../middleware"
 
-export const getCartApp = appFactory().get("/", authMiddleware, async (c) => {
+export const getCartApp = appFactory.get("/", authMiddleware, async (c) => {
   const user = c.get("user")
   try {
     const result = await selectCartByUserId(user.id)

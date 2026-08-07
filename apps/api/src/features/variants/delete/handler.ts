@@ -1,10 +1,10 @@
 import { db, productVariants } from "@repo/db"
 import { and, eq } from "drizzle-orm"
 import z from "zod"
-import { appFactory } from "@/lib/factory"
-import { validate } from "@/middleware"
+import { appFactory } from "../../../lib/factory"
+import { validate } from "../../../middleware"
 
-export const deleteProductVariantApp = appFactory().delete(
+export const deleteProductVariantApp = appFactory.delete(
   "/:productId/variants/:variantId",
   // authMiddleware,
   validate(

@@ -4,7 +4,7 @@ import { z } from "zod"
 import { appFactory } from "../../../lib/factory"
 import { authMiddleware, validate } from "../../../middleware"
 
-export const removeFromCartApp = appFactory().delete(
+export const removeFromCartApp = appFactory.delete(
   "/items/:cartItemId",
   authMiddleware,
   validate("param", z.object({ cartItemId: z.coerce.number() })),

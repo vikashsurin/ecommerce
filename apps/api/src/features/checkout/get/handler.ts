@@ -4,7 +4,7 @@ import { z } from "zod"
 import { appFactory } from "../../../lib/factory"
 import { authMiddleware, validate } from "../../../middleware"
 
-export const getCheckoutSessionApp = appFactory()
+export const getCheckoutSessionApp = appFactory
   .get(
     "/:id",
     authMiddleware,

@@ -1,5 +1,5 @@
-import { appFactory } from "@/lib/factory"
-import { authMiddleware, validate } from "@/middleware"
+import { appFactory } from "../../../lib/factory"
+import { authMiddleware, validate } from "../../../middleware"
 import { db, productImages, productVariants } from "@repo/db"
 import { eq } from "drizzle-orm"
 import z from "zod"

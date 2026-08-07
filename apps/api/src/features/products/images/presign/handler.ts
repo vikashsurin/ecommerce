@@ -1,11 +1,11 @@
-import { appFactory } from "@/lib/factory"
-import { buildImageKey, getPresignedUploadUrl } from "@/lib/storage"
-import { validate } from "@/middleware"
+import { appFactory } from "../../../../lib/factory"
+import { buildImageKey, getPresignedUploadUrl } from "../../../../lib/storage"
+import { validate } from "../../../../middleware"
 import { db, products } from "@repo/db"
 import { eq } from "drizzle-orm"
 import z from "zod"
 
-export const presignImagesApp = appFactory().post(
+export const presignImagesApp = appFactory.post(
   "/:productId/images/presign",
   // authMiddleware,
   validate("param", z.object({ productId: z.coerce.number() })),

@@ -6,7 +6,7 @@ import { authMiddleware, validate } from "../../../middleware"
 import { addItemToCart, findOrCreateCart } from "../../carts"
 import { deleteFromWishlist } from "../services/delete-from-wishlist.service"
 
-export const moveItemToCartApp = appFactory().post(
+export const moveItemToCartApp = appFactory.post(
   "/move-to-cart",
   authMiddleware,
   validate(

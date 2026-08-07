@@ -5,7 +5,7 @@ import { appFactory } from "../../../lib/factory"
 import { authMiddleware } from "../../../middleware"
 import { validate } from "../../../middleware/validate"
 
-export const deleteAddressApp = appFactory().delete(
+export const deleteAddressApp = appFactory.delete(
   "/:id",
   authMiddleware,
   validate("param", z.object({ id: z.coerce.number() })),

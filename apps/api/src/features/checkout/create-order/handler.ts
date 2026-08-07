@@ -5,7 +5,7 @@ import { appFactory } from "../../../lib/factory"
 import { razorpay } from "../../../lib/razorpay"
 import { authMiddleware, validate } from "../../../middleware"
 
-export const createRazorpayOrderApp = appFactory().post(
+export const createRazorpayOrderApp = appFactory.post(
   "/create-order",
   authMiddleware,
   validate("json", z.object({ checkoutSessionId: z.coerce.number() })),

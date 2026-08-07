@@ -5,7 +5,7 @@ import { appFactory } from "../../../lib/factory"
 import { validate } from "../../../middleware"
 import { updateCategoryAttributeSchema } from "./schema"
 
-export const updateAttributeApp = appFactory().put(
+export const updateAttributeApp = appFactory.put(
   "/attributes/:id",
   // authMiddleware,
   validate("param", z.object({ id: z.coerce.number() })),

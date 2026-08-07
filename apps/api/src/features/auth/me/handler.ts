@@ -5,7 +5,7 @@ import { appFactory } from "../../../lib/factory"
 import { getSession } from "../../sessions"
 import { getUserService } from "../../users"
 
-export const meApp = appFactory().get("/me", async (c) => {
+export const meApp = appFactory.get("/me", async (c) => {
   const cookie = cookieFromContext(c)
 
   if (!cookie) {

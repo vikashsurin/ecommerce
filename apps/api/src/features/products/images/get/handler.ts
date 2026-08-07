@@ -1,11 +1,11 @@
-import { validate } from "@/middleware"
+import { validate } from "../../../../middleware"
 import { z } from "zod"
-import { appFactory } from "@/lib/factory"
+import { appFactory } from "../../../../lib/factory"
 import { db, productImages } from "@repo/db"
 import { eq } from "drizzle-orm"
-import { getImageUrl } from "@/lib/storage"
+import { getImageUrl } from "../../../../lib/storage"
 
-export const getImagesApp = appFactory()
+export const getImagesApp = appFactory
   .get(
     "/:productId/images",
     validate("param", z.object({ productId: z.coerce.number() })),

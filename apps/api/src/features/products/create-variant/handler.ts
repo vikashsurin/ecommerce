@@ -1,11 +1,11 @@
-import { appFactory } from "@/lib/factory";
-import { authMiddleware, validate } from "@/middleware";
+import { appFactory } from "../../../lib/factory";
+import { authMiddleware, validate } from "../../../middleware";
 import { db, productVariants } from "@repo/db";
 import { z } from "zod";
 import { type CreateProductVariantSchema, createProductVariantSchema } from './schema'
 
 
-export const createProductVariantApp = appFactory()
+export const createProductVariantApp = appFactory
   .post(
     "/:productId/variants",
     authMiddleware,

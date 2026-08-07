@@ -7,7 +7,7 @@ import { createCategorySchema } from "./schema"
 
 const slugSchema = z.string().slugify()
 
-export const createCategoryApp = appFactory().post(
+export const createCategoryApp = appFactory.post(
   "/",
   authMiddleware,
   validate("json", createCategorySchema),

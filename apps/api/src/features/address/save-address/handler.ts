@@ -4,7 +4,7 @@ import { authMiddleware } from "../../../middleware"
 import { validate } from "../../../middleware/validate"
 import { type CreateAddressSchema, createAddressSchema } from "./schema"
 
-export const saveAddressApp = appFactory().post(
+export const saveAddressApp = appFactory.post(
   "/",
   authMiddleware,
   validate("json", createAddressSchema),

@@ -1,10 +1,10 @@
-import { appFactory } from "@/lib/factory";
-import { validate } from "@/middleware";
+import { appFactory } from "../../../../lib/factory";
+import { validate } from "../../../../middleware";
 import { db, productImages, productVariants } from "@repo/db";
 import { eq } from "drizzle-orm";
 import z from "zod";
 
-export const confirmImagesApp = appFactory()
+export const confirmImagesApp = appFactory
   .post(
     "/:variantId/images/confirm",
     // authMiddleware,

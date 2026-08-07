@@ -3,7 +3,7 @@ import { appFactory } from "../../../lib/factory"
 import { validate } from "../../../middleware"
 import { createCategoryAttributeSchema } from "./schema"
 
-export const createCategoryAttributeApp = appFactory().post(
+export const createCategoryAttributeApp = appFactory.post(
   "/attributes",
   // authMiddleware,
   validate("json", createCategoryAttributeSchema),

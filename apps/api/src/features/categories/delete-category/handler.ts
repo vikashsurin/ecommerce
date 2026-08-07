@@ -4,7 +4,7 @@ import { z } from "zod"
 import { appFactory } from "../../../lib/factory"
 import { validate } from "../../../middleware"
 
-export const deleteCategoryApp = appFactory().delete(
+export const deleteCategoryApp = appFactory.delete(
   "/:id",
   // authMiddleware,
   validate("param", z.object({ id: z.string() })),

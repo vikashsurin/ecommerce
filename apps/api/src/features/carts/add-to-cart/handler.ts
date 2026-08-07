@@ -4,7 +4,7 @@ import { validate } from "../../../middleware/validate"
 import { addItemToCart, findOrCreateCart } from "../services/add-to-cart"
 import { addToCartSchema } from "./schema"
 
-export const addToCartApp = appFactory().post(
+export const addToCartApp = appFactory.post(
   "/",
   authMiddleware,
   validate("json", addToCartSchema),

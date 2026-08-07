@@ -4,7 +4,7 @@ import { validate } from "../../../middleware"
 import { z } from "zod"
 import { eq } from "drizzle-orm"
 
-export const getCategoryAttributes = appFactory().get(
+export const getCategoryAttributes = appFactory.get(
   "/:id/attributes",
   // authMiddleware,
   validate("param", z.object({ id: z.coerce.string() })),

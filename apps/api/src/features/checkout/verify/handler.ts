@@ -5,7 +5,7 @@ import { appFactory } from "../../../lib/factory"
 import { authMiddleware, validate } from "../../../middleware"
 import { verifyPaymentSchema } from "./schema"
 
-export const verifyRazorpayApp = appFactory().post(
+export const verifyRazorpayApp = appFactory.post(
   "/verify-payment",
   authMiddleware,
   validate("json", verifyPaymentSchema),

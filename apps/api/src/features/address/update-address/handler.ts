@@ -6,7 +6,7 @@ import { authMiddleware } from "../../../middleware"
 import { validate } from "../../../middleware/validate"
 import { type UpdateAddressSchema, updateAddressSchema } from "./schema"
 
-export const updateAddressApp = appFactory().patch(
+export const updateAddressApp = appFactory.patch(
   "/:id",
   authMiddleware,
   validate("param", z.object({ id: z.coerce.number() })),

@@ -1,10 +1,10 @@
-import { appFactory } from "@/lib/factory"
-import { getImageUrl } from "@/lib/storage"
-import { validate } from "@/middleware"
+import { appFactory } from "../../../../lib/factory"
+import { getImageUrl } from "../../../../lib/storage"
+import { validate } from "../../../../middleware"
 import { db, productImages } from "@repo/db"
 import z from "zod"
 
-export const confirmImagesApp = appFactory()
+export const confirmImagesApp = appFactory
   .post(
     "/:productId/images/confirm",
     // authMiddleware,

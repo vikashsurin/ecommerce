@@ -5,7 +5,7 @@ import { checkoutSessionAddress } from "../services/checkout-session-address"
 import { checkoutSessionCart } from "../services/checkout-session-cart"
 import { checkoutSessionFinalize } from "../services/checkout-session-finalize"
 
-export const checkoutSessionApp = appFactory()
+export const checkoutSessionApp = appFactory
   .use(authMiddleware)
   .post(
     "/add-items",
