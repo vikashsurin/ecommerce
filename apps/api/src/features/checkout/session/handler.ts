@@ -1,11 +1,11 @@
 import { z } from "zod"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { authMiddleware, validate } from "../../../middleware"
 import { checkoutSessionAddress } from "../services/checkout-session-address"
 import { checkoutSessionCart } from "../services/checkout-session-cart"
 import { checkoutSessionFinalize } from "../services/checkout-session-finalize"
 
-export const checkoutSessionApp = appFactory
+export const checkoutSessionApp = factory.createApp()
   .use(authMiddleware)
   .post(
     "/add-items",

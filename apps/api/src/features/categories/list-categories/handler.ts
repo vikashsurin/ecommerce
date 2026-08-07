@@ -1,8 +1,8 @@
 import { categories, db } from "@repo/db"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { authMiddleware } from "../../../middleware"
 
-export const listCategoriesApp = appFactory.get(
+export const listCategoriesApp = factory.createApp().get(
   "/",
   // authMiddleware,
   async (c) => {

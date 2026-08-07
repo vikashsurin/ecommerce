@@ -3,10 +3,10 @@ import { and, eq } from "drizzle-orm"
 import z from "zod"
 import { AppError } from "../../../lib/app-error"
 import { toAppError } from "../../../lib/db-error"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { authMiddleware, validate } from "../../../middleware"
 
-export const deleteProductVariantApp = appFactory.delete(
+export const deleteProductVariantApp = factory.createApp().delete(
   "/:productId/variants/:variantId",
   authMiddleware,
   validate(

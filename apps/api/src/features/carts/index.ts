@@ -1,11 +1,11 @@
-import { Hono } from "hono";
+import { factory } from "../../lib";
 import { addToCartApp } from "./add-to-cart/handler";
 import { getCartApp } from "./get-cart/handler";
 import { removeFromCartApp } from "./remove-from-cart/handler";
 import { addItemToCart, findOrCreateCart } from "./services/add-to-cart";
 import { updateCartItemQuantity } from "./update-cart-item-quantity/handler";
 
-export const cartsApp = new Hono()
+export const cartsApp = factory.createApp()
   .route('/', addToCartApp)
   .route('/', removeFromCartApp)
   .route('/', getCartApp)

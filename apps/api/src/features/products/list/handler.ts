@@ -1,6 +1,6 @@
 import { db, products } from "@repo/db";
 import { toAppError } from "../../../lib";
-import { factory } from "../../../lib/factory";
+import { factory } from "../../../lib";
 
 // Todo: include filtering, sorting, and pagination
 export const listProductsApp = factory.createApp()

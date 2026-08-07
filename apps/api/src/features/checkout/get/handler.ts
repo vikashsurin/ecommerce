@@ -1,10 +1,10 @@
 import { checkoutSessions, db } from "@repo/db"
 import { and, desc, eq, notInArray } from "drizzle-orm"
 import { z } from "zod"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { authMiddleware, validate } from "../../../middleware"
 
-export const getCheckoutSessionApp = appFactory
+export const getCheckoutSessionApp = factory.createApp()
   .get(
     "/:id",
     authMiddleware,

@@ -1,9 +1,9 @@
 import { db, wishlist } from "@repo/db"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { authMiddleware, validate } from "../../../middleware"
 import { addToWishlistSchema } from "./schema"
 
-export const addToWishlistHandler = appFactory.post(
+export const addToWishlistHandler = factory.createApp().post(
   "/",
   authMiddleware,
   validate("json", addToWishlistSchema),

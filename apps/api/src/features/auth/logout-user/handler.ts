@@ -1,8 +1,8 @@
-import { Hono } from 'hono'
+import { factory } from "../../../lib"
 import { deleteSession } from '../../sessions'
 import { authMiddleware } from '../../../middleware'
 
-export const logoutUserApp = new Hono()
+export const logoutUserApp = factory.createApp()
   .post('/logout', authMiddleware, async (c) => {
     const authHeader = c.req.header('Authorization')
 

@@ -1,10 +1,10 @@
 import { cartItems, db } from "@repo/db"
 import { eq } from "drizzle-orm"
 import { z } from "zod"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { authMiddleware, validate } from "../../../middleware"
 
-export const removeFromCartApp = appFactory.delete(
+export const removeFromCartApp = factory.createApp().delete(
   "/items/:cartItemId",
   authMiddleware,
   validate("param", z.object({ cartItemId: z.coerce.number() })),

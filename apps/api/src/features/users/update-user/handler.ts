@@ -1,10 +1,10 @@
 import { db, users } from '@repo/db';
 import { eq } from 'drizzle-orm';
-import { Hono } from "hono";
+import { factory } from "../../../lib";
 import { validate } from "../../../middleware/validate";
 import { updateUserSchema } from './schema';
 
-export const updateUserApp = new Hono()
+export const updateUserApp = factory.createApp()
   .patch('/:id',
     validate('json', updateUserSchema),
     async (c) => {

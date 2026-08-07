@@ -1,10 +1,10 @@
 import { z } from "zod"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { authMiddleware } from "../../../middleware"
 import { validate } from "../../../middleware/validate"
 import { deleteFromWishlist } from "../services/delete-from-wishlist.service"
 
-export const removeFromWishlistApp = appFactory.delete(
+export const removeFromWishlistApp = factory.createApp().delete(
   "/:productVariantId",
   authMiddleware,
   validate("param", z.object({ itemId: z.coerce.number() })),

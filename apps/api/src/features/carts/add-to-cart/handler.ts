@@ -1,10 +1,10 @@
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { authMiddleware } from "../../../middleware"
 import { validate } from "../../../middleware/validate"
 import { addItemToCart, findOrCreateCart } from "../services/add-to-cart"
 import { addToCartSchema } from "./schema"
 
-export const addToCartApp = appFactory.post(
+export const addToCartApp = factory.createApp().post(
   "/",
   authMiddleware,
   validate("json", addToCartSchema),

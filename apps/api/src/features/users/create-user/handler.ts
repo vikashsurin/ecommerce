@@ -1,9 +1,9 @@
-import { Hono } from "hono";
+import { factory } from "../../../lib";
 import { validate } from "../../../middleware/validate";
 import { createUserService } from '../services/create-user.service';
 import { createUserSchema } from './schema';
 
-export const createUserApp = new Hono()
+export const createUserApp = factory.createApp()
   .post('/', validate('json', createUserSchema), async (c) => {
 
     const parsedData = c.req.valid('json')

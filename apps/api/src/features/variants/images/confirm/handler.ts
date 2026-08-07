@@ -1,10 +1,10 @@
 import { db, productImages, productVariants } from "@repo/db"
 import { eq } from "drizzle-orm"
 import z from "zod"
-import { appFactory } from "../../../../lib/factory"
+import { factory } from "../../../../lib"
 import { authMiddleware, validate } from "../../../../middleware"
 
-export const confirmImagesApp = appFactory.post(
+export const confirmImagesApp = factory.createApp().post(
   "/:variantId/images/confirm",
   authMiddleware,
   validate("param", z.object({ variantId: z.coerce.number() })),

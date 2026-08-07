@@ -1,10 +1,10 @@
 import { categoryAttributes, db } from "@repo/db"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { validate } from "../../../middleware"
 import { z } from "zod"
 import { eq } from "drizzle-orm"
 
-export const getCategoryAttributes = appFactory.get(
+export const getCategoryAttributes = factory.createApp().get(
   "/:id/attributes",
   // authMiddleware,
   validate("param", z.object({ id: z.coerce.string() })),

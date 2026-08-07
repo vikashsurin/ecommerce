@@ -1,10 +1,10 @@
 import { addresses, db } from "@repo/db"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { authMiddleware } from "../../../middleware"
 import { validate } from "../../../middleware/validate"
 import { type CreateAddressSchema, createAddressSchema } from "./schema"
 
-export const saveAddressApp = appFactory.post(
+export const saveAddressApp = factory.createApp().post(
   "/",
   authMiddleware,
   validate("json", createAddressSchema),

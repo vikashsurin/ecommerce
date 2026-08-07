@@ -1,10 +1,10 @@
 import { db, users } from '@repo/db';
-import { Hono } from "hono";
+import { factory } from "../../../lib";
 import { z } from "zod";
 import { validate } from "../../../middleware/validate";
 import { eq } from 'drizzle-orm';
 
-export const deleteUserApp = new Hono()
+export const deleteUserApp = factory.createApp()
   .delete('/:id',
     validate('param', z.object({ id: z.coerce.number() })),
     async (c) => {

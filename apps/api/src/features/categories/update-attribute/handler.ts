@@ -1,11 +1,11 @@
 import { categoryAttributes, db } from "@repo/db"
 import { eq } from "drizzle-orm"
 import { z } from "zod"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { validate } from "../../../middleware"
 import { updateCategoryAttributeSchema } from "./schema"
 
-export const updateAttributeApp = appFactory.put(
+export const updateAttributeApp = factory.createApp().put(
   "/attributes/:id",
   // authMiddleware,
   validate("param", z.object({ id: z.coerce.number() })),

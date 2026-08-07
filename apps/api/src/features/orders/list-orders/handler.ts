@@ -1,9 +1,9 @@
 import { db, orders } from "@repo/db"
 import { eq } from "drizzle-orm"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { authMiddleware } from "../../../middleware"
 
-export const listOrdersApp = appFactory.get(
+export const listOrdersApp = factory.createApp().get(
   "/",
   authMiddleware,
   async (c) => {

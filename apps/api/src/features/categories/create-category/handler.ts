@@ -1,5 +1,5 @@
 import { categories, db } from "@repo/db"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { authMiddleware, validate } from "../../../middleware"
 
 import z from "zod"
@@ -7,7 +7,7 @@ import { createCategorySchema } from "./schema"
 
 const slugSchema = z.string().slugify()
 
-export const createCategoryApp = appFactory.post(
+export const createCategoryApp = factory.createApp().post(
   "/",
   authMiddleware,
   validate("json", createCategorySchema),

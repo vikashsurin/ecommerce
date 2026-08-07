@@ -2,10 +2,10 @@ import { addresses } from "@repo/db";
 import { db } from "@repo/db";
 import { and, eq } from "drizzle-orm";
 import z from "zod";
-import { appFactory } from "../../../lib/factory";
+import { factory } from "../../../lib";
 import { authMiddleware, validate } from "../../../middleware";
 
-export const getAddressApp = appFactory
+export const getAddressApp = factory.createApp()
   .get(
     "/:addressId",
     authMiddleware,

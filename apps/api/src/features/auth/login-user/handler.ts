@@ -1,13 +1,13 @@
 import { db, users } from '@repo/db';
 import { eq } from 'drizzle-orm';
-import { Hono } from 'hono';
 import { getConnInfo } from 'hono/bun';
 import { setCookie } from 'hono/cookie';
+import { factory } from '../../../lib';
 import { validate } from '../../../middleware/validate';
 import { createSession } from '../../sessions';
 import { loginUserSchema } from './schema';
 
-export const loginUserApp = new Hono()
+export const loginUserApp = factory.createApp()
   .post('/login',
     validate("json", loginUserSchema),
     async (c) => {

@@ -1,10 +1,10 @@
 import { db, users } from "@repo/db"
-import { Hono } from "hono"
+import { factory } from "../../../lib"
 import { z } from "zod"
 import { validate } from "../../../middleware/validate"
 import { createUserSchema } from "../../users"
 
-export const registerUserApp = new Hono().post(
+export const registerUserApp = factory.createApp().post(
   "/register",
   validate("json", createUserSchema),
   async (c) => {

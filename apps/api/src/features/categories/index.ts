@@ -1,4 +1,4 @@
-import { Hono } from "hono"
+import { factory } from "../../lib"
 import { createCategoryAttributeApp } from "./create-category-attribute/handler"
 import { createCategoryApp } from "./create-category/handler"
 import { deleteAttributeApp } from "./delete-attribute/handler"
@@ -8,7 +8,7 @@ import { getCategoryApp } from "./get-category/handler"
 import { listCategoriesApp } from "./list-categories/handler"
 import { updateAttributeApp } from "./update-attribute/handler"
 
-export const categoriesApp = new Hono()
+export const categoriesApp = factory.createApp()
   .route("/", createCategoryApp)
   .route('/', getCategoryApp)
   .route('/', listCategoriesApp)

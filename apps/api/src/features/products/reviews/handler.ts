@@ -1,9 +1,10 @@
-import { Hono } from "hono";
+import { factory } from "../../../lib"
 
-export const productReviewApp = new Hono()
-  .get('/', async (ctx) => {
-    return ctx.json({ message: 'Product reviews' })
+export const productReviewApp = factory
+  .createApp()
+  .get("/", async (ctx) => {
+    return ctx.json({ message: "Product reviews" })
   })
-  .post('/', async (ctx) => {
-    return ctx.json({ message: 'Product review created' })
+  .post("/", async (ctx) => {
+    return ctx.json({ message: "Product review created" })
   })

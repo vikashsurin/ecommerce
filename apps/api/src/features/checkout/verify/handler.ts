@@ -1,11 +1,11 @@
 import { orders, cartItems, checkoutSessions, db } from "@repo/db"
 import crypto from "crypto"
 import { and, eq } from "drizzle-orm"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { authMiddleware, validate } from "../../../middleware"
 import { verifyPaymentSchema } from "./schema"
 
-export const verifyRazorpayApp = appFactory.post(
+export const verifyRazorpayApp = factory.createApp().post(
   "/verify-payment",
   authMiddleware,
   validate("json", verifyPaymentSchema),

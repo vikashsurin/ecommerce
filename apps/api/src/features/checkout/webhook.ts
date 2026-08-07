@@ -1,7 +1,7 @@
-import { Hono } from "hono";
 import crypto from "node:crypto";
+import { factory } from "../../lib";
 
-export const webhookRoute = new Hono().post("/", async (c) => {
+export const webhookRoute = factory.createApp().post("/", async (c) => {
   const rawBody = await c.req.text();
   const signature = c.req.header("x-razorpay-signature");
 

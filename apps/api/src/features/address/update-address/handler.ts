@@ -1,12 +1,12 @@
 import { addresses, db } from "@repo/db"
 import { and, eq } from "drizzle-orm"
 import { z } from "zod"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { authMiddleware } from "../../../middleware"
 import { validate } from "../../../middleware/validate"
 import { type UpdateAddressSchema, updateAddressSchema } from "./schema"
 
-export const updateAddressApp = appFactory.patch(
+export const updateAddressApp = factory.createApp().patch(
   "/:id",
   authMiddleware,
   validate("param", z.object({ id: z.coerce.number() })),

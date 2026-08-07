@@ -1,11 +1,11 @@
 import { deleteCookie } from "hono/cookie"
 import { cookieFromContext } from "../../../lib/cookie-from-context"
 import { env } from "../../../lib/env"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { getSession } from "../../sessions"
 import { getUserService } from "../../users"
 
-export const meApp = appFactory.get("/me", async (c) => {
+export const meApp = factory.createApp().get("/me", async (c) => {
   const cookie = cookieFromContext(c)
 
   if (!cookie) {

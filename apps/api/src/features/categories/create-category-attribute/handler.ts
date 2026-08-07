@@ -1,9 +1,9 @@
 import { categoryAttributes, db } from "@repo/db"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { validate } from "../../../middleware"
 import { createCategoryAttributeSchema } from "./schema"
 
-export const createCategoryAttributeApp = appFactory.post(
+export const createCategoryAttributeApp = factory.createApp().post(
   "/attributes",
   // authMiddleware,
   validate("json", createCategoryAttributeSchema),

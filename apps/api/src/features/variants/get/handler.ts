@@ -1,10 +1,10 @@
 import { db, productImages, productVariants } from "@repo/db"
 import { eq } from "drizzle-orm"
 import z from "zod"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { authMiddleware, validate } from "../../../middleware"
 
-export const getVariantApp = appFactory.get(
+export const getVariantApp = factory.createApp().get(
   "/:id",
   authMiddleware,
   validate("param", z.object({ id: z.coerce.number() })),

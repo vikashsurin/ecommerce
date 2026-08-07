@@ -1,11 +1,11 @@
 import { addresses, db } from "@repo/db"
 import { and, eq } from "drizzle-orm"
 import { z } from "zod"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { authMiddleware } from "../../../middleware"
 import { validate } from "../../../middleware/validate"
 
-export const deleteAddressApp = appFactory.delete(
+export const deleteAddressApp = factory.createApp().delete(
   "/:id",
   authMiddleware,
   validate("param", z.object({ id: z.coerce.number() })),

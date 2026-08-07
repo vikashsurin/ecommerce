@@ -1,12 +1,12 @@
 import { db, wishlist } from "@repo/db"
 import { and, eq } from "drizzle-orm"
 import z from "zod"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { authMiddleware, validate } from "../../../middleware"
 import { addItemToCart, findOrCreateCart } from "../../carts"
 import { deleteFromWishlist } from "../services/delete-from-wishlist.service"
 
-export const moveItemToCartApp = appFactory.post(
+export const moveItemToCartApp = factory.createApp().post(
   "/move-to-cart",
   authMiddleware,
   validate(

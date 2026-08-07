@@ -1,10 +1,10 @@
 import { db, orders } from "@repo/db"
 import { and, eq } from "drizzle-orm"
 import z from "zod"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { authMiddleware, validate } from "../../../middleware"
 
-export const cancelOrderApp = appFactory.patch(
+export const cancelOrderApp = factory.createApp().patch(
   "/:orderId",
   authMiddleware,
   validate("param", z.object({ orderId: z.coerce.number() })),

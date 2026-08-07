@@ -1,11 +1,11 @@
 import { db, productVariants } from "@repo/db"
 import { eq } from "drizzle-orm"
-import { Hono } from "hono"
 import z from "zod"
-import { authMiddleware, validate } from "../../../../middleware"
+import { factory } from "../../../../lib"
 import { buildImageKey, getPresignedUploadUrl } from "../../../../lib/storage"
+import { authMiddleware, validate } from "../../../../middleware"
 
-export const presignImagesApp = new Hono().post(
+export const presignImagesApp = factory.createApp().post(
   "/:variantId/images/presign",
   authMiddleware,
   validate("param", z.object({ variantId: z.coerce.number() })),

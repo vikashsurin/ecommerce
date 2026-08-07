@@ -1,10 +1,10 @@
 import { cartItems, carts, db } from "@repo/db"
 import { and, eq, inArray } from "drizzle-orm"
 import { z } from "zod"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { authMiddleware, validate } from "../../../middleware"
 
-export const updateCartItemQuantity = appFactory.patch(
+export const updateCartItemQuantity = factory.createApp().patch(
   "/items/:cartItemId",
   authMiddleware,
   validate(

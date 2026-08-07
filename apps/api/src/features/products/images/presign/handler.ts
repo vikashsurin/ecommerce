@@ -1,11 +1,11 @@
-import { appFactory } from "../../../../lib/factory"
-import { buildImageKey, getPresignedUploadUrl } from "../../../../lib/storage"
-import { validate } from "../../../../middleware"
 import { db, products } from "@repo/db"
 import { eq } from "drizzle-orm"
 import z from "zod"
+import { factory } from "../../../../lib"
+import { buildImageKey, getPresignedUploadUrl } from "../../../../lib/storage"
+import { validate } from "../../../../middleware"
 
-export const presignImagesApp = appFactory.post(
+export const presignImagesApp = factory.createApp().post(
   "/:productId/images/presign",
   // authMiddleware,
   validate("param", z.object({ productId: z.coerce.number() })),
@@ -55,7 +55,7 @@ export const presignImagesApp = appFactory.post(
         })
       )
 
-      return c.json({ data: presignedResults  }, 200)
+      return c.json({ data: presignedResults }, 200)
     } catch (error) {
       return c.json(
         {
@@ -69,4 +69,3 @@ export const presignImagesApp = appFactory.post(
     }
   }
 )
-

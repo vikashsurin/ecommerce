@@ -1,9 +1,9 @@
 import { cartItems, carts, db, productVariants } from "@repo/db"
 import { asc, eq } from "drizzle-orm"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { authMiddleware } from "../../../middleware"
 
-export const getCartApp = appFactory.get("/", authMiddleware, async (c) => {
+export const getCartApp = factory.createApp().get("/", authMiddleware, async (c) => {
   const user = c.get("user")
   try {
     const result = await selectCartByUserId(user.id)

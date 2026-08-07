@@ -1,7 +1,7 @@
-import { Hono } from "hono"
+import { factory } from "../../../lib"
 import { presignImagesApp } from "./presign/handler"
 import { confirmImagesApp } from "./confirm/handler"
 
-export const variantImagesApp = new Hono()
+export const variantImagesApp = factory.createApp()
   .route("/", presignImagesApp)
   .route("/", confirmImagesApp)

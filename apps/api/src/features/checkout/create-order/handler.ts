@@ -1,11 +1,11 @@
 import { checkoutSessions, db } from "@repo/db"
 import { and, eq } from "drizzle-orm"
 import { z } from "zod"
-import { appFactory } from "../../../lib/factory"
+import { factory } from "../../../lib"
 import { razorpay } from "../../../lib/razorpay"
 import { authMiddleware, validate } from "../../../middleware"
 
-export const createRazorpayOrderApp = appFactory.post(
+export const createRazorpayOrderApp = factory.createApp().post(
   "/create-order",
   authMiddleware,
   validate("json", z.object({ checkoutSessionId: z.coerce.number() })),
