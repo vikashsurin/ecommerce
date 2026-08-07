@@ -18,7 +18,7 @@ export function ProductVariantActionMenu({ productId, variant }: {
 }) {
   const [open, setOpen] = useState(false);
 
-  const pathname = usePathname();                                                
+  const pathname = usePathname();
   console.log({ pathname });
   return (
     <>
@@ -27,9 +27,11 @@ export function ProductVariantActionMenu({ productId, variant }: {
           <Ellipsis size={16} className="ml-4" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem>
-            <Link href={`${pathname}/variants/${variant.id}/images`}>Edit</Link>
-          </DropdownMenuItem>
+          <Link href={`${pathname}/variants/${variant.id}/images`}>
+            <DropdownMenuItem>
+              Edit
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             variant="destructive"

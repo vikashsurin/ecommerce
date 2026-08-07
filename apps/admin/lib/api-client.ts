@@ -1,5 +1,6 @@
-import { hc } from "hono/client"
-import type { AppType, ProductsAppType } from "@repo/api"
+import type { AppType } from "@repo/api";
+import { hc } from "hono/client";
+
 
 // Create the typed client instance
 export const apiClient = hc<AppType>("http://localhost:4000", {
@@ -7,8 +8,4 @@ export const apiClient = hc<AppType>("http://localhost:4000", {
   init: {
     credentials: "include",
   },
-})
-
-export const productsApiClient = hc<ProductsAppType>(
-  "http://localhost:4000/api/products"
-)
+});

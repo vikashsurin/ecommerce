@@ -1,4 +1,3 @@
-import type { AppType } from "./src/index"
-import { type ProductsAppType } from "./src/features/products/index"
+import { type AppType } from "./src/index.ts";
 
-export type { AppType, ProductsAppType }
+export type { AppType };
