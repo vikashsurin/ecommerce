@@ -1,39 +1,43 @@
-import { appFactory } from "../../../lib/factory"
-import { authMiddleware, validate } from "../../../middleware"
 import { db, productImages, productVariants } from "@repo/db"
 import { eq } from "drizzle-orm"
 import z from "zod"
-import { Hono } from "hono"
+import { appFactory } from "../../../lib/factory"
+import { authMiddleware, validate } from "../../../middleware"
 
-export const getVariantApp = new Hono().get("/:id", async (c) => {
-  const { id } = c.req.param()
-  try {
-    const variant = await selectVariant(Number(id))
-    if (!variant) {
+export const getVariantApp = appFactory.get(
+  "/:id",
+  authMiddleware,
+  validate("param", z.object({ id: z.coerce.number() })),
+  async (c) => {
+    const { id } = c.req.param()
+    try {
+      const variant = await selectVariant(Number(id))
+      if (!variant) {
+        return c.json(
+          {
+            error: {
+              code: "not_found",
+              message: "Not Found",
+            },
+          },
+          404
+        )
+      }
+
+      return c.json({ data: variant })
+    } catch (error) {
       return c.json(
         {
           error: {
-            code: "not_found",
-            message: "Not Found",
+            code: "internal_server_error",
+            message: "Internal Server Error",
           },
         },
-        404
+        500
       )
     }
-
-    return c.json({ data: variant })
-  } catch (error) {
-    return c.json(
-      {
-        error: {
-          code: "internal_server_error",
-          message: "Internal Server Error",
-        },
-      },
-      500
-    )
   }
-})
+)
 
 async function selectVariant(id: number) {
   const [row] = await db
