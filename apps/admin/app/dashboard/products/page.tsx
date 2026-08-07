@@ -5,19 +5,24 @@ import { useProducts } from "@/app/features/products/queries"
 import { Button } from "@workspace/ui/components/button"
 import { ArrowRight, Plus } from "lucide-react"
 import Link from "next/link"
-import Image from 'next/image'
 
 export default function ProductsPage() {
   return (
     <div className="p-4">
       <h1>Products</h1>
 
-      <div className="flex gap-2 mt-4">
+      <div className="mt-4 flex gap-2">
         <Link href="/dashboard/products/categories" className="underline">
-          <Button variant={'secondary'}>Categories <ArrowRight /></Button>
+          <Button variant={"secondary"}>
+            Categories <ArrowRight />
+          </Button>
         </Link>
         <Link href="/dashboard/products/new" className="underline">
-          <Button> <Plus />Add Products</Button>
+          <Button>
+            {" "}
+            <Plus />
+            Add Products
+          </Button>
         </Link>
       </div>
 
@@ -26,11 +31,10 @@ export default function ProductsPage() {
   )
 }
 
-
-
 function ProductList() {
   const { data: products, isLoading } = useProducts()
 
+  console.log("products", products)
   if (isLoading) {
     return <div>Loading...</div>
   }

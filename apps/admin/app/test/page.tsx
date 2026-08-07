@@ -1,18 +1,17 @@
-"use client"
+"use client";
 
-import { apiClient } from "@/lib"
+import { apiClient } from "@/lib";
 
 export default function TestPage() {
   async function handleClick() {
-    const res = await apiClient.api.demo.test[":id"].$get({
-      param: { id: "123" },
-    })
-    if (!res.ok) {  
-      console.error("Error fetching demo endpoint:", res.statusText)
-      return
+    console.log("calling client");
+    const res = await apiClient.api.demo.$get();
+    if (!res.ok) {
+      throw new Error("There was an error");
     }
-    const data = await res.json()
-    console.log("Demo endpoint response:", data)
+
+    const data = await res.json();
+    console.log("Demo endpoint response:", data);
   }
   return (
     <>
@@ -24,5 +23,5 @@ export default function TestPage() {
         </button>
       </div>
     </>
-  )
+  );
 }

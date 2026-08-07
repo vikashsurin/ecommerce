@@ -1,4 +1,4 @@
-import { appFactory } from "../../lib/factory"
-import { getDemo } from "./get/handler"
+import { factory } from "../../lib/factory";
+import { getDemo } from "./get/handler";
 
-export const demoApp = appFactory.route("/", getDemo)
+export const demoApp = factory.createApp().route("/", getDemo);
