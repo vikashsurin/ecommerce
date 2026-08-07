@@ -1,15 +1,7 @@
 {
   "compilerOptions": {
-    // Environment setup & latest features
-    "baseUrl": ".",
-    "paths": {
-      "@/*": [
-        "src/*"
-      ]
-    },
-    "lib": [
-      "ESNext"
-    ],
+    // Environment setup & lat`est features
+    "lib": ["ESNext"],
     "target": "ESNext",
     "module": "Preserve",
     "moduleDetection": "force",

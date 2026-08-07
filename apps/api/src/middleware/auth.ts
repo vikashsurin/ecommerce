@@ -1,10 +1,9 @@
-import { createMiddleware } from "hono/factory"
 import { getSession } from "../features/sessions"
 import { getUserService } from "../features/users"
 import { cookieFromContext } from "../lib/cookie-from-context"
+import { factory } from "../lib/factory"
 
-
-export const authMiddleware = createMiddleware(async (c, next) => {
+export const authMiddleware = factory.createMiddleware(async (c, next) => {
   const token = cookieFromContext(c)
 
   if (!token) {
