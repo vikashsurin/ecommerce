@@ -19,7 +19,6 @@ export function ProductVariantActionMenu({ productId, variant }: {
   const [open, setOpen] = useState(false);
 
   const pathname = usePathname();
-  console.log({ pathname });
   return (
     <>
       <DropdownMenu>

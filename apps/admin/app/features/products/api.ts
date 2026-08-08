@@ -87,7 +87,7 @@ export const uploadProductImages = async (productId: number, files: File[]) => {
         images: presigned.map((p, i) => ({
           key: p.key,
           sortOrder: i,
-          isPrimary: i === 0,
+          isPrimary: false,
         })),
       },
     })
@@ -134,7 +134,7 @@ export const uploadVariantImages = async (variantId: number, files: File[]) => {
         images: presigned.map((p, i) => ({
           key: p.key,
           sortOrder: i,
-          isPrimary: i === 0,
+          isPrimary: false,
         })),
       },
     })
