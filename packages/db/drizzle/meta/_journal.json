@@ -43,6 +43,13 @@
       "when": 1785693472723,
       "tag": "0005_whole_firebrand",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1786197912108,
+      "tag": "0006_worthless_proemial_gods",
+      "breakpoints": true
     }
   ]
 }

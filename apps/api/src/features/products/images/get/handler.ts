@@ -12,10 +12,11 @@ export const getImagesApp = factory
     validate("param", z.object({ productId: z.coerce.number() })),
     async (c) => {
       const { productId } = c.req.valid("param");
-
+      console.log("calling imge");
       try {
         const image = await selectImage(productId);
 
+        console.log("imgessdgfsg", image);
         if (!image) {
           return c.json({ data: null });
         }
@@ -45,7 +46,7 @@ async function selectImage(productId: number) {
     .where(
       and(
         eq(productImages.productId, productId),
-        isNull(productImages),
+        isNull(productImages.productVariantId),
       ),
     )
     .limit(1);

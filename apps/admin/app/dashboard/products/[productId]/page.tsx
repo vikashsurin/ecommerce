@@ -19,6 +19,8 @@ export default function ProductPage() {
 
   const { data: productImage, isLoading: isLoadingImage } = useProductImage(productId);
 
+  console.log({ productImage });
+
   if (isLoading || isLoadingImage) return <div>Loading...</div>;
   return (
     <>
@@ -31,7 +33,7 @@ export default function ProductPage() {
                   data-image
                   className="flex relative flex-col h-50 w-50 items-center justify-center border"
                 >
-                  {productImage && productImage.url !== null || showChange
+                  {productImage && productImage.url !== null
                     ? (
                       <div className="">
                         <img

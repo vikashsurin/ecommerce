@@ -24,7 +24,13 @@ export const productImages = pgTable("product_images", {
     table.productVariantId,
     table.sortOrder,
   ),
-  uniqueIndex("product_images_one_primary_per_variant")
+
+  // only one product-level image (variantId IS NULL) per product
+  uniqueIndex("one_product_level_image")
+    .on(table.productId)
+    .where(sql`${table.productVariantId} IS NULL`),
+
+  uniqueIndex("one_primary_per_variant")
     .on(table.productVariantId)
     .where(sql`${table.isPrimary} = true`),
 ]);
