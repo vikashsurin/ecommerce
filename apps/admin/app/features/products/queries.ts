@@ -1,5 +1,6 @@
 import { queryClient } from "@/lib/query-client";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 import {
   createProduct,
   getProduct,
@@ -53,6 +54,9 @@ export const useUploadProductImages = () => {
           queryKey: ["product-images", String(variables.productId)],
         });
       }
+    },
+    onError: () => {
+      toast.error("There was an error");
     },
   });
 };

@@ -1,10 +1,8 @@
 "use client";
 
-import { UploadImageButton } from "@/app/features/products/components/upload-product-img-btn";
+import { UploadImageModal } from "@/app/features/products/components/upload-product-img-btn";
 import { useProduct } from "@/app/features/products/queries";
 import { useProductImage } from "@/app/features/products/queries";
-import { IconPencil } from "@tabler/icons-react";
-import { Button } from "@workspace/ui/components/button";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import AddVariantDrawer from "./add-variant-drawer";
@@ -13,14 +11,15 @@ import ProductVariantsTable from "./product-variants-table";
 export default function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
   const { data: product, isLoading } = useProduct(productId);
-  const [showChange, setShowChange] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
 
   const { data: productImage, isLoading: isLoadingImage } = useProductImage(productId);
   const imgUrl = productImage ? productImage.url : null;
 
   function onSuccess() {
-    setShowChange(false);
+    setShowEdit(false);
   }
+
   if (isLoading || isLoadingImage) return <div>Loading...</div>;
   return (
     <>
@@ -35,39 +34,36 @@ export default function ProductPage() {
                 >
                   {imgUrl !== null
                     ? (
-                      <div className="">
+                      <div
+                        onMouseOverCapture={() => setShowEdit(true)}
+                        onMouseOutCapture={() => setShowEdit(false)}
+                      >
                         <img
                           src={imgUrl}
-                          placeholder="Product Image"
+                          alt="Product Image"
                           className="h-50 w-50 object-cover"
                         />
-
-                        <button
-                          onClick={() => setShowChange(true)}
-                          className="absolute right-0 flex items-center m-1 bottom-0 bg-gray-300 p-1 "
-                        >
-                          <IconPencil size={12} />
-                          <span className="text-xs">Edit</span>
-                        </button>
+                        <div className="absolute right-1 bottom-1">
+                          {showEdit
+                            && (
+                              <UploadImageModal
+                                trigger="edit"
+                                productId={productId}
+                                multiple={false}
+                                onSuccess={onSuccess}
+                              />
+                            )}
+                        </div>
                       </div>
                     )
                     : (
                       <div className="flex flex-col justify-center items-center">
-                        <UploadImageButton productId={productId} multiple={false} onSuccess={onSuccess} />
-                      </div>
-                    )}
-                  {showChange
-                    && (
-                      <div className="absolute bg-gray-200 rounded">
-                        <UploadImageButton productId={productId} multiple={false} onSuccess={onSuccess} />
-                        <Button
-                          onClick={() => setShowChange(false)}
-                          size={"xs"}
-                          variant="ghost"
-                          className={"flex mb-1 justify-self-center"}
-                        >
-                          Cancel
-                        </Button>
+                        <UploadImageModal
+                          trigger="Upload image"
+                          productId={productId}
+                          multiple={false}
+                          onSuccess={onSuccess}
+                        />
                       </div>
                     )}
                 </div>
