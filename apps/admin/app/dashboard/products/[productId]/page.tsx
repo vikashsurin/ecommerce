@@ -15,12 +15,12 @@ export default function ProductPage() {
   const { data: product, isLoading } = useProduct(productId);
   const [showChange, setShowChange] = useState(false);
 
-  console.log({ showChange });
-
   const { data: productImage, isLoading: isLoadingImage } = useProductImage(productId);
+  const imgUrl = productImage ? productImage.url : null;
 
-  console.log({ productImage });
-
+  function onSuccess() {
+    setShowChange(false);
+  }
   if (isLoading || isLoadingImage) return <div>Loading...</div>;
   return (
     <>
@@ -33,11 +33,11 @@ export default function ProductPage() {
                   data-image
                   className="flex relative flex-col h-50 w-50 items-center justify-center border"
                 >
-                  {productImage && productImage.url !== null
+                  {imgUrl !== null
                     ? (
                       <div className="">
                         <img
-                          src={productImage.url}
+                          src={imgUrl}
                           placeholder="Product Image"
                           className="h-50 w-50 object-cover"
                         />
@@ -53,13 +53,13 @@ export default function ProductPage() {
                     )
                     : (
                       <div className="flex flex-col justify-center items-center">
-                        <UploadImageButton productId={productId} multiple={false} />
+                        <UploadImageButton productId={productId} multiple={false} onSuccess={onSuccess} />
                       </div>
                     )}
                   {showChange
                     && (
                       <div className="absolute bg-gray-200 rounded">
-                        <UploadImageButton productId={productId} multiple={false} />
+                        <UploadImageButton productId={productId} multiple={false} onSuccess={onSuccess} />
                         <Button
                           onClick={() => setShowChange(false)}
                           size={"xs"}
@@ -96,6 +96,7 @@ export default function ProductPage() {
             {product && product.categoryId ? <AddVariantDrawer categoryId={product.categoryId} /> : <div></div>}
           </div>
         </section>
+
         <ProductVariantsTable />
       </div>
     </>

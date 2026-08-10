@@ -46,10 +46,11 @@ export const useProductImage = (productId: string) => {
 export const useUploadProductImages = () => {
   return useMutation({
     mutationFn: async (data: { productId: number; files: File[] }) => uploadProductImages(data.productId, data.files),
-    onSucces: (data: any) => {
+    onSuccess: (data: any, variables) => {
+      console.log("it was a success ! ", data, variables);
       if (data) {
         queryClient.invalidateQueries({
-          queryKey: ["product-images", String(data.productId)],
+          queryKey: ["product-images", String(variables.productId)],
         });
       }
     },

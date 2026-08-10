@@ -6,7 +6,12 @@ import { Button } from "@workspace/ui/components/button";
 import { toast } from "sonner";
 
 export function UploadImageButton(
-  { productId, multiple = false }: { productId: string; multiple: boolean; variantId?: string | undefined },
+  { productId, multiple = false, onSuccess }: {
+    productId: string;
+    multiple: boolean;
+    variantId?: string | undefined;
+    onSuccess?: () => void;
+  },
 ) {
   const { mutate: uploadImage } = useUploadProductImages();
 
@@ -19,7 +24,11 @@ export function UploadImageButton(
         return;
       }
 
-      uploadImage({ productId: Number(productId), files: value.images }, {});
+      uploadImage({ productId: Number(productId), files: value.images }, {
+        onSuccess: (data) => {
+          onSuccess();
+        },
+      });
     },
   });
 
