@@ -1,9 +1,9 @@
-import { db, productVariants } from "@repo/db"
-import { eq } from "drizzle-orm"
-import z from "zod"
-import { factory } from "../../../../lib"
-import { buildImageKey, getPresignedUploadUrl } from "../../../../lib/storage"
-import { authMiddleware, validate } from "../../../../middleware"
+import { db, productVariants } from "@repo/db";
+import { eq } from "drizzle-orm";
+import z from "zod";
+import { factory } from "../../../../lib";
+import { buildImageKey, getPresignedUploadUrl } from "../../../../lib/storage";
+import { authMiddleware, validate } from "../../../../middleware";
 
 export const presignImagesApp = factory.createApp().post(
   "/:variantId/images/presign",
@@ -16,22 +16,23 @@ export const presignImagesApp = factory.createApp().post(
         z.object({
           filename: z.string(),
           contentType: z.string(),
-        })
+        }),
       ),
-    })
+    }),
   ),
   async (c) => {
-    const { variantId } = c.req.valid("param")
-    const { images } = c.req.valid("json")
+    const { variantId } = c.req.valid("param");
+    const { images } = c.req.valid("json");
+
 
     try {
       const [variant] = await db
         .select()
         .from(productVariants)
-        .where(eq(productVariants.id, variantId))
+        .where(eq(productVariants.id, variantId));
 
       if (!variant) {
-        throw new Error("Product Not Found")
+        throw new Error("Product Not Found");
       }
 
       const presignedResults = await Promise.all(
@@ -40,19 +41,19 @@ export const presignImagesApp = factory.createApp().post(
             productId: variant.productId,
             variantId: variant.id,
             filename: img.filename,
-          })
+          });
 
           const presignedUrl = await getPresignedUploadUrl({
             key,
             contentType: img.contentType,
             expiresIn: 300,
-          })
+          });
 
-          return { key, presignedUrl, contentType: img.contentType }
-        })
-      )
+          return { key, presignedUrl, contentType: img.contentType };
+        }),
+      );
 
-      return c.json({ data: presignedResults }, 200)
+      return c.json({ data: presignedResults }, 200);
     } catch (error) {
       return c.json(
         {
@@ -61,8 +62,8 @@ export const presignImagesApp = factory.createApp().post(
             message: "Internal server error" + error,
           },
         },
-        500
-      )
+        500,
+      );
     }
-  }
-)
+  },
+);

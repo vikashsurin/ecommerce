@@ -1,8 +1,8 @@
-import { db, productImages, productVariants } from "@repo/db"
-import { eq } from "drizzle-orm"
-import z from "zod"
-import { factory } from "../../../../lib"
-import { authMiddleware, validate } from "../../../../middleware"
+import { db, productImages, productVariants } from "@repo/db";
+import { and, eq, sql } from "drizzle-orm";
+import z from "zod";
+import { AppError, factory, toAppError } from "../../../../lib";
+import { authMiddleware, validate } from "../../../../middleware";
 
 export const confirmImagesApp = factory.createApp().post(
   "/:variantId/images/confirm",
@@ -15,87 +15,80 @@ export const confirmImagesApp = factory.createApp().post(
         .array(
           z.object({
             key: z.string(),
-            sortOrder: z.coerce.number(),
-            isPrimary: z.boolean(),
-          })
+          }),
         )
         .min(1)
         .max(10),
-    })
+    }),
   ),
   async (c) => {
-    const { variantId } = c.req.valid("param")
-    const { images } = c.req.valid("json")
+    const { variantId } = c.req.valid("param");
+    const { images } = c.req.valid("json");
 
-    const primaryCount = images.filter((img) => img.isPrimary).length
-    if (primaryCount > 1) {
-      throw new Error("Only one image can be marked as primary")
+    const [variant] = await db
+      .select()
+      .from(productVariants)
+      .where(eq(productVariants.id, variantId));
+
+    if (!variant) {
+      throw new Error("Product Not Found");
     }
 
-    try {
-      const [variant] = await db
-        .select()
-        .from(productVariants)
-        .where(eq(productVariants.id, variantId))
+    const insertedImages = await insertImages({
+      variantId: Number(variant.id),
+      images: images,
+    });
 
-      if (!variant) {
-        throw new Error("Product Not Found")
-      }
-
-      const insertedImages = await insertImages({
-        productId: Number(variant.productId),
-        variantId: Number(variant.id),
-        images: images,
-      })
-
-      if (insertedImages.length <= 0) {
-        return c.json(
-          {
-            error: {
-              code: "failed",
-              message: "Failed to upload images",
-            },
-          },
-          400
-        )
-      }
-
-      return c.json({ data: insertedImages }, 200)
-    } catch (error) {
-      return c.json(
-        {
-          error: {
-            code: "internal_server_error",
-            message: "Internal server error" + error,
-          },
-        },
-        500
-      )
+    if (insertedImages.length <= 0) {
+      throw AppError.internal();
     }
-  }
-)
 
-export async function insertImages({
-  productId,
+    return c.json({ data: insertedImages }, 200);
+  },
+);
+
+async function insertImages({
   variantId,
   images,
 }: {
-  productId: number
-  variantId: number
-  images: { key: string; sortOrder: number; isPrimary: boolean }[]
+  variantId: number;
+  images: { key: string }[];
 }) {
-  const inserted = await db
-    .insert(productImages)
-    .values(
-      images.map((img) => ({
-        productId,
-        productVariantId: variantId,
-        key: img.key,
-        sortOrder: img.sortOrder,
-        isPrimary: img.isPrimary,
-      }))
-    )
-    .returning()
+  try {
+    return await db.transaction(async (tx) => {
+      const [[variant], hasPrimary, maxSortResult] = await Promise.all([
+        tx.select().from(productVariants).where(eq(productVariants.id, variantId)).for("update"),
+        tx.select({ id: productImages.id })
+          .from(productImages)
+          .where(and(eq(productImages.productVariantId, variantId), eq(productImages.isPrimary, true)))
+          .limit(1),
+        tx.select({ maxSort: sql<number>`COALESCE(MAX(${productImages.sortOrder}), -1)` })
+          .from(productImages)
+          .where(eq(productImages.productVariantId, variantId)),
+      ]);
 
-  return inserted
+      const maxSort = maxSortResult[0]?.maxSort ?? -1;
+
+      if (!variant) {
+        throw AppError.notFound("Variant not found");
+      }
+
+      const inserted = await tx
+        .insert(productImages)
+        .values(
+          images.map((img, i) => ({
+            productId: variant.productId,
+            productVariantId: variantId,
+            key: img.key,
+            sortOrder: maxSort + 1 + i,
+            isPrimary: hasPrimary.length > 0 ? false : i === 0,
+          })),
+        )
+        .returning();
+
+      return inserted;
+    });
+  } catch (error) {
+    toAppError(error, { entity: "Variant Images" });
+  }
 }

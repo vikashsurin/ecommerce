@@ -1,5 +1,5 @@
-import { apiClient } from "@/lib"
-import { parseResponse } from "hono/client"
+import { apiClient } from "@/lib";
+import { parseResponse } from "hono/client";
 
 export const getVariant = async (id: number) => {
   try {
@@ -7,23 +7,21 @@ export const getVariant = async (id: number) => {
       param: {
         id: String(id),
       },
-    })
-    const result = await parseResponse(response)
-    return result.data
+    });
+    const result = await parseResponse(response);
+    return result.data;
   } catch (error) {
-    console.error(error)
-    return error
+    console.error(error);
+    return error;
   }
-}
+};
 
 export const uploadVariantImages = async (
   variantId: number,
-  isPrimary: boolean,
-  files: File[]
+  files: File[],
 ) => {
-  console.log("api call")
+
   try {
-    console.log("calling presign")
     const response = await apiClient.api.variants[
       ":variantId"
     ].images.presign.$post({
@@ -31,9 +29,9 @@ export const uploadVariantImages = async (
       json: {
         images: files.map((f) => ({ filename: f.name, contentType: f.type })),
       },
-    })
-    const { data: presigned } = await response.json()
-    if (!presigned) throw new Error("presigned urls not received")
+    });
+    const { data: presigned } = await response.json();
+    if (!presigned) throw new Error("presigned urls not received");
 
     await Promise.all(
       files.map(async (file, i) => {
@@ -41,13 +39,13 @@ export const uploadVariantImages = async (
           method: "PUT",
           headers: { "Content-Type": presigned[i].contentType },
           body: file,
-        })
-        if (!res.ok)
-          throw new Error(`Upload failed for ${file.name}: ${res.status}`)
-      })
-    )
+        });
+        if (!res.ok) {
+          throw new Error(`Upload failed for ${file.name}: ${res.status}`);
+        }
+      }),
+    );
 
-    console.log("calling confirm")
     const confirmRes = await apiClient.api.variants[
       ":variantId"
     ].images.confirm.$post({
@@ -55,16 +53,14 @@ export const uploadVariantImages = async (
       json: {
         images: presigned.map((p, i) => ({
           key: p.key,
-          sortOrder: i,
-          isPrimary: isPrimary,
+          isPrimary: i === 0 ? true : false,
         })),
       },
-    })
-    const result = await confirmRes.json()
-    console.log({ result })
-    return result
+    });
+    const result = await confirmRes.json();
+    return result;
   } catch (error) {
-    console.error("upload failed", error)
-    return
+    console.error("upload failed", error);
+    return;
   }
-}
+};

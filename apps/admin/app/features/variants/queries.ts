@@ -10,7 +10,9 @@ export const useVariant = (id: number | undefined) => {
 
 export const useUploadVariantImages = () => {
   return useMutation({
-    mutationFn: async (data: { variantId: number; isPrimary: boolean; files: File[] }) =>
-      uploadVariantImages(data.variantId, data.isPrimary, data.files),
+    mutationFn: async (data: { variantId: number; files: File[] }) => uploadVariantImages(data.variantId, data.files),
+    onSuccess: (_data, variables) => {
+      console.log("it was a success");
+    },
   });
 };

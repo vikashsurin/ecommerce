@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib";
+import { IconPhoto, IconPlus } from "@tabler/icons-react";
 import { parseResponse } from "hono/client";
 import { type CreateProductSchema } from "./schema";
 
