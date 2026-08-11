@@ -1,4 +1,7 @@
+import { promoteImage } from "@/app/features/variants/api";
+import { queryClient } from "@/lib";
 import { IconStar } from "@tabler/icons-react";
+import { useMutation } from "@tanstack/react-query";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,10 +14,27 @@ import {
   AlertDialogTrigger,
 } from "@workspace/ui/components/alert-dialog";
 import { Button } from "@workspace/ui/components/button";
+import { useState } from "react";
+import { toast } from "sonner";
+import { variantKeys } from "../keys";
 
-export function MarkVariantImgPrimaryBtn() {
+export function PromoteImage({ id }: { id: number }) {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { mutate } = useMutation({
+    mutationFn: promoteImage,
+    onSuccess: (data: any) => {
+      console.log({data})
+      if (data) {
+        queryClient.invalidateQueries({
+          queryKey: variantKeys.detail(data.variantId),
+        });
+        toast.info("Image promoted");
+      }
+      setIsOpen(false);
+    },
+  });
   return (
-    <AlertDialog>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger
         render={
           <Button size="icon-xs" className="absolute top-0 p-0 left-0 mt-2 ml-2 rounded">
@@ -32,7 +52,7 @@ export function MarkVariantImgPrimaryBtn() {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <AlertDialogAction onClick={() => mutate(id)}>Continue</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

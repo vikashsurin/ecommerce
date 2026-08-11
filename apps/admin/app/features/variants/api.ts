@@ -69,3 +69,13 @@ export const deleteVariantImage = async (id: number) => {
   const result = await parseResponse(res);
   return result.data;
 };
+
+export const promoteImage = async (id: number) => {
+  const res = await apiClient.api.variants[":id"].images.$put({
+    param: {
+      id: String(id),
+    },
+  });
+  const result = await parseResponse(res);
+  return result.data;
+};
