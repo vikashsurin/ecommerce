@@ -1,7 +1,7 @@
 import { db, productImages, productVariants } from "@repo/db";
 import { and, eq, sql } from "drizzle-orm";
 import z from "zod";
-import { AppError, factory, toAppError } from "../../../../lib";
+import { AppError, factory } from "../../../../lib";
 import { authMiddleware, validate } from "../../../../middleware";
 
 export const confirmImagesApp = factory.createApp().post(
@@ -89,6 +89,6 @@ async function insertImages({
       return inserted;
     });
   } catch (error) {
-    toAppError(error, { entity: "Variant Images" });
+    AppError.fromPg(error, { entity: "Variant Images" });
   }
 }

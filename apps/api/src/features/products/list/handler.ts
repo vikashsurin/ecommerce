@@ -1,6 +1,5 @@
 import { db, products } from "@repo/db";
-import { toAppError } from "../../../lib";
-import { factory } from "../../../lib";
+import { AppError, factory } from "../../../lib";
 
 // Todo: include filtering, sorting, and pagination
 export const listProductsApp = factory.createApp()
@@ -19,6 +18,6 @@ async function listProducts() {
     const productsList = await db.select().from(products);
     return productsList;
   } catch (error) {
-    toAppError(error, { entity: "Products" });
+    AppError.fromPg(error, { entity: "Products" });
   }
 }

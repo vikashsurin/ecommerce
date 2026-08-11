@@ -15,9 +15,8 @@ import React, { useState } from "react";
 import { toast } from "sonner";
 
 export function UploadImageModal(
-  { variantId, onSuccess }: {
+  { variantId }: {
     variantId: string;
-    onSuccess?: () => void;
   },
 ) {
   const [isOpen, setIsOpen] = useState(false);
@@ -47,10 +46,9 @@ export function UploadImageModal(
 }
 
 export function UploadImageButton(
-  { variantId, setIsOpen, onSuccess }: {
+  { variantId, setIsOpen }: {
     variantId: string;
     setIsOpen: (arg0: boolean) => void;
-    onSuccess?: () => void;
   },
 ) {
   const { mutate: uploadImage } = useUploadVariantImages();
@@ -75,7 +73,9 @@ export function UploadImageButton(
 
       uploadImage({ variantId: Number(variantId), files: value.images }, {
         onSuccess: () => {
-          onSuccess?.();
+          setIsOpen(false);
+          form.reset();
+          toast.info("Upload successful");
         },
       });
     },
@@ -144,7 +144,7 @@ export function UploadImageButton(
         />
       </div>
 
-      <div className="max-h-100 overflow-y-scroll mt-2">
+      <div className="max-h-50 overflow-y-scroll mt-2">
         <form.Subscribe
           selector={(state) => state.values.images}
           children={(values) =>

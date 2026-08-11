@@ -2,25 +2,19 @@ import { apiClient } from "@/lib";
 import { parseResponse } from "hono/client";
 
 export const getVariant = async (id: number) => {
-  try {
-    const response = await apiClient.api.variants[":id"].$get({
-      param: {
-        id: String(id),
-      },
-    });
-    const result = await parseResponse(response);
-    return result.data;
-  } catch (error) {
-    console.error(error);
-    return error;
-  }
+  const response = await apiClient.api.variants[":id"].$get({
+    param: {
+      id: String(id),
+    },
+  });
+  const result = await parseResponse(response);
+  return result.data;
 };
 
 export const uploadVariantImages = async (
   variantId: number,
   files: File[],
 ) => {
-
   try {
     const response = await apiClient.api.variants[
       ":variantId"
@@ -63,4 +57,15 @@ export const uploadVariantImages = async (
     console.error("upload failed", error);
     return;
   }
+};
+
+export const deleteVariantImage = async (id: number) => {
+  const res = await apiClient.api.variants[":id"].images.$delete({
+    param: {
+      id: String(id),
+    },
+  });
+
+  const result = await parseResponse(res);
+  return result.data;
 };

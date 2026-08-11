@@ -1,7 +1,7 @@
 import { db, productImages } from "@repo/db";
 import { and, eq, isNull } from "drizzle-orm";
 import z from "zod";
-import { factory, toAppError } from "../../../../lib";
+import { AppError, factory } from "../../../../lib";
 import { validate } from "../../../../middleware";
 
 export const confirmImagesApp = factory.createApp().post(
@@ -73,6 +73,6 @@ async function upsertImage(productId: number, newKey: string) {
       }
     });
   } catch (error) {
-    toAppError(error, { entity: "Product Images" });
+    AppError.fromPg(error, { entity: "Product Images" });
   }
 }
