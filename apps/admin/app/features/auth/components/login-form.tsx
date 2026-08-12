@@ -1,19 +1,14 @@
-"use client"
+"use client";
 
-import { Button } from "@workspace/ui/components/button"
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
-import { useForm } from "@tanstack/react-form-nextjs"
-import { useLogin } from "../queries"
-import { loginSchema } from "../schema"
+import { useForm } from "@tanstack/react-form-nextjs";
+import { Button } from "@workspace/ui/components/button";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@workspace/ui/components/field";
+import { Input } from "@workspace/ui/components/input";
+import { useLogin } from "../queries";
+import { loginSchema } from "../schema";
 
 export default function LoginForm() {
-  const { mutate: login, isError, reset } = useLogin()
+  const { mutate: login, isError, reset } = useLogin();
   const form = useForm({
     defaultValues: {
       email: "",
@@ -23,24 +18,23 @@ export default function LoginForm() {
       onSubmit: loginSchema,
     },
     onSubmit: async ({ value }) => {
-      login(value)
-      reset()
+      login(value);
+      reset();
     },
-  })
+  });
 
   return (
     <form
       className="max-w-md"
       onSubmit={(e) => {
-        e.preventDefault()
-        form.handleSubmit()
+        e.preventDefault();
+        form.handleSubmit();
       }}
     >
       <FieldGroup>
         <form.Field name="email">
           {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid
+            const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
             return (
               <>
                 <Field>
@@ -52,8 +46,8 @@ export default function LoginForm() {
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => {
-                      if (isError) reset()
-                      field.handleChange(e.target.value)
+                      if (isError) reset();
+                      field.handleChange(e.target.value);
                     }}
                     className="rounded-sm"
                     placeholder="Enter email"
@@ -61,14 +55,13 @@ export default function LoginForm() {
                 </Field>
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </>
-            )
+            );
           }}
         </form.Field>
 
         <form.Field name="password">
           {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid
+            const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
             return (
               <>
                 <Field>
@@ -80,8 +73,8 @@ export default function LoginForm() {
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => {
-                      if (isError) reset()
-                      field.handleChange(e.target.value)
+                      if (isError) reset();
+                      field.handleChange(e.target.value);
                     }}
                     className="rounded-sm"
                     placeholder="Enter email"
@@ -98,7 +91,7 @@ export default function LoginForm() {
                 </Field>
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </>
-            )
+            );
           }}
         </form.Field>
         <Button type="submit">Login</Button>
@@ -111,5 +104,5 @@ export default function LoginForm() {
         </a>
       </div>
     </form>
-  )
+  );
 }
