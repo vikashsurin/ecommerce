@@ -42,7 +42,7 @@ export default function CreateProductForm() {
           console.log("succes", data)
           reset()
           form.reset()
-          redirect(`/dashboard/products/${id}`)
+          redirect(`/admin/products/${id}`)
         },
       })
     },

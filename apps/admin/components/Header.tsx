@@ -10,9 +10,9 @@ export default function HeaderAdmin() {
   const { data: session } = useSession();
   console.log({ session });
   return (
-    <header className="Link-4 flex px-4 items-center justify-between bg-gray-100">
+    <header className=" flex px-4 items-center justify-between bg-gray-100">
       <div data-left>
-        <NavLink href={"/"}>Home</NavLink>
+        <NavLink href={"/admin"}>Home</NavLink>
         <NavLink href={"/about"}>About</NavLink>
         <NavLink href={"/dashboard"}>Dashboard</NavLink>
       </div>

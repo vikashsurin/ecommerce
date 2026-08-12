@@ -19,7 +19,7 @@ export function CategoryActionsMenu({ category }: { category: Category }) {
         <DropdownMenuContent>
           <DropdownMenuItem>
             <Link
-              href={`/dashboard/products/categories/${category.id}/attributes`}
+              href={`/admin/products/categories/${category.id}/attributes`}
               className="flex items-center justify-between gap-2"
             >
               Attributes
