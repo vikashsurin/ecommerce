@@ -1,24 +1,22 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import './globals.css'
-
-import { Toaster } from "sonner"
-
+import "./globals.css";
+import HeaderAdmin from "@/components/Header";
+import { Toaster } from "sonner";
 import "@workspace/ui/globals.css";
-// import { ThemeProvider } from "@/components/theme-provider"
 import { Providers } from "@/lib";
 import { cn } from "@workspace/ui/lib/utils";
 
-const geist = Geist({ subsets: ['latin'], variable: '--font-sans' })
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
-})
+});
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html
@@ -29,11 +27,12 @@ export default function RootLayout({
       <body>
         <Providers>
           <main>
+            <HeaderAdmin />
             {children}
           </main>
           <Toaster />
         </Providers>
       </body>
     </html>
-  )
+  );
 }

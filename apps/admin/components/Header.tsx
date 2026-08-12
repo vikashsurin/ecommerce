@@ -1,30 +1,26 @@
 "use client";
 
-import Cart from "@/components/Cart";
 import { useSession } from "@/hooks/useSession";
 import { IconCaretDownFilled } from "@tabler/icons-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@workspace/ui/components/popover";
 import Link from "next/link";
-import LoginButton from "./Login-button";
+import LoginButton from "./login-btn";
 
-export default function Header() {
+export default function HeaderAdmin() {
   const { data: session } = useSession();
-
+  console.log({ session });
   return (
     <header className="Link-4 flex px-4 items-center justify-between bg-gray-100">
       <div data-left>
         <NavLink href={"/"}>Home</NavLink>
         <NavLink href={"/about"}>About</NavLink>
-        <NavLink href="/products">Products</NavLink>
+        <NavLink href={"/dashboard"}>Dashboard</NavLink>
       </div>
-
       <div data-right className="flex items-center gap-4">
         <div className=" relative flex gap-2">
           {!session && <LoginButton />}
           <Menu />
         </div>
-
-        <Cart />
       </div>
     </header>
   );

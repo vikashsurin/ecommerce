@@ -1,43 +1,35 @@
-import { deleteCookie } from "hono/cookie"
-import { cookieFromContext } from "../../../lib/cookie-from-context"
-import { env } from "../../../lib/env"
-import { factory } from "../../../lib"
-import { getSession } from "../../sessions"
-import { getUserService } from "../../users"
+import { deleteCookie } from "hono/cookie";
+import { AppError, factory } from "../../../lib";
+import { cookieFromContext } from "../../../lib/cookie-from-context";
+import { env } from "../../../lib/env";
+import { getSession } from "../../sessions";
+import { getUserService } from "../../users";
 
 export const meApp = factory.createApp().get("/me", async (c) => {
-  const cookie = cookieFromContext(c)
+  const cookie = cookieFromContext(c);
 
   if (!cookie) {
-    return c.json(
-      {
-        error: {
-          code: "missing_credentials",
-          message: "Missing",
-        },
-      },
-      400
-    )
+    throw AppError.unauthorized("Not logged in");
   }
 
-  const session = await getSession(cookie)
+  const session = await getSession(cookie);
 
   if (!session) {
-    deleteCookie(c, env.COOKIE_NAME)
+    deleteCookie(c, env.COOKIE_NAME);
     return c.json(
       {
         data: null,
       },
-      200
-    )
+      200,
+    );
   }
 
   try {
-    const user = await getUserService(session.userId)
+    const user = await getUserService(session.userId);
 
     return c.json({
       data: user,
-    })
+    });
   } catch (error) {
     return c.json(
       {
@@ -46,7 +38,7 @@ export const meApp = factory.createApp().get("/me", async (c) => {
           message: "Internal Server Error",
         },
       },
-      500
-    )
+      500,
+    );
   }
-})
+});
