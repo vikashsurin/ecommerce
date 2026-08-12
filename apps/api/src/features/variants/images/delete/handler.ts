@@ -1,6 +1,6 @@
 import { productImages } from "@repo/db";
 import { db } from "@repo/db";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import z from "zod";
 import { AppError, factory } from "../../../../lib";
 import { validate } from "../../../../middleware";
@@ -22,8 +22,14 @@ async function deleteVariantImage(id: number) {
   try {
     const [deleted] = await db
       .delete(productImages)
-      .where(eq(productImages.id, id))
+      .where(
+        and(
+          eq(productImages.id, id),
+          eq(productImages.isPrimary, false),
+        ),
+      )
       .returning();
+
     return deleted ?? null;
   } catch (error) {
     AppError.fromPg(error, { entity: "Variant images" });

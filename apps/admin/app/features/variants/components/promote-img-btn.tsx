@@ -20,10 +20,10 @@ import { variantKeys } from "../keys";
 
 export function PromoteImage({ id }: { id: number }) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: promoteImage,
     onSuccess: (data: any) => {
-      console.log({data})
+      console.log({ data });
       if (data) {
         queryClient.invalidateQueries({
           queryKey: variantKeys.detail(data.variantId),
@@ -45,14 +45,14 @@ export function PromoteImage({ id }: { id: number }) {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>Promote image to Primary?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your account from our servers.
+            This will be used as the main image. You can select any image to be primary.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => mutate(id)}>Continue</AlertDialogAction>
+          <AlertDialogAction onClick={() => mutate(id)}>{isPending ? "Promoting" : "Promote image"}</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

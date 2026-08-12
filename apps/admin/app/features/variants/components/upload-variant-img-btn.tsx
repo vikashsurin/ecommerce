@@ -51,7 +51,7 @@ export function UploadImageButton(
     setIsOpen: (arg0: boolean) => void;
   },
 ) {
-  const { mutate: uploadImage } = useUploadVariantImages();
+  const { mutate: uploadImage, isPending } = useUploadVariantImages();
 
   const form = useForm({
     defaultValues: { images: [] as File[] },
@@ -197,7 +197,7 @@ export function UploadImageButton(
           type="submit"
           className={"w-max"}
         >
-          Save
+          {isPending ? "Uploading" : "Upload"}
         </Button>
       </div>
     </form>

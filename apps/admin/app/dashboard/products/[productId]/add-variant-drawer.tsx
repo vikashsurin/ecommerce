@@ -1,5 +1,5 @@
-import AddVariantForm from "@/app/features/products/variants/components/create-variant-form"
-import { Button } from "@workspace/ui/components/button"
+import AddVariantForm from "@/app/features/products/components/create-variant-form";
+import { Button } from "@workspace/ui/components/button";
 import {
   Drawer,
   DrawerContent,
@@ -7,16 +7,16 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@workspace/ui/components/drawer"
-import { useState } from "react"
-import { Plus } from "lucide-react"
+} from "@workspace/ui/components/drawer";
+import { Plus } from "lucide-react";
+import { useState } from "react";
 
 export default function AddVariantDrawer({
   categoryId,
 }: {
-  categoryId: number
+  categoryId: number;
 }) {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <Drawer
       open={isOpen}
@@ -32,7 +32,8 @@ export default function AddVariantDrawer({
             Add Variant
           </Button>
         }
-      ></DrawerTrigger>
+      >
+      </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>Add Variant</DrawerTitle>
@@ -46,5 +47,5 @@ export default function AddVariantDrawer({
         </div>
       </DrawerContent>
     </Drawer>
-  )
+  );
 }

@@ -28,7 +28,7 @@ export function ProductVariantActionMenu({ productId, variant }: {
         <DropdownMenuContent>
           <Link href={`${pathname}/variants/${variant.id}/images`}>
             <DropdownMenuItem>
-              Edit
+              Edit images
             </DropdownMenuItem>
           </Link>
           <DropdownMenuSeparator />

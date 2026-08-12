@@ -19,7 +19,7 @@ import {
 } from "@workspace/ui/components/select"
 import { Info } from "lucide-react"
 import { useParams } from "next/navigation"
-import { useGetAttributes } from "../../../categories/queries"
+import { useGetAttributes } from "../../categories/queries"
 import { useCreateProductVariant, useGenerateSku } from "../queries"
 import { createProductVariantSchema } from "../schema"
 
@@ -27,7 +27,6 @@ function getOptionsList(options: any): string[] {
   if (!Array.isArray(options)) return []
   return options.filter((opt): opt is string => typeof opt === "string")
 }
-
 
 export default function AddVariantForm({
   categoryId,
@@ -51,8 +50,6 @@ export default function AddVariantForm({
     />
   )
 }
-
-
 
 function VariantFormFields({
   categoryAttributes,
@@ -96,7 +93,8 @@ function VariantFormFields({
     },
   })
 
-  const { mutate: generateSku, isPending: isGenerateSkuPending } = useGenerateSku()
+  const { mutate: generateSku, isPending: isGenerateSkuPending } =
+    useGenerateSku()
 
   function handleGenerateSku() {
     generateSku(
@@ -129,7 +127,7 @@ function VariantFormFields({
                 // TODO: Review this section
                 onChange: attribute.required
                   ? ({ value }) =>
-                    !value ? `${attribute.label} is required` : undefined
+                      !value ? `${attribute.label} is required` : undefined
                   : undefined,
               }}
             >
@@ -150,7 +148,6 @@ function VariantFormFields({
                           />
                         </SelectTrigger>
                         <SelectContent>
-
                           {options.map((option) => (
                             <SelectItem key={option} value={option}>
                               {option}
@@ -177,8 +174,7 @@ function VariantFormFields({
                     )}
                   </div>
                 )
-              }
-              }
+              }}
             </form.Field>
           ))}
 
@@ -287,7 +283,7 @@ function VariantFormFields({
                       placeholder="NAME-COLOR-SIZE"
                     />
                     <Button variant="secondary" onClick={handleGenerateSku}>
-                      {isGenerateSkuPending ? 'Generating...' : 'Generate'}
+                      {isGenerateSkuPending ? "Generating..." : "Generate"}
                     </Button>
                   </div>
 

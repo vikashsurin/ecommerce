@@ -10,13 +10,11 @@ import { useUpdateProductVariant } from "../queries"
 import { updateProductVariantSchema } from "../schema"
 
 export function UpdateSalePriceForm({
-  productId,
   variantId,
   price,
   salePrice,
   setOpen,
 }: {
-  productId: number
   variantId: number
   price: number
   salePrice: number | null
@@ -39,7 +37,7 @@ export function UpdateSalePriceForm({
 
     onSubmit: async ({ value }) => {
       mutate(
-        { data: value, productId, variantId },
+        { data: value, variantId },
         {
           onSuccess: () => {
             setOpen(false)
@@ -52,8 +50,6 @@ export function UpdateSalePriceForm({
       )
     },
   })
-
-
 
   useEffect(() => {
     if (!onSale) {
@@ -119,10 +115,12 @@ export function UpdateSalePriceForm({
                     e.preventDefault()
                     const current = Number(field.state.value)
                     if (current >= price) {
-                      toast.error('Sale Price cannot be greater than the regular price')
+                      toast.error(
+                        "Sale Price cannot be greater than the regular price"
+                      )
                       return
                     } else {
-                    field.handleChange(current + 1)
+                      field.handleChange(current + 1)
                     }
                   }}
                 >
@@ -138,7 +136,13 @@ export function UpdateSalePriceForm({
           Cancel
         </Button>
         <Button type="submit" variant="default" size={"xs"}>
-          {onSale ? "Update" : onSale === false? "Remove sale": isPending ? "Updating..." : ''}
+          {onSale
+            ? "Update"
+            : onSale === false
+              ? "Remove sale"
+              : isPending
+                ? "Updating..."
+                : ""}
         </Button>
       </div>
     </form>

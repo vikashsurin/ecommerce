@@ -1,44 +1,38 @@
-import { db, productVariants } from "@repo/db";
-import { and, eq } from "drizzle-orm";
-import z from "zod";
-import { factory } from "../../../lib";
-import { AppError } from "../../../lib/app-error";
-import { authMiddleware, validate } from "../../../middleware";
+import { db, productVariants } from "@repo/db"
+import { and, eq } from "drizzle-orm"
+import z from "zod"
+import { factory } from "../../../lib"
+import { AppError } from "../../../lib/app-error"
+import { authMiddleware, validate } from "../../../middleware"
 
 export const deleteProductVariantApp = factory.createApp().delete(
-  "/:productId/variants/:variantId",
+  "/:id",
   authMiddleware,
   validate(
     "param",
     z.object({
-      productId: z.coerce.number(),
-      variantId: z.coerce.number(),
-    }),
+      id: z.coerce.number(),
+    })
   ),
   async (c) => {
-    const { productId, variantId } = c.req.valid("param");
+    const { id } = c.req.valid("param")
 
-    const deleted = await deleteProductVariant(productId, variantId);
+    const deleted = await deleteProductVariant(id)
     if (!deleted) {
-      throw AppError.notFound("Product variant not found");
+      throw AppError.notFound("Product variant not found")
     }
-    return c.json({ data: deleted });
-  },
-);
+    return c.json({ data: deleted })
+  }
+)
 
-async function deleteProductVariant(productId: number, variantId: number) {
+async function deleteProductVariant(id: number) {
   try {
     const row = await db
       .delete(productVariants)
-      .where(
-        and(
-          eq(productVariants.productId, productId),
-          eq(productVariants.id, variantId),
-        ),
-      )
-      .returning();
-    return row[0] ?? null;
+      .where(and(eq(productVariants.id, id)))
+      .returning()
+    return row[0] ?? null
   } catch (error) {
-    AppError.fromPg(error, { entity: "Product variant" });
+    AppError.fromPg(error, { entity: "Product variant" })
   }
 }

@@ -1,26 +1,34 @@
+import { useDeleteProductVariant } from "@/app/features/variants/queries"
+import { type ProductVariant } from "@/app/features/variants/schema"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@workspace/ui/components/alert-dialog"
 
+import { toast } from "sonner"
 
-import { useDeleteProductVariant } from "@/app/features/products/variants/queries";
-import { type ProductVariant } from "@/app/features/products/variants/schema";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@workspace/ui/components/alert-dialog";
-
-import { toast } from "sonner";
-
-export function DeleteVariantDialogForm({ productId, variant, open, setOpen }: {
-  productId: number;
-  variant: ProductVariant;
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+export function DeleteVariantDialogForm({
+  productId,
+  variant,
+  open,
+  setOpen,
+}: {
+  productId: number
+  variant: ProductVariant
+  open: boolean
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-
   const { mutate: deleteVariant, isPending } = useDeleteProductVariant()
 
-
   function handleDelete() {
-    deleteVariant({
-      productId,
-      variantId: variant.id
-    },
+    deleteVariant(
+      { id: variant.id },
       {
         onSuccess: () => {
           setOpen(false)
@@ -29,7 +37,8 @@ export function DeleteVariantDialogForm({ productId, variant, open, setOpen }: {
         onError: () => {
           toast.error("Something went wrong")
         },
-      })
+      }
+    )
   }
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -37,14 +46,14 @@ export function DeleteVariantDialogForm({ productId, variant, open, setOpen }: {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            Delete <b className='text-black'>{variant.id}</b>?
-            This action cannot be undone.
+            Delete <b className="text-black">{variant.id}</b>? This action
+            cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            variant={'destructive'}
+            variant={"destructive"}
             onClick={handleDelete}
             disabled={isPending}
           >

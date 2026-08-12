@@ -1,25 +1,8 @@
 import { apiClient } from "@/lib"
-import { InferResponseType } from "hono/client"
-import { z } from "zod"
+import { InferResponseType } from "hono"
+import z from "zod"
 
 
-export const createProductVariantSchema = z.object({
-  productId: z.number().min(1, "Product ID must be a positive number"),
-  sku: z.string().min(1, "SKU must be at least 1 character"),
-  price: z.coerce.number().min(0, "Price must be a positive number"),
-  salePrice: z.coerce
-    .number()
-    .min(
-      0,
-      "Sale price must be a positive number and less than or equal to the price"
-    ),
-  stock: z.coerce.number().min(0, "Stock must be a positive number"),
-  attributes: z.record(z.string(), z.string()),
-})
-
-export type CreateProductVariantSchema = z.infer<
-  typeof createProductVariantSchema
->
 
 export type CreateProductVariantResponse = InferResponseType<typeof apiClient.api.products[':productId']['variants']['$get'], 200>
 

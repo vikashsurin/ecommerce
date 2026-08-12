@@ -1,6 +1,6 @@
 import { deleteVariantImage } from "@/app/features/variants/api";
 import { queryClient } from "@/lib";
-import { IconTrash } from "@tabler/icons-react";
+import { IconInfoTriangle, IconTrash } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import {
   AlertDialog,
@@ -21,7 +21,7 @@ import { variantKeys } from "../keys";
 export function DeleteVariantImgBtn({ id }: { id: number }) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { mutate: deleteImage } = useMutation({
+  const { mutate: deleteImage, isPending } = useMutation({
     mutationFn: deleteVariantImage,
     onSuccess: (data) => {
       if (data) {
@@ -47,14 +47,18 @@ export function DeleteVariantImgBtn({ id }: { id: number }) {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>Delete image?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete your account from our servers.
+            <span className="flex text-xs items-center mt-2 gap-2 bg-amber-200 p-1 px-2 rounded">
+              <IconInfoTriangle size={14} />
+              <i>When an image is primary it cannot be deleted.</i>
+            </span>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => deleteImage(id)}>Continue</AlertDialogAction>
+          <AlertDialogAction onClick={() => deleteImage(id)}>{isPending ? "Deleting" : "Delete"}</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

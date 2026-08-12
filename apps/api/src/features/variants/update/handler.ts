@@ -9,22 +9,21 @@ import {
 } from "./schema"
 
 export const updateProductVariantApp = factory.createApp().put(
-  "/:productId/variants/:variantId",
+  "/:id",
   // authMiddleware,
   validate(
     "param",
     z.object({
-      productId: z.coerce.number(),
-      variantId: z.coerce.number(),
+      id: z.coerce.number(),
     })
   ),
   validate("json", updateProductVariantSchema),
   async (c) => {
-    const { productId, variantId } = c.req.valid("param")
+    const {  id } = c.req.valid("param")
     const data = c.req.valid("json")
 
     try {
-      const variant = await updateProductVariant(productId, variantId, data)
+      const variant = await updateProductVariant( id, data)
       return c.json({ data: variant })
     } catch (error) {
       return c.json(
@@ -41,8 +40,7 @@ export const updateProductVariantApp = factory.createApp().put(
 )
 
 async function updateProductVariant(
-  productId: number,
-  variantId: number,
+  id: number,
   data: UpdateProductVariantSchema
 ) {
   const row = await db
@@ -50,8 +48,7 @@ async function updateProductVariant(
     .set(data)
     .where(
       and(
-        eq(productVariants.productId, productId),
-        eq(productVariants.id, variantId)
+        eq(productVariants.id, id)
       )
     )
     .returning()

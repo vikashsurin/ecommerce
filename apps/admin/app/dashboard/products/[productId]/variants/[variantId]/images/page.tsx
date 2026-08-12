@@ -4,6 +4,8 @@ import { DeleteVariantImgBtn } from "@/app/features/variants/components/delete-v
 import { PromoteImage } from "@/app/features/variants/components/promote-img-btn";
 import { UploadImageModal } from "@/app/features/variants/components/upload-variant-img-btn";
 import { useVariant } from "@/app/features/variants/queries";
+import { IconStar } from "@tabler/icons-react";
+import { Button } from "@workspace/ui/components/button";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 
@@ -16,8 +18,6 @@ export default function() {
     if (b.isPrimary) return 1;
     return a.sortOrder - b.sortOrder;
   });
-
-  console.log({ sorted });
 
   if (isLoading) <div>loading...</div>;
   const [showActionsFor, setShowActionsFor] = useState<number>();
@@ -33,7 +33,9 @@ export default function() {
             <img src={img.url} alt={`image` + img.id} className="h-40 w-40 rounded" />
 
             {img.isPrimary === true && (
-              <p className="absolute top-2 rounded-xs left-2 text-xs bg-amber-500 px-1 py-0.5 ">primary</p>
+              <Button size="icon-xs" className="absolute top-0 p-0 left-0 mt-2 ml-2 rounded bg-amber-700">
+                <IconStar size={12} />
+              </Button>
             )}
             {showActionsFor === img.id && !img.isPrimary
               && (

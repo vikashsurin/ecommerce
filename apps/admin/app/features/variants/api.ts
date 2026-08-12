@@ -1,20 +1,18 @@
-import { apiClient } from "@/lib";
-import { parseResponse } from "hono/client";
+import { apiClient } from "@/lib"
+import { parseResponse } from "hono/client"
+import { UpdateProductVariantSchema } from "./schema"
 
 export const getVariant = async (id: number) => {
   const response = await apiClient.api.variants[":id"].$get({
     param: {
       id: String(id),
     },
-  });
-  const result = await parseResponse(response);
-  return result.data;
-};
+  })
+  const result = await parseResponse(response)
+  return result.data
+}
 
-export const uploadVariantImages = async (
-  variantId: number,
-  files: File[],
-) => {
+export const uploadVariantImages = async (variantId: number, files: File[]) => {
   try {
     const response = await apiClient.api.variants[
       ":variantId"
@@ -23,9 +21,9 @@ export const uploadVariantImages = async (
       json: {
         images: files.map((f) => ({ filename: f.name, contentType: f.type })),
       },
-    });
-    const { data: presigned } = await response.json();
-    if (!presigned) throw new Error("presigned urls not received");
+    })
+    const { data: presigned } = await response.json()
+    if (!presigned) throw new Error("presigned urls not received")
 
     await Promise.all(
       files.map(async (file, i) => {
@@ -33,12 +31,12 @@ export const uploadVariantImages = async (
           method: "PUT",
           headers: { "Content-Type": presigned[i].contentType },
           body: file,
-        });
+        })
         if (!res.ok) {
-          throw new Error(`Upload failed for ${file.name}: ${res.status}`);
+          throw new Error(`Upload failed for ${file.name}: ${res.status}`)
         }
-      }),
-    );
+      })
+    )
 
     const confirmRes = await apiClient.api.variants[
       ":variantId"
@@ -50,32 +48,79 @@ export const uploadVariantImages = async (
           isPrimary: i === 0 ? true : false,
         })),
       },
-    });
-    const result = await confirmRes.json();
-    return result;
+    })
+    const result = await confirmRes.json()
+    return result
   } catch (error) {
-    console.error("upload failed", error);
-    return;
+    console.error("upload failed", error)
+    return
   }
-};
+}
 
 export const deleteVariantImage = async (id: number) => {
   const res = await apiClient.api.variants[":id"].images.$delete({
     param: {
       id: String(id),
     },
-  });
+  })
 
-  const result = await parseResponse(res);
-  return result.data;
-};
+  const result = await parseResponse(res)
+  return result.data
+}
 
 export const promoteImage = async (id: number) => {
   const res = await apiClient.api.variants[":id"].images.$put({
     param: {
       id: String(id),
     },
-  });
-  const result = await parseResponse(res);
-  return result.data;
-};
+  })
+  const result = await parseResponse(res)
+  return result.data
+}
+
+export const updateProductVariant = async ({
+  data,
+  variantId,
+}: {
+  data: UpdateProductVariantSchema
+  variantId: number
+}) => {
+  try {
+    const response = await apiClient.api.variants[
+      ":id"
+    ].$put({
+      param: {
+       id: String(variantId),
+      },
+      json: {
+        stock: data.stock,
+        price: data.price,
+        salePrice: data.salePrice,
+      },
+    })
+    const result = await parseResponse(response)
+    return result.data
+  } catch (error) {
+    console.error("Failed to update product variant:", error)
+    throw error
+  }
+}
+
+export const deleteProductVariant = async (
+  id: number
+) => {
+  try {
+    const response = await apiClient.api.variants[
+      ":id"
+    ].$delete({
+      param: {
+        id: String(id),
+      },
+    })
+    const result = await parseResponse(response)
+    return result.data
+  } catch (error) {
+    console.error("Failed to delete product variant:", error)
+    throw error
+  }
+}
