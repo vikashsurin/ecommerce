@@ -1,4 +1,4 @@
-import Sidebar from "@/components/sidebar";
+import { Sidebar } from "@/components/sidebar";
 import React from "react";
 
 export default function AdminLayout({
@@ -8,7 +8,7 @@ export default function AdminLayout({
 }) {
   return (
     <div className="h-full min-h-0 flex">
-      <aside className="w-64 shrink-0 border-r overflow-y-auto">
+      <aside className="  shrink-0 border-r border-r-amber-800 overflow-y-auto">
         <Sidebar />
       </aside>
 
