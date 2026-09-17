@@ -9,11 +9,16 @@ config({ path: "../../.env" })
 const globalForDb = globalThis as unknown as {
   conn: SQL | undefined
 }
+const url = 'postgresql://vikashadmin:dbpass@123@localhost:5432/ecommerce'
+
+console.log('db url', url)
+
 
 const client =
   globalForDb.conn ??
   new SQL({
-    url: process.env.DATABASE_URL,
+    // url: process.env.DATABASE_URL,
+    url:url,
     max: process.env.NODE_ENV === "production" ? 10 : undefined,
   })
 

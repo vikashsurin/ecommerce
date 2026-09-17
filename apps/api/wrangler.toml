@@ -1,0 +1,19 @@
+name = "ecommerce-api"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"] # IMPORTANT for drizzle + bun
+
+# This creates a fake R2 bucket locally, no cloud needed
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "ecommerce-images"
+preview_bucket_name = "ecommerce-images"
+
+# D1 not needed - we keep your Postgres
+# Use vars for local dev
+[vars]
+S3_REGION = "auto"
+
+# For local.env
+[dev]
+inspector = true

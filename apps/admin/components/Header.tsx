@@ -8,7 +8,6 @@ import LoginButton from "./login-btn";
 
 export default function HeaderAdmin() {
   const { data: session } = useSession();
-  console.log({ session });
   return (
     <header className=" flex text-sm px-4 items-center justify-between bg-gray-100">
       <div data-left>

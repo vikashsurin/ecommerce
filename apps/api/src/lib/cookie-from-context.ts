@@ -1,7 +1,7 @@
 import { getCookie } from "hono/cookie"
 
 export function cookieFromContext(c: any) {
-  const cookieName = Bun.env.COOKIE_NAME
+  const cookieName = Bun.env.COOKIE_NAME || "_Host_session"
 
   if (!cookieName) {
     console.error("Missing  COOKIE_NAME env")
