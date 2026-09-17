@@ -1,8 +1,8 @@
-import { db, sessions } from '@repo/db';
+import { sessions } from '@repo/db';
 import { hashToken } from '../_shared/hashToken';
 import { type SessionCreatePayload } from './schema';
 
-export const createSession = async (userId: number, ipAddress: string) => {
+export const createSession = async (db: any, userId: number, ipAddress: string) => {
   const token = crypto.randomUUID()
   const tokenHash = hashToken(token)
 
@@ -13,7 +13,7 @@ export const createSession = async (userId: number, ipAddress: string) => {
     expiresAt: new Date(Date.now() + 30 * 60 * 1000),
   }
 
-  const session = await saveSession(payload)
+  const session = await saveSession(db, payload)
 
   if (!session) {
     throw new Error('Failed to create session')
@@ -23,7 +23,7 @@ export const createSession = async (userId: number, ipAddress: string) => {
 }
 
 
-async function saveSession(payload: SessionCreatePayload) {
+async function saveSession(db: any, payload: SessionCreatePayload) {
   const session = await db
     .insert(sessions)
     .values(payload)

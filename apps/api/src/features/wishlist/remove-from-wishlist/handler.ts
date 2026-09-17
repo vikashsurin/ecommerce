@@ -1,19 +1,20 @@
 import { z } from "zod"
 import { factory } from "../../../lib"
-import { authMiddleware } from "../../../middleware"
+import { authMiddleware, dbMiddleware } from "../../../middleware"
 import { validate } from "../../../middleware/validate"
 import { deleteFromWishlist } from "../services/delete-from-wishlist.service"
 
-export const removeFromWishlistApp = factory.createApp().delete(
-  "/:productVariantId",
+export const removeFromWishlistHandler = factory.createHandlers(
   authMiddleware,
+  dbMiddleware,
   validate("param", z.object({ itemId: z.coerce.number() })),
   async (c) => {
     const { itemId } = c.req.valid("param")
     const user = c.get("user")
+    const db = c.get("db")
 
     try {
-      const item = await deleteFromWishlist(itemId, user.id)
+      const item = await deleteFromWishlist(db, itemId, user.id)
 
       if (!item)
         return c.json({

@@ -1,19 +1,20 @@
-import { cartItems, db } from "@repo/db"
+import { cartItems } from "@repo/db"
 import { eq } from "drizzle-orm"
 import { z } from "zod"
 import { factory } from "../../../lib"
-import { authMiddleware, validate } from "../../../middleware"
+import { authMiddleware, dbMiddleware, validate } from "../../../middleware"
 
-export const removeFromCartApp = factory.createApp().delete(
-  "/items/:cartItemId",
+export const removeFromCartHandler = factory.createHandlers(
   authMiddleware,
+  dbMiddleware,
   validate("param", z.object({ cartItemId: z.coerce.number() })),
   async (c) => {
     const user = c.get("user")
     const { cartItemId } = c.req.valid("param")
+    const db = c.get("db")
 
     try {
-      const item = await removeItemFromCart(cartItemId)
+      const item = await removeItemFromCart(db, cartItemId)
       if (!item)
         return c.json(
           {
@@ -40,7 +41,7 @@ export const removeFromCartApp = factory.createApp().delete(
   }
 )
 
-async function removeItemFromCart(id: number) {
+async function removeItemFromCart(db: any, id: number) {
   const cartItem = await db
     .delete(cartItems)
     .where(eq(cartItems.id, id))

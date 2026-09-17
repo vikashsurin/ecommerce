@@ -1,20 +1,21 @@
 import { factory } from "../../../lib"
-import { authMiddleware } from "../../../middleware"
+import { authMiddleware, dbMiddleware } from "../../../middleware"
 import { validate } from "../../../middleware/validate"
 import { addItemToCart, findOrCreateCart } from "../services/add-to-cart"
 import { addToCartSchema } from "./schema"
 
-export const addToCartApp = factory.createApp().post(
-  "/",
+export const addToCartHandler = factory.createHandlers(
   authMiddleware,
+  dbMiddleware,
   validate("json", addToCartSchema),
   async (c) => {
     const user = c.get("user")
     const parsedData = c.req.valid("json")
+    const db = c.get("db")
 
     try {
-      const cartId = await findOrCreateCart(user.id)
-      const cartItem = await addItemToCart(cartId, parsedData)
+      const cartId = await findOrCreateCart(db, user.id)
+      const cartItem = await addItemToCart(db, cartId, parsedData)
 
       if (!cartItem) {
         return c.json(

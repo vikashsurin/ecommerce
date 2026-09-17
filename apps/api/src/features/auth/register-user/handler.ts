@@ -1,16 +1,17 @@
-import { db, users } from "@repo/db"
+import { users } from "@repo/db"
 import { factory } from "../../../lib"
 import { z } from "zod"
-import { validate } from "../../../middleware/validate"
+import { dbMiddleware, validate } from "../../../middleware"
 import { createUserSchema } from "../../users"
 
-export const registerUserApp = factory.createApp().post(
-  "/register",
+export const registerUserHandler = factory.createHandlers(
+  dbMiddleware,
   validate("json", createUserSchema),
   async (c) => {
     const parsedData = c.req.valid("json")
+    const db = c.get("db")
     try {
-      const user = await insertUser(parsedData)
+      const user = await insertUser(db, parsedData)
 
       if (!user) {
         throw new Error("Failed to create user")
@@ -42,7 +43,7 @@ export const registerUserApp = factory.createApp().post(
   }
 )
 
-async function insertUser(data: z.infer<typeof createUserSchema>) {
+async function insertUser(db: any, data: z.infer<typeof createUserSchema>) {
   console.info("Inserting user into database", { data })
   const passwordHash = await Bun.password.hash(data.password)
 

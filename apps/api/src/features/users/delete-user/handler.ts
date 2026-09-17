@@ -1,17 +1,18 @@
-import { db, users } from '@repo/db';
+import { users } from '@repo/db';
 import { factory } from "../../../lib";
 import { z } from "zod";
-import { validate } from "../../../middleware/validate";
+import { dbMiddleware, validate } from "../../../middleware";
 import { eq } from 'drizzle-orm';
 
-export const deleteUserApp = factory.createApp()
-  .delete('/:id',
+export const deleteUserHandler = factory.createHandlers(
+    dbMiddleware,
     validate('param', z.object({ id: z.coerce.number() })),
     async (c) => {
       const { id } = c.req.valid('param');
+      const db = c.get('db')
 
       try {
-        const user = await deleteUser(id);
+        const user = await deleteUser(db, id);
 
         if (!user) {
           return c.json({
@@ -33,7 +34,7 @@ export const deleteUserApp = factory.createApp()
     });
 
 
-async function deleteUser(id: number) {
+async function deleteUser(db: any, id: number) {
   const user = await db
     .delete(users)
     .where(eq(users.id, id))

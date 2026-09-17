@@ -1,7 +1,7 @@
-import { db, wishlist } from "@repo/db";
+import { wishlist } from "@repo/db";
 import { and, eq } from "drizzle-orm";
 
-export async function deleteFromWishlist(itemId: number, userId: number) {
+export async function deleteFromWishlist(db: any, itemId: number, userId: number) {
   const item = await db
     .delete(wishlist)
     .where(

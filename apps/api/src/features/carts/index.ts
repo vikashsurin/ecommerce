@@ -1,14 +1,14 @@
 import { factory } from "../../lib";
-import { addToCartApp } from "./add-to-cart/handler";
-import { getCartApp } from "./get-cart/handler";
-import { removeFromCartApp } from "./remove-from-cart/handler";
+import { addToCartHandler } from "./add-to-cart/handler";
+import { getCartHandler } from "./get-cart/handler";
+import { removeFromCartHandler } from "./remove-from-cart/handler";
 import { addItemToCart, findOrCreateCart } from "./services/add-to-cart";
-import { updateCartItemQuantity } from "./update-cart-item-quantity/handler";
+import { updateCartItemQuantityHandler } from "./update-cart-item-quantity/handler";
 
 export const cartsApp = factory.createApp()
-  .route('/', addToCartApp)
-  .route('/', removeFromCartApp)
-  .route('/', getCartApp)
-  .route('/', updateCartItemQuantity)
+  .post('/', ...addToCartHandler)
+  .delete('/items/:cartItemId', ...removeFromCartHandler)
+  .get('/', ...getCartHandler)
+  .patch('/items/:cartItemId', ...updateCartItemQuantityHandler)
 
 export { addItemToCart, findOrCreateCart };

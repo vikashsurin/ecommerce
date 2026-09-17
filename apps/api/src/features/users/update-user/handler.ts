@@ -1,11 +1,11 @@
-import { db, users } from '@repo/db';
+import { users } from '@repo/db';
 import { eq } from 'drizzle-orm';
 import { factory } from "../../../lib";
-import { validate } from "../../../middleware/validate";
+import { dbMiddleware, validate } from "../../../middleware";
 import { updateUserSchema } from './schema';
 
-export const updateUserApp = factory.createApp()
-  .patch('/:id',
+export const updateUserHandler = factory.createHandlers(
+    dbMiddleware,
     validate('json', updateUserSchema),
     async (c) => {
       const id = Number(c.req.param('id'));
@@ -14,6 +14,7 @@ export const updateUserApp = factory.createApp()
       }
 
       const parsedData = c.req.valid('json');
+      const db = c.get('db')
       let updatePayload: Partial<typeof users.$inferInsert> = {};
 
       // 1. Isolate the execution scope to let TypeScript safely narrow types
@@ -43,7 +44,7 @@ export const updateUserApp = factory.createApp()
       }
 
       // 2. Perform safe update operation
-      const updatedUser = await updateUser(id, updatePayload);
+      const updatedUser = await updateUser(db, id, updatePayload);
 
       if (!updatedUser) {
         return c.json({ error: 'User not found' }, 404);
@@ -52,7 +53,7 @@ export const updateUserApp = factory.createApp()
       return c.json({ data: updatedUser });
     });
 
-async function updateUser(id: number, payload: Partial<typeof users.$inferInsert>) {
+  async function updateUser(db: any, id: number, payload: Partial<typeof users.$inferInsert>) {
   if (Object.keys(payload).length === 0) return null;
 
   const result = await db

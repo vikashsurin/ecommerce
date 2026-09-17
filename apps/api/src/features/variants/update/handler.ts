@@ -1,4 +1,4 @@
-import { db, productVariants } from "@repo/db"
+import { productVariants } from "@repo/db"
 import { and, eq } from "drizzle-orm"
 import { z } from "zod"
 import { factory } from "../../../lib"
@@ -8,8 +8,7 @@ import {
   updateProductVariantSchema,
 } from "./schema"
 
-export const updateProductVariantApp = factory.createApp().put(
-  "/:id",
+export const updateProductVariantHandler = factory.createHandlers(
   // authMiddleware,
   validate(
     "param",
@@ -19,11 +18,12 @@ export const updateProductVariantApp = factory.createApp().put(
   ),
   validate("json", updateProductVariantSchema),
   async (c) => {
-    const {  id } = c.req.valid("param")
+    const db = c.get("db")
+    const { id } = c.req.valid("param")
     const data = c.req.valid("json")
 
     try {
-      const variant = await updateProductVariant( id, data)
+      const variant = await updateProductVariant(db, id, data)
       return c.json({ data: variant })
     } catch (error) {
       return c.json(
@@ -40,17 +40,14 @@ export const updateProductVariantApp = factory.createApp().put(
 )
 
 async function updateProductVariant(
+  db: any,
   id: number,
   data: UpdateProductVariantSchema
 ) {
   const row = await db
     .update(productVariants)
     .set(data)
-    .where(
-      and(
-        eq(productVariants.id, id)
-      )
-    )
+    .where(and(eq(productVariants.id, id)))
     .returning()
 
   return row[0] ?? null

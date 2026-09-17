@@ -3,16 +3,19 @@ import { AppError, factory } from "../../../lib";
 import { cookieFromContext } from "../../../lib/cookie-from-context";
 import { env } from "../../../lib/env";
 import { getSession } from "../../sessions";
-import { getUserService } from "../../users";
+import { dbMiddleware } from "../../../middleware";
+import { users } from "@repo/db";
+import { eq } from "drizzle-orm";
 
-export const meApp = factory.createApp().get("/me", async (c) => {
+export const meHandler = factory.createHandlers(dbMiddleware, async (c) => {
   const cookie = cookieFromContext(c);
+  const db = c.get("db");
 
   if (!cookie) {
     throw AppError.unauthorized("Not logged in");
   }
 
-  const session = await getSession(cookie);
+  const session = await getSession(db, cookie);
 
   if (!session) {
     deleteCookie(c, env.COOKIE_NAME);
@@ -25,7 +28,7 @@ export const meApp = factory.createApp().get("/me", async (c) => {
   }
 
   try {
-    const user = await getUserService(session.userId);
+    const user = await getUser(db, session.userId);
 
     return c.json({
       data: user,
@@ -42,3 +45,20 @@ export const meApp = factory.createApp().get("/me", async (c) => {
     );
   }
 });
+
+
+
+async function getUser(db: any, id: number) {
+
+  const user = await db
+    .select({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      role: users.role
+    })
+    .from(users)
+    .where(eq(users.id, id))
+
+  return user[0] || null;
+}

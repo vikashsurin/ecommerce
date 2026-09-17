@@ -1,27 +1,27 @@
-import { db, products } from "@repo/db"
+import { products } from "@repo/db"
 import { z } from "zod"
 import { factory } from "../../../lib"
-import { authMiddleware, isSeller } from "../../../middleware"
+import { authMiddleware, dbMiddleware, isSeller } from "../../../middleware"
 import { validate } from "../../../middleware/validate"
 import { createProductSchema, slugSchema } from "./schema"
 
-export const createProductApp = factory
-  .createApp()
-  .post(
-    "/",
+export const createProductHandler = factory.createHandlers(
     authMiddleware,
+    dbMiddleware,
     isSeller,
     validate("json", createProductSchema),
     async (c) => {
       const parsedData = c.req.valid("json")
+      const db = c.get("db")
 
       try {
         const productSlug = slugSchema.parse(parsedData.name)
 
-        const product = await insertProductWithUniqueSlug(
+        const product = await insertProductWithUniqueSlug(db,
           parsedData,
           productSlug
         )
+
         if (!product) {
           return c.json({ message: "Failed to create product " }, 400)
         }
@@ -39,6 +39,7 @@ export const createProductApp = factory
   )
 
 const insertProductWithUniqueSlug = async (
+  db: any,
   data: z.infer<typeof createProductSchema>,
   baseSlug: string
 ) => {

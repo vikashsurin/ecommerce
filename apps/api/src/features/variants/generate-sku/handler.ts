@@ -1,12 +1,12 @@
 import z from "zod"
 import { factory } from "../../../lib"
-import { authMiddleware, validate } from "../../../middleware"
-import { getProductById } from "../../products/shared"
+import { dbMiddleware, validate } from "../../../middleware"
 import { generateSku } from "../../../utils/generate-sku"
+import { getProductById } from "../../products/shared"
 import { generateSkuSchema } from "./schema"
 
-export const generateSkuApp = factory.createApp().post(
-  "/:productId/variants/generate-sku",
+export const generateSkuHandler = factory.createHandlers(
+  dbMiddleware,
   // authMiddleware,
   validate(
     "param",
@@ -16,13 +16,14 @@ export const generateSkuApp = factory.createApp().post(
   ),
   validate("json", generateSkuSchema),
   async (c) => {
+    const db = c.get("db")
     const { productId } = c.req.valid("param")
     const data = c.req.valid("json")
 
     console.log({ data })
 
     try {
-      const product = await getProductById(productId)
+      const product = await getProductById(db, productId)
 
       if (!product) {
         return c.json(

@@ -1,17 +1,17 @@
-import { categoryAttributes, db } from "@repo/db"
+import { categoryAttributes } from "@repo/db"
 import { factory } from "../../../lib"
-import { validate } from "../../../middleware"
+import { dbMiddleware, validate } from "../../../middleware"
 import { createCategoryAttributeSchema } from "./schema"
 
-export const createCategoryAttributeApp = factory.createApp().post(
-  "/attributes",
-  // authMiddleware,
+export const createCategoryAttributeHandler = factory.createHandlers(
+  dbMiddleware,
   validate("json", createCategoryAttributeSchema),
   async (c) => {
     const data = c.req.valid("json")
+    const db = c.get("db")
 
     try {
-      const attribute = await insertCategoryAttribute(data)
+      const attribute = await insertCategoryAttribute(db, data)
       return c.json({ data: attribute })
     } catch (error) {
       return c.json(
@@ -27,7 +27,7 @@ export const createCategoryAttributeApp = factory.createApp().post(
   }
 )
 
-async function insertCategoryAttribute(data: any) {
+async function insertCategoryAttribute(db: any, data: any) {
   const result = await db.insert(categoryAttributes).values(data).returning()
   return result[0] ?? null
 }

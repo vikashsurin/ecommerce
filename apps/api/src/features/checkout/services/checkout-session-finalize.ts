@@ -1,12 +1,12 @@
 import {
   type Transaction,
   checkoutSessions,
-  db
 } from "@repo/db";
 import { and, eq } from "drizzle-orm";
 
 
 export async function checkoutSessionFinalize(
+  db: any,
   checkoutSessionsId: number,
   userId: number,
   tx: Transaction = db,

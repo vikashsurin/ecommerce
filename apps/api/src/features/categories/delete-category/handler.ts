@@ -1,17 +1,17 @@
-import { categories, db } from "@repo/db"
+import { categories } from "@repo/db"
 import { eq } from "drizzle-orm"
 import { z } from "zod"
 import { factory } from "../../../lib"
-import { validate } from "../../../middleware"
+import { dbMiddleware, validate } from "../../../middleware"
 
-export const deleteCategoryApp = factory.createApp().delete(
-  "/:id",
-  // authMiddleware,
+export const deleteCategoryHandler = factory.createHandlers(
+  dbMiddleware,
   validate("param", z.object({ id: z.string() })),
   async (c) => {
     const { id } = c.req.valid("param")
+    const db = c.get("db")
     try {
-      const deleted = await deleteCategoryById(Number(id))
+      const deleted = await deleteCategoryById(db, Number(id))
       if (!deleted) {
         return c.json(
           {
@@ -38,7 +38,7 @@ export const deleteCategoryApp = factory.createApp().delete(
   }
 )
 
-async function deleteCategoryById(id: number) {
+async function deleteCategoryById(db: any, id: number) {
   const row = await db
     .delete(categories)
     .where(eq(categories.id, id))

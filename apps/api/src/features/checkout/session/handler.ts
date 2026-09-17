@@ -1,14 +1,13 @@
 import { z } from "zod"
 import { factory } from "../../../lib"
-import { authMiddleware, validate } from "../../../middleware"
+import { authMiddleware, dbMiddleware, validate } from "../../../middleware"
 import { checkoutSessionAddress } from "../services/checkout-session-address"
 import { checkoutSessionCart } from "../services/checkout-session-cart"
 import { checkoutSessionFinalize } from "../services/checkout-session-finalize"
 
-export const checkoutSessionApp = factory.createApp()
-  .use(authMiddleware)
-  .post(
-    "/add-items",
+export const addCheckoutItemsHandler = factory.createHandlers(
+    authMiddleware,
+    dbMiddleware,
     validate(
       "json",
       z.object({
@@ -18,9 +17,10 @@ export const checkoutSessionApp = factory.createApp()
     async (c) => {
       const user = c.get("user")
       const { cartId } = c.req.valid("json")
+      const db = c.get("db")
 
       try {
-        const checkoutSession = await checkoutSessionCart(user.id, cartId)
+        const checkoutSession = await checkoutSessionCart(db, user.id, cartId)
 
         if (!checkoutSession) {
           return c.json(
@@ -46,9 +46,11 @@ export const checkoutSessionApp = factory.createApp()
         )
       }
     }
-  )
-  .post(
-    "/add-address",
+)
+
+export const addCheckoutAddressHandler = factory.createHandlers(
+    authMiddleware,
+    dbMiddleware,
     validate(
       "json",
       z.object({
@@ -60,9 +62,11 @@ export const checkoutSessionApp = factory.createApp()
       const user = c.get("user")
       const userId = user.id
       const { addressId, checkoutSessionId } = c.req.valid("json")
+      const db = c.get("db")
 
       try {
         const checkoutSession = await checkoutSessionAddress(
+          db,
           addressId,
           checkoutSessionId,
           userId
@@ -95,10 +99,11 @@ export const checkoutSessionApp = factory.createApp()
         )
       }
     }
-  )
-  .post(
-    "/finalize",
+)
+
+export const finalizeCheckoutHandler = factory.createHandlers(
     authMiddleware,
+    dbMiddleware,
     validate(
       "json",
       z.object({
@@ -109,9 +114,11 @@ export const checkoutSessionApp = factory.createApp()
       const user = c.get("user")
       const userId = user.id
       const { checkoutSessionId } = c.req.valid("json")
+      const db = c.get("db")
 
       try {
         const checkoutSession = await checkoutSessionFinalize(
+          db,
           checkoutSessionId,
           userId
         )
@@ -142,4 +149,4 @@ export const checkoutSessionApp = factory.createApp()
         )
       }
     }
-  )
+)

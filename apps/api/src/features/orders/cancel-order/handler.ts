@@ -1,15 +1,16 @@
-import { db, orders } from "@repo/db"
+import { orders } from "@repo/db"
 import { and, eq } from "drizzle-orm"
 import z from "zod"
 import { factory } from "../../../lib"
-import { authMiddleware, validate } from "../../../middleware"
+import { authMiddleware, dbMiddleware, validate } from "../../../middleware"
 
-export const cancelOrderApp = factory.createApp().patch(
-  "/:orderId",
+export const cancelOrderHandler = factory.createHandlers(
   authMiddleware,
+  dbMiddleware,
   validate("param", z.object({ orderId: z.coerce.number() })),
   async (c) => {
     const user = c.get("user")
+    const db = c.get("db")
     const { orderId } = c.req.valid("param")
 
     try {
@@ -57,7 +58,7 @@ export const cancelOrderApp = factory.createApp().patch(
       }
 
       // 3. Execute the safe cancellation
-      const order = await cancelOrder(user.id, orderId)
+      const order = await cancelOrder(db, user.id, orderId)
 
       if (!order) {
         throw new Error("Failed to cancel order")
@@ -81,7 +82,7 @@ export const cancelOrderApp = factory.createApp().patch(
   }
 )
 
-async function cancelOrder(userId: number, orderId: number) {
+async function cancelOrder(db: any, userId: number, orderId: number) {
   const order = await db
     .update(orders)
     .set({

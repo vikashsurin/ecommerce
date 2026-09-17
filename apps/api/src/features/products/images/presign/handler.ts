@@ -1,13 +1,11 @@
-import { db, products } from "@repo/db"
+import {  products } from "@repo/db"
 import { eq } from "drizzle-orm"
 import z from "zod"
 import { factory } from "../../../../lib"
 import { buildImageKey, getPresignedUploadUrl } from "../../../../lib/storage"
 import { validate } from "../../../../middleware"
 
-export const presignImagesApp = factory.createApp().post(
-  "/:productId/images/presign",
-  // authMiddleware,
+export const presignImagesHandler= factory.createHandlers(  // authMiddleware,
   validate("param", z.object({ productId: z.coerce.number() })),
   validate(
     "json",
@@ -24,6 +22,7 @@ export const presignImagesApp = factory.createApp().post(
     })
   ),
   async (c) => {
+    const db = c.get('db')
     const user = c.get("user")
     const { productId } = c.req.valid("param")
     const { images } = c.req.valid("json")

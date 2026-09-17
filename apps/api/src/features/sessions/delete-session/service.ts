@@ -1,13 +1,13 @@
-import { db, sessions } from "@repo/db"
+import { sessions } from "@repo/db"
 import { hashToken } from "../_shared/hashToken"
 import { eq } from "drizzle-orm"
 
-export const deleteSession = async (token: string) => {
-  const session = await findAndDeleteSession(token)
+export const deleteSession = async (db: any, token: string) => {
+  const session = await findAndDeleteSession(db, token)
   return session
 }
 
-async function findAndDeleteSession(token: string) {
+async function findAndDeleteSession(db: any, token: string) {
   const hash = hashToken(token)
 
   const session = await db

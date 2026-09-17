@@ -1,8 +1,8 @@
-import { cartItems, carts, db } from "@repo/db";
+import { cartItems, carts } from "@repo/db";
 import { eq, sql } from "drizzle-orm";
 import { type AddToCartSchema } from "../add-to-cart/schema";
 
-export async function addItemToCart(cartId: number, data: AddToCartSchema) {
+export async function addItemToCart(db: any, cartId: number, data: AddToCartSchema) {
   const cartItem = await db
     .insert(cartItems)
     .values({
@@ -22,7 +22,7 @@ export async function addItemToCart(cartId: number, data: AddToCartSchema) {
   return cartItem[0] ?? null
 }
 
-export async function findOrCreateCart(userId: number) {
+export async function findOrCreateCart(db: any, userId: number) {
   const [cart] = await db
     .select()
     .from(carts)

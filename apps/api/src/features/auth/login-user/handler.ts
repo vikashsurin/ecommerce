@@ -1,24 +1,26 @@
-import { db, users } from "@repo/db"
+import { users } from "@repo/db"
 import { eq } from "drizzle-orm"
 import { getConnInfo } from "hono/bun"
 import { setCookie } from "hono/cookie"
 import { factory } from "../../../lib"
-import { validate } from "../../../middleware/validate"
+import { dbMiddleware, validate } from "../../../middleware"
 import { createSession } from "../../sessions"
 import { loginUserSchema } from "./schema"
 
-export const loginUserApp = factory
-  .createApp()
-  .post("/login", validate("json", loginUserSchema), async (c) => {
-    console.log("req", c.req)
+export const loginUserHandler = factory.createHandlers(
+  dbMiddleware,
+  validate("json", loginUserSchema),
+  async (c) => {
     const { email, password } = c.req.valid("json")
+    console.log({ email, password })
     const info = getConnInfo(c)
     const ipAddress = info.remote.address
+    const db = c.get("db")
     try {
-      const user = await findUser(email, password)
+      const user = await findUser(db, email, password)
 
       if (user && ipAddress) {
-        const { token } = await createSession(user.id, ipAddress)
+        const { token } = await createSession(db, user.id, ipAddress)
 
         setCookie(c, "_Host_session", token, {
           httpOnly: true,
@@ -42,9 +44,10 @@ export const loginUserApp = factory
         400
       )
     }
-  })
+  }
+)
 
-async function findUser(email: string, password: string) {
+async function findUser(db: any, email: string, password: string) {
   const [user] = await db
     .select()
     .from(users)

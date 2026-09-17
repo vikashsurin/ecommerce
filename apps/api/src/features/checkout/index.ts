@@ -1,11 +1,14 @@
 import { factory } from "../../lib";
-import { createRazorpayOrderApp } from './create-order/handler';
-import { getCheckoutSessionApp } from './get/handler';
-import { checkoutSessionApp } from './session/handler';
-import { verifyRazorpayApp } from './verify/handler';
+import { createRazorpayOrderHandler } from './create-order/handler';
+import { getCheckoutSessionHandler, listCheckoutSessionsHandler } from './get/handler';
+import { addCheckoutAddressHandler, addCheckoutItemsHandler, finalizeCheckoutHandler } from './session/handler';
+import { verifyRazorpayHandler } from './verify/handler';
 
 export const checkoutApp = factory.createApp()
-  .route('/', checkoutSessionApp)
-  .route('/', getCheckoutSessionApp)
-  .route('/', createRazorpayOrderApp)
-  .route('/', verifyRazorpayApp)
+  .post('/add-items', ...addCheckoutItemsHandler)
+  .post('/add-address', ...addCheckoutAddressHandler)
+  .post('/finalize', ...finalizeCheckoutHandler)
+  .get('/:id', ...getCheckoutSessionHandler)
+  .get('/', ...listCheckoutSessionsHandler)
+  .post('/create-order', ...createRazorpayOrderHandler)
+  .post('/verify-payment', ...verifyRazorpayHandler)

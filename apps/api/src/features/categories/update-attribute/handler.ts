@@ -1,21 +1,21 @@
-import { categoryAttributes, db } from "@repo/db"
+import { categoryAttributes } from "@repo/db"
 import { eq } from "drizzle-orm"
 import { z } from "zod"
 import { factory } from "../../../lib"
-import { validate } from "../../../middleware"
+import { dbMiddleware, validate } from "../../../middleware"
 import { updateCategoryAttributeSchema } from "./schema"
 
-export const updateAttributeApp = factory.createApp().put(
-  "/attributes/:id",
-  // authMiddleware,
+export const updateAttributeHandler = factory.createHandlers(
+  dbMiddleware,
   validate("param", z.object({ id: z.coerce.number() })),
   validate("json", updateCategoryAttributeSchema),
   async (c) => {
     const { id } = c.req.valid("param")
     const data = c.req.valid("json")
+    const db = c.get("db")
 
     try {
-      const updated = await updateAttributeById(id, data)
+      const updated = await updateAttributeById(db, id, data)
 
       console.log({ updated })
 
@@ -48,6 +48,7 @@ export const updateAttributeApp = factory.createApp().put(
 )
 
 async function updateAttributeById(
+  db: any,
   id: number,
   data: z.infer<typeof updateCategoryAttributeSchema>
 ) {

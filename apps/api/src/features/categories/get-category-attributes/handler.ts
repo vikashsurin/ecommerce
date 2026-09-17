@@ -1,20 +1,20 @@
-import { categoryAttributes, db } from "@repo/db"
+import { categoryAttributes } from "@repo/db"
 import { factory } from "../../../lib"
-import { validate } from "../../../middleware"
+import { dbMiddleware, validate } from "../../../middleware"
 import { z } from "zod"
 import { eq } from "drizzle-orm"
 
-export const getCategoryAttributes = factory.createApp().get(
-  "/:id/attributes",
-  // authMiddleware,
+export const getCategoryAttributesHandler = factory.createHandlers(
+  dbMiddleware,
   validate("param", z.object({ id: z.coerce.string() })),
   async (c) => {
     const { id } = c.req.valid("param")
+    const db = c.get("db")
 
     console.log("id", id)
 
     try {
-      const attributes = await selectAttributesById(Number(id))
+      const attributes = await selectAttributesById(db, Number(id))
       return c.json({ data: attributes })
     } catch (error) {
       return c.json(
@@ -30,7 +30,7 @@ export const getCategoryAttributes = factory.createApp().get(
   }
 )
 
-async function selectAttributesById(id: number) {
+async function selectAttributesById(db: any, id: number) {
   const rows = await db
     .select()
     .from(categoryAttributes)

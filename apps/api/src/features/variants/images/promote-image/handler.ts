@@ -1,16 +1,17 @@
-import { db, productImages } from "@repo/db";
-import { eq } from "drizzle-orm";
-import z from "zod";
-import { AppError, factory } from "../../../../lib";
-import { validate } from "../../../../middleware";
+import { productImages } from "@repo/db"
+import { eq } from "drizzle-orm"
+import z from "zod"
+import { AppError, factory } from "../../../../lib"
+import { validate } from "../../../../middleware"
 
-export const promoteImgToPrimary = factory.createApp()
-  .put("/:id/images", validate("param", z.object({ id: z.coerce.number() })), async (c) => {
-    const { id } = c.req.valid("param");
-
-    const updated = await promoteImage(id);
+export const promoteImgToPrimaryHandler = factory.createHandlers(
+  validate("param", z.object({ id: z.coerce.number() })),
+  async (c) => {
+    const { id } = c.req.valid("param")
+    const db = c.get("db")
+    const updated = await promoteImage(db, id)
     if (!updated) {
-      throw AppError.internal("Unable to promote image to primary");
+      throw AppError.internal("Unable to promote image to primary")
     }
 
     return c.json({
@@ -18,20 +19,21 @@ export const promoteImgToPrimary = factory.createApp()
         id: updated.id,
         variantId: updated.productVariantId,
       },
-    });
-  });
+    })
+  }
+)
 
-async function promoteImage(id: number) {
+async function promoteImage(db: any, id: number) {
   try {
-    const updated = await db.transaction(async (tx) => {
+    const updated = await db.transaction(async (tx: any) => {
       // find the primary image and change it
       const updated = await tx
         .update(productImages)
         .set({ isPrimary: false })
         .where(eq(productImages.isPrimary, true))
-        .returning();
+        .returning()
       if (!updated) {
-        throw AppError.internal("Unable to update primary image");
+        throw AppError.internal("Unable to update primary image")
       }
 
       // update the required image to primary
@@ -39,11 +41,11 @@ async function promoteImage(id: number) {
         .update(productImages)
         .set({ isPrimary: true })
         .where(eq(productImages.id, id))
-        .returning();
-      return row;
-    });
-    return updated;
+        .returning()
+      return row
+    })
+    return updated
   } catch (error) {
-    AppError.fromPg(error, { entity: "Variant Image" });
+    AppError.fromPg(error, { entity: "Variant Image" })
   }
 }

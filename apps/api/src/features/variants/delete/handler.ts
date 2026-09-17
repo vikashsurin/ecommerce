@@ -1,12 +1,12 @@
-import { db, productVariants } from "@repo/db"
+import { productVariants } from "@repo/db"
 import { and, eq } from "drizzle-orm"
 import z from "zod"
 import { factory } from "../../../lib"
 import { AppError } from "../../../lib/app-error"
-import { authMiddleware, validate } from "../../../middleware"
+import { authMiddleware, dbMiddleware, validate } from "../../../middleware"
 
-export const deleteProductVariantApp = factory.createApp().delete(
-  "/:id",
+export const deleteProductVariantHandler = factory.createHandlers(
+  dbMiddleware,
   authMiddleware,
   validate(
     "param",
@@ -15,9 +15,10 @@ export const deleteProductVariantApp = factory.createApp().delete(
     })
   ),
   async (c) => {
+    const db = c.get("db")
     const { id } = c.req.valid("param")
 
-    const deleted = await deleteProductVariant(id)
+    const deleted = await deleteProductVariant(db, id)
     if (!deleted) {
       throw AppError.notFound("Product variant not found")
     }
@@ -25,7 +26,7 @@ export const deleteProductVariantApp = factory.createApp().delete(
   }
 )
 
-async function deleteProductVariant(id: number) {
+async function deleteProductVariant(db: any, id: number) {
   try {
     const row = await db
       .delete(productVariants)

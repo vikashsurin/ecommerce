@@ -1,9 +1,11 @@
 import { factory } from "../../../lib"
 import { deleteSession } from '../../sessions'
-import { authMiddleware } from '../../../middleware'
+import { authMiddleware, dbMiddleware } from '../../../middleware'
 
-export const logoutUserApp = factory.createApp()
-  .post('/logout', authMiddleware, async (c) => {
+export const logoutUserHandler = factory.createHandlers(
+  authMiddleware,
+  dbMiddleware,
+  async (c) => {
     const authHeader = c.req.header('Authorization')
 
     // 1. Strict Bearer format validation
@@ -17,9 +19,10 @@ export const logoutUserApp = factory.createApp()
     }
 
     const token = authHeader.substring(7) // Extract the token efficiently
+    const db = c.get("db")
 
     try {
-      const session = await deleteSession(token)
+      const session = await deleteSession(db, token)
 
       // 2. Clearer error handling for missing/invalid sessions
       if (!session) {
@@ -44,4 +47,5 @@ export const logoutUserApp = factory.createApp()
         }
       }, 500)
     }
-  })
+  }
+)

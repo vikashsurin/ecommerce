@@ -1,37 +1,36 @@
-import { productImages } from "@repo/db";
-import { db } from "@repo/db";
-import { and, eq } from "drizzle-orm";
-import z from "zod";
-import { AppError, factory } from "../../../../lib";
-import { validate } from "../../../../middleware";
+import { productImages } from "@repo/db"
+import { and, eq } from "drizzle-orm"
+import z from "zod"
+import { AppError, factory } from "../../../../lib"
+import { dbMiddleware, validate } from "../../../../middleware"
 
-export const deleteImageApp = factory.createApp()
-  .delete("/:id/images", validate("param", z.object({ id: z.coerce.number() })), async (c) => {
-    const { id } = c.req.valid("param");
-
-    const deleted = await deleteVariantImage(id);
+export const deleteImagesHandler = factory.createHandlers(
+  dbMiddleware,
+  validate("param", z.object({ id: z.coerce.number() })),
+  async (c) => {
+    const { id } = c.req.valid("param")
+    const db = c.get("db")
+    const deleted = await deleteVariantImage(db, id)
 
     if (!deleted) {
-      throw AppError.internal("There was an error deleting image");
+      throw AppError.internal("There was an error deleting image")
     }
 
-    return c.json({ data: { id: deleted.id, variantId: deleted.productVariantId } });
-  });
+    return c.json({
+      data: { id: deleted.id, variantId: deleted.productVariantId },
+    })
+  }
+)
 
-async function deleteVariantImage(id: number) {
+async function deleteVariantImage(db: any, id: number) {
   try {
     const [deleted] = await db
       .delete(productImages)
-      .where(
-        and(
-          eq(productImages.id, id),
-          eq(productImages.isPrimary, false),
-        ),
-      )
-      .returning();
+      .where(and(eq(productImages.id, id), eq(productImages.isPrimary, false)))
+      .returning()
 
-    return deleted ?? null;
+    return deleted ?? null
   } catch (error) {
-    AppError.fromPg(error, { entity: "Variant images" });
+    AppError.fromPg(error, { entity: "Variant images" })
   }
 }

@@ -1,16 +1,17 @@
-import { cartItems, carts, db, productVariants } from "@repo/db"
+import { cartItems, carts, productVariants } from "@repo/db"
 import { asc, eq } from "drizzle-orm"
 import { factory } from "../../../lib"
-import { authMiddleware } from "../../../middleware"
+import { authMiddleware, dbMiddleware } from "../../../middleware"
 
-export const getCartApp = factory.createApp().get("/", authMiddleware, async (c) => {
+export const getCartHandler = factory.createHandlers(authMiddleware, dbMiddleware, async (c) => {
   const user = c.get("user")
+  const db = c.get("db")
   try {
-    const result = await selectCartByUserId(user.id)
+    const result = await selectCartByUserId(db, user.id)
 
     if (!result) return c.json({ data: null }, 200)
 
-    const total = result.items.reduce((acc, item) => {
+    const total = (result.items as any[]).reduce((acc: number, item: any) => {
       const price = item.productVariant.salePrice ?? item.productVariant.price
       const qty = item.cartItem.quantity
 
@@ -40,7 +41,7 @@ export const getCartApp = factory.createApp().get("/", authMiddleware, async (c)
   }
 })
 
-async function selectCartByUserId(userId: number) {
+async function selectCartByUserId(db: any, userId: number) {
   const [cart] = await db.select().from(carts).where(eq(carts.userId, userId))
 
   if (!cart) return null

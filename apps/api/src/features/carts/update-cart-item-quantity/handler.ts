@@ -1,12 +1,12 @@
-import { cartItems, carts, db } from "@repo/db"
+import { cartItems, carts } from "@repo/db"
 import { and, eq, inArray } from "drizzle-orm"
 import { z } from "zod"
 import { factory } from "../../../lib"
-import { authMiddleware, validate } from "../../../middleware"
+import { authMiddleware, dbMiddleware, validate } from "../../../middleware"
 
-export const updateCartItemQuantity = factory.createApp().patch(
-  "/items/:cartItemId",
+export const updateCartItemQuantityHandler = factory.createHandlers(
   authMiddleware,
+  dbMiddleware,
   validate(
     "param",
     z.object({
@@ -26,11 +26,13 @@ export const updateCartItemQuantity = factory.createApp().patch(
     const { quantity } = c.req.valid("json")
     const user = c.get("user")
     const userId = user.id
+    const db = c.get("db")
 
     if (quantity === 0) return c.json({ data: null }, 200)
 
     try {
       const updated = await updateQuantity(
+        db,
         Number(cartItemId),
         Number(quantity),
         Number(userId)
@@ -64,6 +66,7 @@ export const updateCartItemQuantity = factory.createApp().patch(
 )
 
 async function updateQuantity(
+  db: any,
   cartItemId: number,
   quantity: number,
   userId: number

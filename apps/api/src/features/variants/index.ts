@@ -1,13 +1,14 @@
 import { factory } from "../../lib"
-import { deleteProductVariantApp } from "./delete/handler"
-import { generateSkuApp } from "./generate-sku/handler"
-import { getVariantApp } from "./get/handler"
+import { deleteProductVariantHandler } from "./delete/handler"
+import { generateSkuHandler } from "./generate-sku/handler"
+import { getVariantHandler } from "./get/handler"
 import { variantImagesApp } from "./images/index"
-import { updateProductVariantApp } from "./update/handler"
+import { updateProductVariantHandler} from "./update/handler"
 
-export const productVariantsApp = factory.createApp()
-  .route("/", getVariantApp)
-  .route("/", generateSkuApp)
-  .route("/", updateProductVariantApp)
-  .route("/", deleteProductVariantApp)
+export const productVariantsApp = factory
+  .createApp()
+  .get("/:id", ...getVariantHandler)
+  .delete("/:id", ...deleteProductVariantHandler)
+  .post("/:productId/variants/generate-sku", ...generateSkuHandler)
+  .put("/:id", ...updateProductVariantHandler)
   .route("/", variantImagesApp)

@@ -1,11 +1,12 @@
-import { factory } from "../../../lib";
-import { confirmImagesApp } from "./confirm/handler";
-import { deleteImageApp } from "./delete/handler";
-import { presignImagesApp } from "./presign/handler";
-import { promoteImgToPrimary } from "./promote-image/handler";
+import { factory } from "../../../lib"
+import { presignImagesHandler } from "../../products/images/presign/handler"
+import { confirmImagesHandler } from "./confirm/handler"
+import { deleteImagesHandler } from "./delete/handler"
+import { promoteImgToPrimaryHandler } from "./promote-image/handler"
 
-export const variantImagesApp = factory.createApp()
-  .route("/", presignImagesApp)
-  .route("/", confirmImagesApp)
-  .route("/", deleteImageApp)
-  .route("/", promoteImgToPrimary);
+export const variantImagesApp = factory
+  .createApp()
+  .post("/:variantId/images/confirm", ...confirmImagesHandler)
+  .delete("/:id/images", ...deleteImagesHandler)
+  .post("/:variantId/images/presign", ...presignImagesHandler)
+  .put("/:id/images", ...promoteImgToPrimaryHandler)

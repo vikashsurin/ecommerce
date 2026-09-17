@@ -1,10 +1,12 @@
+import { users } from "@repo/db"
+import { eq } from "drizzle-orm"
 import { getSession } from "../features/sessions"
-import { getUserService } from "../features/users"
 import { cookieFromContext } from "../lib/cookie-from-context"
 import { factory } from "../lib/factory"
 
 export const authMiddleware = factory.createMiddleware(async (c, next) => {
   const token = cookieFromContext(c)
+  const db = c.get("db")
 
   if (!token) {
     return c.json(
@@ -18,7 +20,7 @@ export const authMiddleware = factory.createMiddleware(async (c, next) => {
     )
   }
 
-  const session = await getSession(token)
+  const session = await getSession(db, token)
 
   if (!session) {
     return c.json(
@@ -32,7 +34,7 @@ export const authMiddleware = factory.createMiddleware(async (c, next) => {
     )
   }
 
-  const user = await getUserService(session.userId)
+  const user = await getUser(db, session.userId)
 
   if (!user) {
     return c.json(
@@ -51,6 +53,20 @@ export const authMiddleware = factory.createMiddleware(async (c, next) => {
   await next()
 })
 
+async function getUser(db: any, id: number) {
+
+  const user = await db
+    .select({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      role: users.role
+    })
+    .from(users)
+    .where(eq(users.id, id))
+
+  return user[0] || null;
+}
 // function _tokenFromHeader(c: any) {
 //   const authHeader = c.req.header("Authorization")
 

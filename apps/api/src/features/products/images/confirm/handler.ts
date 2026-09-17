@@ -1,12 +1,10 @@
-import { db, productImages } from "@repo/db";
+import { productImages } from "@repo/db";
 import { and, eq, isNull } from "drizzle-orm";
 import z from "zod";
 import { AppError, factory } from "../../../../lib";
 import { validate } from "../../../../middleware";
 
-export const confirmImagesApp = factory.createApp().post(
-  "/:productId/images/confirm",
-  // authMiddleware,
+export const confirmImagesHandler= factory.createHandlers(  // authMiddleware,
   validate("param", z.object({ productId: z.coerce.number() })),
   validate(
     "json",
@@ -26,10 +24,11 @@ export const confirmImagesApp = factory.createApp().post(
   async (c) => {
     const { productId } = c.req.valid("param");
     const { images } = c.req.valid("json");
-
-    const newKey = images[0]["key"];
+    const db = c.get("db");
+    const newKey = images[0]?.key ?? '';
 
     const insertedImages = await upsertImage(
+      db,
       Number(productId),
       newKey,
     );
@@ -44,9 +43,9 @@ export const confirmImagesApp = factory.createApp().post(
 );
 
 // It only inserts or updates single image
-async function upsertImage(productId: number, newKey: string) {
+async function upsertImage(db:any,productId: number, newKey: string) {
   try {
-    return db.transaction(async (tx) => {
+    return db.transaction(async (tx:any) => {
       const [existing] = await tx
         .select()
         .from(productImages)

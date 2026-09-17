@@ -1,13 +1,13 @@
-import { categories, db } from "@repo/db"
+import { categories } from "@repo/db"
 import { factory } from "../../../lib"
-import { authMiddleware } from "../../../middleware"
+import { dbMiddleware } from "../../../middleware"
 
-export const listCategoriesApp = factory.createApp().get(
-  "/",
-  // authMiddleware,
+export const listCategoriesHandler = factory.createHandlers(
+  dbMiddleware,
   async (c) => {
+    const db = c.get("db")
     try {
-      const categories = await selectCategories()
+      const categories = await selectCategories(db)
       return c.json({ data: categories })
     } catch (error) {
       return c.json(
@@ -23,7 +23,7 @@ export const listCategoriesApp = factory.createApp().get(
   }
 )
 
-async function selectCategories() {
+async function selectCategories(db: any) {
   const rows = await db.select().from(categories)
   return rows
 }

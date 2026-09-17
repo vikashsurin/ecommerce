@@ -1,8 +1,8 @@
-import { db, sessions } from '@repo/db';
+import { sessions } from '@repo/db';
 import { hashToken } from '../_shared/hashToken';
 import { eq } from 'drizzle-orm';
 
-export const getSession = async (token: string) => {
+export const getSession = async (db: any, token: string) => {
   const tokenHash = hashToken(token);
 
   const session = await db.select()

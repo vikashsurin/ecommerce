@@ -1,7 +1,8 @@
-import { type Transaction, addresses, checkoutSessions, db } from "@repo/db"
+import { type Transaction, addresses, checkoutSessions } from "@repo/db"
 import { and, eq } from "drizzle-orm"
 
 export async function checkoutSessionAddress(
+  db: any,
   addressId: number,
   checkoutSessionId: number,
   userId: number,

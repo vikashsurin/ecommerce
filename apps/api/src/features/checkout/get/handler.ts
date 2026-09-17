@@ -1,18 +1,18 @@
-import { checkoutSessions, db } from "@repo/db"
+import { checkoutSessions } from "@repo/db"
 import { and, desc, eq, notInArray } from "drizzle-orm"
 import { z } from "zod"
 import { factory } from "../../../lib"
-import { authMiddleware, validate } from "../../../middleware"
+import { authMiddleware, dbMiddleware, validate } from "../../../middleware"
 
-export const getCheckoutSessionApp = factory.createApp()
-  .get(
-    "/:id",
+export const getCheckoutSessionHandler = factory.createHandlers(
     authMiddleware,
+    dbMiddleware,
     validate("param", z.object({ id: z.coerce.number() })),
     async (c) => {
       const { id } = c.req.valid("param")
       const user = c.get("user")
       const userId = user.id
+      const db = c.get("db")
       try {
         const [checkoutSession] = await db
           .select()
@@ -42,9 +42,14 @@ export const getCheckoutSessionApp = factory.createApp()
         )
       }
     }
-  )
-  .get("/", authMiddleware, async (c) => {
+)
+
+export const listCheckoutSessionsHandler = factory.createHandlers(
+  authMiddleware,
+  dbMiddleware,
+  async (c) => {
     const user = c.get("user")
+    const db = c.get("db")
     try {
       const [checkoutSession] = await db
         .select()
@@ -77,4 +82,5 @@ export const getCheckoutSessionApp = factory.createApp()
         500
       )
     }
-  })
+  }
+)

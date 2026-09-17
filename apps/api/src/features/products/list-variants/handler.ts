@@ -1,12 +1,12 @@
-import { db, productVariants } from "@repo/db"
+import { productVariants } from "@repo/db"
 import { eq } from "drizzle-orm"
 import z from "zod"
 import { factory } from "../../../lib"
-import { authMiddleware, validate } from "../../../middleware"
+import { authMiddleware, dbMiddleware, validate } from "../../../middleware"
 
-export const listProductVariantsApp = factory.createApp().get(
-  "/:productId/variants",
+export const listProductVariantsHandler = factory.createHandlers(
   authMiddleware,
+  dbMiddleware,
   validate(
     "param",
     z.object({
@@ -16,9 +16,10 @@ export const listProductVariantsApp = factory.createApp().get(
   async (c) => {
     const { productId } = c.req.valid("param")
     const user = c.get("user")
+    const db = c.get("db")
 
     try {
-      const result = await selectProductVariants(productId)
+      const result = await selectProductVariants(db, productId)
       return c.json({ data: result })
     } catch (error) {
       return c.json(
@@ -34,7 +35,7 @@ export const listProductVariantsApp = factory.createApp().get(
   }
 )
 
-async function selectProductVariants(productId: number) {
+async function selectProductVariants(db: any, productId: number) {
   const rows = await db
     .select()
     .from(productVariants)

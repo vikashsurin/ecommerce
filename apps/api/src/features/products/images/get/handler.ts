@@ -1,20 +1,18 @@
-import { db, productImages } from "@repo/db";
+import {  productImages } from "@repo/db";
 import { and, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { factory } from "../../../../lib";
 import { getImageUrl } from "../../../../lib/storage";
 import { validate } from "../../../../middleware";
 
-export const getImagesApp = factory
-  .createApp()
-  .get(
-    "/:productId/images",
+export const getImagesHandler= factory
+  .createHandlers(
     validate("param", z.object({ productId: z.coerce.number() })),
     async (c) => {
       const { productId } = c.req.valid("param");
-      console.log("calling imge");
+      const db = c.get("db");
       try {
-        const image = await selectImage(productId);
+        const image = await selectImage(db,productId);
 
         console.log("imgessdgfsg", image);
         if (!image) {
@@ -39,7 +37,7 @@ export const getImagesApp = factory
     },
   );
 
-async function selectImage(productId: number) {
+async function selectImage(db:any,productId: number) {
   const row = await db
     .select()
     .from(productImages)

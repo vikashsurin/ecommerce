@@ -9,6 +9,6 @@ export const addressApp = factory
   .createApp()
   .patch("/:id", ...upddateAddressHandler)
   .post("/", ...saveAddressHandler)
-  .post("/", ...listAddressHandler)
+  .get("/", ...listAddressHandler)
   .get("/:addressId", ...getAddressHandler)
   .delete("/:id", ...deleteAddressHandler)

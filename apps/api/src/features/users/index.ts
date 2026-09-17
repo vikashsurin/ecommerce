@@ -1,14 +1,13 @@
 import { factory } from "../../lib"
-import { createUserApp } from './create-user/handler'
-import { deleteUserApp } from './delete-user/handler'
-import { updateUserApp } from './update-user/handler'
-import { createUserService } from './services/create-user.service'
-import { createUserSchema } from './create-user/schema'
-import { getUserService } from './services/get-user.service'
+import { createUserHandler } from "./create-user/handler"
+import { createUserSchema } from "./create-user/schema"
+import { deleteUserHandler } from "./delete-user/handler"
+import { updateUserHandler } from "./update-user/handler"
 
-export const usersApp = factory.createApp()
-  .route('/', createUserApp)
-  .route('/', deleteUserApp)
-  .route('/', updateUserApp)
+export const usersApp = factory
+  .createApp()
+  .post("/", ...createUserHandler)
+  .delete("/:id", ...deleteUserHandler)
+  .patch("/:id", ...updateUserHandler)
 
-export { createUserService, createUserSchema, getUserService }
+export { createUserSchema }

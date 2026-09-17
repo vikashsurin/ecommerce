@@ -1,10 +1,10 @@
 import { factory } from "../../../lib"
-import { confirmImagesApp } from "./confirm/handler"
-import { getImagesApp } from "./get/handler"
-import { presignImagesApp } from "./presign/handler"
+import { confirmImagesHandler } from "./confirm/handler"
+import { getImagesHandler } from "./get/handler"
+import { presignImagesHandler } from "./presign/handler"
 
 export const productImagesApp = factory
   .createApp()
-  .route("/", presignImagesApp)
-  .route("/", confirmImagesApp)
-  .route("/", getImagesApp)
+  .get("/:productId/images", ...getImagesHandler)
+  .post("/:productId/images/confirm", ...confirmImagesHandler)
+  .post("/:productId/images/presign", ...presignImagesHandler)

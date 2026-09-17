@@ -2,13 +2,13 @@ import {
   type Transaction,
   cartItems,
   checkoutSessions,
-  db,
   productVariants,
   products,
 } from "@repo/db"
 import { eq, notInArray, sql } from "drizzle-orm"
 
 export async function checkoutSessionCart(
+  db: any,
   userId: number,
   cartId: number,
   tx: Transaction = db

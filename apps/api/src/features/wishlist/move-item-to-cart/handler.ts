@@ -1,14 +1,14 @@
-import { db, wishlist } from "@repo/db"
+import { wishlist } from "@repo/db"
 import { and, eq } from "drizzle-orm"
 import z from "zod"
 import { factory } from "../../../lib"
-import { authMiddleware, validate } from "../../../middleware"
+import { authMiddleware, dbMiddleware, validate } from "../../../middleware"
 import { addItemToCart, findOrCreateCart } from "../../carts"
 import { deleteFromWishlist } from "../services/delete-from-wishlist.service"
 
-export const moveItemToCartApp = factory.createApp().post(
-  "/move-to-cart",
+export const moveItemToCartHandler = factory.createHandlers(
   authMiddleware,
+  dbMiddleware,
   validate(
     "json",
     z.object({
@@ -18,8 +18,9 @@ export const moveItemToCartApp = factory.createApp().post(
   async (c) => {
     const user = c.get("user")
     const { itemId } = c.req.valid("json")
+    const db = c.get("db")
     try {
-      const wishlistItem = await getWishlistItem(itemId, user.id)
+      const wishlistItem = await getWishlistItem(db, itemId, user.id)
       if (!wishlistItem) {
         return c.json(
           {
@@ -31,8 +32,8 @@ export const moveItemToCartApp = factory.createApp().post(
           400
         )
       }
-      const cartId = await findOrCreateCart(user.id)
-      const cartItem = await addItemToCart(cartId, {
+      const cartId = await findOrCreateCart(db, user.id)
+      const cartItem = await addItemToCart(db, cartId, {
         quantity: 1,
         productVariantId: wishlistItem.productVariantId,
       })
@@ -49,7 +50,7 @@ export const moveItemToCartApp = factory.createApp().post(
         )
       }
 
-      await deleteFromWishlist(itemId, user.id)
+      await deleteFromWishlist(db, itemId, user.id)
 
       return c.json({ data: cartItem })
     } catch (error) {
@@ -66,7 +67,7 @@ export const moveItemToCartApp = factory.createApp().post(
   }
 )
 
-async function getWishlistItem(id: number, userId: number) {
+async function getWishlistItem(db: any, id: number, userId: number) {
   const item = await db
     .select()
     .from(wishlist)

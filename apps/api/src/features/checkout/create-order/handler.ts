@@ -1,21 +1,22 @@
-import { checkoutSessions, db } from "@repo/db"
+import { checkoutSessions } from "@repo/db"
 import { and, eq } from "drizzle-orm"
 import { z } from "zod"
 import { factory } from "../../../lib"
 import { razorpay } from "../../../lib/razorpay"
-import { authMiddleware, validate } from "../../../middleware"
+import { authMiddleware, dbMiddleware, validate } from "../../../middleware"
 
-export const createRazorpayOrderApp = factory.createApp().post(
-  "/create-order",
+export const createRazorpayOrderHandler = factory.createHandlers(
   authMiddleware,
+  dbMiddleware,
   validate("json", z.object({ checkoutSessionId: z.coerce.number() })),
   async (c) => {
     const user = c.get("user")
     const userId = user.id
     const { checkoutSessionId } = c.req.valid("json")
+    const db = c.get("db")
 
     try {
-      const session = await selectSessionById(checkoutSessionId, userId)
+      const session = await selectSessionById(db, checkoutSessionId, userId)
 
       if (!session) {
         return c.json(
@@ -62,6 +63,7 @@ export const createRazorpayOrderApp = factory.createApp().post(
       })
 
       const updated = await updateCheckoutOrder(
+        db,
         order.id,
         checkoutSessionId,
         userId
@@ -89,7 +91,7 @@ export const createRazorpayOrderApp = factory.createApp().post(
   }
 )
 
-async function selectSessionById(sessionId: number, userId: number) {
+async function selectSessionById(db: any, sessionId: number, userId: number) {
   const row = await db
     .select()
     .from(checkoutSessions)
@@ -104,6 +106,7 @@ async function selectSessionById(sessionId: number, userId: number) {
 }
 
 async function updateCheckoutOrder(
+  db: any,
   orderId: any,
   sessionId: number,
   userId: number

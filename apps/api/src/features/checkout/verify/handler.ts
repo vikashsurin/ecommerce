@@ -1,17 +1,18 @@
-import { orders, cartItems, checkoutSessions, db } from "@repo/db"
+import { orders, cartItems, checkoutSessions } from "@repo/db"
 import crypto from "crypto"
 import { and, eq } from "drizzle-orm"
 import { factory } from "../../../lib"
-import { authMiddleware, validate } from "../../../middleware"
+import { authMiddleware, dbMiddleware, validate } from "../../../middleware"
 import { verifyPaymentSchema } from "./schema"
 
-export const verifyRazorpayApp = factory.createApp().post(
-  "/verify-payment",
+export const verifyRazorpayHandler = factory.createHandlers(
   authMiddleware,
+  dbMiddleware,
   validate("json", verifyPaymentSchema),
   async (c) => {
     const user = c.get("user")
     const userId = user?.id
+    const db = c.get("db")
     const ALREADY_PROCESSED = Symbol("already_processed")
     const {
       checkoutSessionId,
@@ -75,7 +76,7 @@ export const verifyRazorpayApp = factory.createApp().post(
 
     if (expectedSignature !== razorpay_signature) {
       // If the signature does not match, update the session status to 'ready_for_payment' and payment status to 'failed'
-      await db
+          await db
         .update(checkoutSessions)
         .set({
           status: "ready_for_payment",
@@ -149,7 +150,7 @@ export const verifyRazorpayApp = factory.createApp().post(
       })
 
       // Remove cart_items
-      await deleteCartItems(session.cartId)
+      await deleteCartItems(db, session.cartId)
 
       if (result === ALREADY_PROCESSED) {
         const [existingOrder] = await db
@@ -188,7 +189,7 @@ export const verifyRazorpayApp = factory.createApp().post(
   }
 )
 
-async function deleteCartItems(cartId: number) {
+async function deleteCartItems(db: any, cartId: number) {
   const rows = await db
     .delete(cartItems)
     .where(eq(cartItems.cartId, cartId))

@@ -1,7 +1,8 @@
-import { apiClient } from "@/lib/api-client";
-import { LoginSchema, RegisterSchema } from "./schema";
+import { apiClient } from "@/lib/api-client"
+import { LoginSchema, RegisterSchema } from "./schema"
 
 export async function loginUser({ email, password }: LoginSchema) {
+  console.log({ email, password })
   const res = await apiClient.api.auth.login.$post({
     json: {
       email,
@@ -12,16 +13,19 @@ export async function loginUser({ email, password }: LoginSchema) {
   return res.json()
 }
 
-
-export async function registerUser({ name, email, password, phone }: RegisterSchema) {
-
+export async function registerUser({
+  name,
+  email,
+  password,
+  phone,
+}: RegisterSchema) {
   const res = await apiClient.api.auth.register.$post({
     json: {
       name,
       email,
       password,
       phone,
-      role: 'seller',
+      role: "seller",
     },
   })
 

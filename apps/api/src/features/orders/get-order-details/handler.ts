@@ -1,19 +1,20 @@
-import { db, orders } from "@repo/db"
+import { orders } from "@repo/db"
 import { eq } from "drizzle-orm"
 import { z } from "zod"
 import { factory } from "../../../lib"
-import { authMiddleware, validate } from "../../../middleware"
+import { authMiddleware, dbMiddleware, validate } from "../../../middleware"
 
-export const getOrderDetailsApp = factory.createApp().get(
-  "/:orderId",
+export const getOrderDetailsHandler = factory.createHandlers(
   authMiddleware,
+  dbMiddleware,
   validate("param", z.object({ orderId: z.coerce.number() })),
   async (c) => {
     const user = c.get("user")
+    const db = c.get("db")
     const { orderId } = c.req.valid("param")
 
     try {
-      const order = await selectOrder(orderId)
+      const order = await selectOrder(db, orderId)
       if (!order) {
         return c.json(
           {
@@ -40,7 +41,7 @@ export const getOrderDetailsApp = factory.createApp().get(
   }
 )
 
-async function selectOrder(orderId: number) {
+async function selectOrder(db: any, orderId: number) {
   const row = await db
     .select()
     .from(orders)
