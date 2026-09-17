@@ -9,4 +9,5 @@ const envSchema = z.object({
   STORAGE_BUCKET_NAME: z.string(),
 });
 
+
 export const env = envSchema.parse(Bun.env);
