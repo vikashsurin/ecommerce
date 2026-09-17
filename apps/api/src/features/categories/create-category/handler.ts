@@ -1,23 +1,23 @@
-import { categories, db } from "@repo/db"
+import { categories } from "@repo/db"
 import { factory } from "../../../lib"
-import { authMiddleware, validate } from "../../../middleware"
+import { dbMiddleware, validate } from "../../../middleware"
 
 import z from "zod"
 import { createCategorySchema } from "./schema"
 
 const slugSchema = z.string().slugify()
 
-export const createCategoryApp = factory.createApp().post(
-  "/",
-  authMiddleware,
+export const createCategoryHandler = factory.createHandlers(
+  dbMiddleware,
   validate("json", createCategorySchema),
   async (c) => {
     const data = c.req.valid("json")
     console.log({ data })
     const slug = slugSchema.parse(data.name)
+    const db = c.get("db")
 
     try {
-      const category = await createCategory({
+      const category = await createCategory(db, {
         name: data.name,
         specificationsLabel: data.specificationsLabel,
         slug,
@@ -37,11 +37,14 @@ export const createCategoryApp = factory.createApp().post(
   }
 )
 
-async function createCategory(data: {
-  name: string
-  specificationsLabel: string
-  slug: string
-}) {
+async function createCategory(
+  db: any,
+  data: {
+    name: string
+    specificationsLabel: string
+    slug: string
+  }
+) {
   const category = await db
     .insert(categories)
     .values({

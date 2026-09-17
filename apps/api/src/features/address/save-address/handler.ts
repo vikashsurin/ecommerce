@@ -1,19 +1,22 @@
-import { addresses, db } from "@repo/db"
+import { addresses } from "@repo/db"
 import { factory } from "../../../lib"
 import { authMiddleware } from "../../../middleware"
+import { dbMiddleware } from "../../../middleware/db"
 import { validate } from "../../../middleware/validate"
 import { type CreateAddressSchema, createAddressSchema } from "./schema"
 
-export const saveAddressApp = factory.createApp().post(
-  "/",
+export const saveAddressHandler = factory.createHandlers(
+   dbMiddleware,
   authMiddleware,
   validate("json", createAddressSchema),
   async (c) => {
     const user = c.get("user")
     const data = c.req.valid("json")
 
+    const db = c.get("db")
+    
     try {
-      const address = await insertAddress(user.id, data)
+      const address = await insertAddress(db,user.id, data)
 
       return c.json({ data: address })
     } catch (error) {
@@ -30,7 +33,7 @@ export const saveAddressApp = factory.createApp().post(
   }
 )
 
-async function insertAddress(userId: number, data: CreateAddressSchema) {
+async function insertAddress(db:any,userId: number, data: CreateAddressSchema) {
   const row = await db
     .insert(addresses)
     .values({

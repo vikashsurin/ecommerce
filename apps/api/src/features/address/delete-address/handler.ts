@@ -1,21 +1,21 @@
-import { addresses, db } from "@repo/db"
+import { addresses } from "@repo/db"
 import { and, eq } from "drizzle-orm"
 import { z } from "zod"
 import { factory } from "../../../lib"
-import { authMiddleware } from "../../../middleware"
+import { authMiddleware, dbMiddleware } from "../../../middleware"
 import { validate } from "../../../middleware/validate"
 
-export const deleteAddressApp = factory.createApp().delete(
-  "/:id",
+export const deleteAddressHandler= factory.createHandlers(
+  dbMiddleware,
   authMiddleware,
   validate("param", z.object({ id: z.coerce.number() })),
 
   async (c) => {
     const user = c.get("user")
     const { id } = c.req.valid("param")
-
+    const db = c.get("db")
     try {
-      const address = await deleteAddress(Number(id), user.id)
+      const address = await deleteAddress(db,Number(id), user.id)
 
       if (!address) {
         return c.json(
@@ -44,7 +44,7 @@ export const deleteAddressApp = factory.createApp().delete(
   }
 )
 
-async function deleteAddress(id: number, userId: number) {
+async function deleteAddress(db:any,id: number, userId: number) {
   const row = await db
     .delete(addresses)
     .where(and(eq(addresses.id, id), eq(addresses.userId, userId)))

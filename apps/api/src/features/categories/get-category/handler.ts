@@ -1,18 +1,17 @@
-import { categories, db } from "@repo/db"
+import { categories } from "@repo/db"
 import { eq } from "drizzle-orm"
 import z from "zod"
 import { factory } from "../../../lib"
-import { authMiddleware, validate } from "../../../middleware"
+import { dbMiddleware, validate } from "../../../middleware"
 
-export const getCategoryApp = factory.createApp().get(
-  "/:categoryId",
-  // authMiddleware,
+export const getCategoryHandler = factory.createHandlers(
+  dbMiddleware,
   validate("param", z.object({ categoryId: z.coerce.number() })),
   async (c) => {
     const { categoryId } = c.req.valid("param")
-
+    const db = c.get("db")
     try {
-      const category = await selectCategory(categoryId)
+      const category = await selectCategory(db, categoryId)
 
       if (!category) {
         return c.json(
@@ -41,7 +40,7 @@ export const getCategoryApp = factory.createApp().get(
   }
 )
 
-async function selectCategory(categoryId: number) {
+async function selectCategory(db: any, categoryId: number) {
   const row = await db
     .select()
     .from(categories)

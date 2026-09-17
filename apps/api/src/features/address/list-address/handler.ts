@@ -1,16 +1,17 @@
-import { addresses, db } from "@repo/db"
+import { addresses } from "@repo/db"
 import { eq } from "drizzle-orm"
 import { factory } from "../../../lib"
-import { authMiddleware } from "../../../middleware"
+import { authMiddleware, dbMiddleware } from "../../../middleware"
 
-export const listAddressApp = factory.createApp().get(
-  "/",
+export const listAddressHandler = factory.createHandlers(
+  dbMiddleware,
   authMiddleware,
   async (c) => {
     const user = c.get("user")
 
+    const db = c.get("db")
     try {
-      const addresses = await selectAddresses(user.id)
+      const addresses = await selectAddresses(db,user.id)
 
       return c.json({ data: addresses })
     } catch (error) {
@@ -27,7 +28,7 @@ export const listAddressApp = factory.createApp().get(
   }
 )
 
-async function selectAddresses(userId: number) {
+async function selectAddresses(db: any, userId: number) {
   const rows = await db
     .select()
     .from(addresses)

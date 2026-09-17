@@ -1,3 +1,4 @@
 export { authMiddleware } from './auth'
+export { dbMiddleware } from './db'
 export { isSeller } from './isSeller'
 export { validate } from './validate'

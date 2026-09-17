@@ -1,4 +1,5 @@
 import type { R2Bucket } from "@cloudflare/workers-types"
+import type { Transaction } from "@repo/db"
 
 type User = {
   id: number
@@ -15,5 +16,6 @@ export type Env = {
   }
   Variables: {
     user: User
+    db: Transaction
   }
 }

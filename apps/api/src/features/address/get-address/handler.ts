@@ -1,21 +1,21 @@
 import { addresses } from "@repo/db";
-import { db } from "@repo/db";
 import { and, eq } from "drizzle-orm";
 import z from "zod";
 import { factory } from "../../../lib";
-import { authMiddleware, validate } from "../../../middleware";
+import { authMiddleware, dbMiddleware, validate } from "../../../middleware";
 
-export const getAddressApp = factory.createApp()
-  .get(
-    "/:addressId",
+export const getAddressHandler= factory.createHandlers(
+  dbMiddleware,
     authMiddleware,
     validate("param", z.object({ addressId: z.coerce.number() })),
     async (c) => {
       const user = c.get("user");
       const { addressId } = c.req.valid("param");
 
+      const db = c.get("db");
+      
       try {
-        const address = await selectAddressById(addressId, user.id);
+        const address = await selectAddressById(db,addressId, user.id);
 
         if (!address) {
           return c.json({
@@ -37,7 +37,7 @@ export const getAddressApp = factory.createApp()
     },
   );
 
-async function selectAddressById(addressId: number, userId: number) {
+async function selectAddressById(db:any,addressId: number, userId: number) {
   const row = await db
     .select()
     .from(addresses)
