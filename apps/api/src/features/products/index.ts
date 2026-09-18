@@ -1,4 +1,9 @@
 import { factory } from "../../lib"
+import {
+  authMiddleware,
+  dbMiddleware,
+  requireTokenMiddleware,
+} from "../../middleware"
 import { createProductVariantHandler } from "./create-variant/handler"
 import { createProductHandler } from "./create/handler"
 import { deleteProductHandler } from "./delete/handler"
@@ -10,6 +15,9 @@ import { updateProductHandler } from "./update/handler"
 
 export const productsApp = factory
   .createApp()
+  .use(requireTokenMiddleware)
+  .use(dbMiddleware)
+  .use(authMiddleware)
   .get("/", ...listProductsHandler)
   .post("/", ...createProductHandler)
   .route("/", productImagesApp)

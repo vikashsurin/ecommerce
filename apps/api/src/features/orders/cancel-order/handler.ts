@@ -2,11 +2,9 @@ import { orders } from "@repo/db"
 import { and, eq } from "drizzle-orm"
 import z from "zod"
 import { factory } from "../../../lib"
-import { authMiddleware, dbMiddleware, validate } from "../../../middleware"
+import { validate } from "../../../middleware"
 
 export const cancelOrderHandler = factory.createHandlers(
-  authMiddleware,
-  dbMiddleware,
   validate("param", z.object({ orderId: z.coerce.number() })),
   async (c) => {
     const user = c.get("user")

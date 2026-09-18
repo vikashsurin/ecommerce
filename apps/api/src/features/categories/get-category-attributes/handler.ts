@@ -1,11 +1,10 @@
 import { categoryAttributes } from "@repo/db"
-import { factory } from "../../../lib"
-import { dbMiddleware, validate } from "../../../middleware"
-import { z } from "zod"
 import { eq } from "drizzle-orm"
+import { z } from "zod"
+import { factory } from "../../../lib"
+import { validate } from "../../../middleware"
 
 export const getCategoryAttributesHandler = factory.createHandlers(
-  dbMiddleware,
   validate("param", z.object({ id: z.coerce.string() })),
   async (c) => {
     const { id } = c.req.valid("param")

@@ -1,10 +1,9 @@
 import { categoryAttributes } from "@repo/db"
 import { factory } from "../../../lib"
-import { dbMiddleware, validate } from "../../../middleware"
+import { validate } from "../../../middleware"
 import { createCategoryAttributeSchema } from "./schema"
 
 export const createCategoryAttributeHandler = factory.createHandlers(
-  dbMiddleware,
   validate("json", createCategoryAttributeSchema),
   async (c) => {
     const data = c.req.valid("json")

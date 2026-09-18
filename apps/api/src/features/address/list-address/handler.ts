@@ -1,32 +1,28 @@
 import { addresses } from "@repo/db"
 import { eq } from "drizzle-orm"
 import { factory } from "../../../lib"
-import { authMiddleware, dbMiddleware } from "../../../middleware"
+import { dbMiddleware } from "../../../middleware"
 
-export const listAddressHandler = factory.createHandlers(
-  dbMiddleware,
-  authMiddleware,
-  async (c) => {
-    const user = c.get("user")
+export const listAddressHandler = factory.createHandlers(async (c) => {
+  const user = c.get("user")
 
-    const db = c.get("db")
-    try {
-      const addresses = await selectAddresses(db,user.id)
+  const db = c.get("db")
+  try {
+    const addresses = await selectAddresses(db, user.id)
 
-      return c.json({ data: addresses })
-    } catch (error) {
-      return c.json(
-        {
-          error: {
-            code: "internal_server_error",
-            message: "Failed to save address",
-          },
+    return c.json({ data: addresses })
+  } catch (error) {
+    return c.json(
+      {
+        error: {
+          code: "internal_server_error",
+          message: "Failed to save address",
         },
-        500
-      )
-    }
+      },
+      500
+    )
   }
-)
+})
 
 async function selectAddresses(db: any, userId: number) {
   const rows = await db

@@ -8,11 +8,10 @@ import { createCategorySchema } from "./schema"
 const slugSchema = z.string().slugify()
 
 export const createCategoryHandler = factory.createHandlers(
-  dbMiddleware,
   validate("json", createCategorySchema),
   async (c) => {
     const data = c.req.valid("json")
-    console.log({ data })
+
     const slug = slugSchema.parse(data.name)
     const db = c.get("db")
 

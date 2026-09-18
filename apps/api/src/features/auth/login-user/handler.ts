@@ -4,6 +4,7 @@ import { getConnInfo } from "hono/bun"
 import { setCookie } from "hono/cookie"
 import { factory } from "../../../lib"
 import { dbMiddleware, validate } from "../../../middleware"
+import { verifyPassword } from "../../../utils/passwords"
 import { createSession } from "../../sessions"
 import { loginUserSchema } from "./schema"
 
@@ -12,10 +13,10 @@ export const loginUserHandler = factory.createHandlers(
   validate("json", loginUserSchema),
   async (c) => {
     const { email, password } = c.req.valid("json")
-    console.log({ email, password })
     const info = getConnInfo(c)
     const ipAddress = info.remote.address
     const db = c.get("db")
+
     try {
       const user = await findUser(db, email, password)
 
@@ -57,8 +58,7 @@ async function findUser(db: any, email: string, password: string) {
   if (!user) {
     throw new Error("User not found")
   }
-
-  const isMatch = await Bun.password.verify(password, user.password_hash)
+  const isMatch = await verifyPassword(password, user.password_hash)
 
   if (!isMatch) {
     throw new Error("Invalid password")

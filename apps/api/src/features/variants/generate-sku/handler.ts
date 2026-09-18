@@ -1,13 +1,11 @@
 import z from "zod"
 import { factory } from "../../../lib"
-import { dbMiddleware, validate } from "../../../middleware"
+import { validate } from "../../../middleware"
 import { generateSku } from "../../../utils/generate-sku"
 import { getProductById } from "../../products/shared"
 import { generateSkuSchema } from "./schema"
 
 export const generateSkuHandler = factory.createHandlers(
-  dbMiddleware,
-  // authMiddleware,
   validate(
     "param",
     z.object({

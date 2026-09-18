@@ -1,5 +1,4 @@
-
-import { z } from 'zod'
+import { z } from "zod"
 
 export const createProductVariantSchema = z.object({
   productId: z.coerce.number(),
@@ -10,4 +9,6 @@ export const createProductVariantSchema = z.object({
   sku: z.string(),
 })
 
-export type CreateProductVariantSchema = z.infer<typeof createProductVariantSchema>
+export type CreateProductVariantSchema = z.infer<
+  typeof createProductVariantSchema
+>

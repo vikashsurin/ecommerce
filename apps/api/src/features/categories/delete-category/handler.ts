@@ -2,10 +2,9 @@ import { categories } from "@repo/db"
 import { eq } from "drizzle-orm"
 import { z } from "zod"
 import { factory } from "../../../lib"
-import { dbMiddleware, validate } from "../../../middleware"
+import { validate } from "../../../middleware"
 
 export const deleteCategoryHandler = factory.createHandlers(
-  dbMiddleware,
   validate("param", z.object({ id: z.string() })),
   async (c) => {
     const { id } = c.req.valid("param")

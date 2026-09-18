@@ -2,12 +2,10 @@ import { checkoutSessions } from "@repo/db"
 import { and, eq } from "drizzle-orm"
 import { z } from "zod"
 import { factory } from "../../../lib"
-import { razorpay } from "../../../lib/razorpay"
-import { authMiddleware, dbMiddleware, validate } from "../../../middleware"
+import { createRazorpayClient } from "../../../lib/razorpay"
+import { validate } from "../../../middleware"
 
 export const createRazorpayOrderHandler = factory.createHandlers(
-  authMiddleware,
-  dbMiddleware,
   validate("json", z.object({ checkoutSessionId: z.coerce.number() })),
   async (c) => {
     const user = c.get("user")
@@ -55,12 +53,20 @@ export const createRazorpayOrderHandler = factory.createHandlers(
       // Convert session total to amount in paise
       const amountInPaise = Math.round(Number(session.total) * 100)
 
-      const order = await razorpay.orders.create({
+      const razorpay = createRazorpayClient(c.env)
+      const order = await razorpay.createOrder({
         amount: amountInPaise,
         currency: "INR",
         receipt: String(session.id),
         notes: { checkoutSessionId: session.id, userId },
       })
+
+      // const order = await razorpay.orders.create({
+      //   amount: amountInPaise,
+      //   currency: "INR",
+      //   receipt: String(session.id),
+      //   notes: { checkoutSessionId: session.id, userId },
+      // })
 
       const updated = await updateCheckoutOrder(
         db,

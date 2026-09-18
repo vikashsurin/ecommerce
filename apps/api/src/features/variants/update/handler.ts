@@ -9,7 +9,7 @@ import {
 } from "./schema"
 
 export const updateProductVariantHandler = factory.createHandlers(
-  // authMiddleware,
+  //
   validate(
     "param",
     z.object({

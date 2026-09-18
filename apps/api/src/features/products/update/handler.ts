@@ -1,40 +1,46 @@
-import { products } from "@repo/db";
-import { eq } from "drizzle-orm";
-import { z } from "zod";
-import { factory } from "../../../lib";
-import { dbMiddleware, validate } from "../../../middleware";
+import { products } from "@repo/db"
+import { eq } from "drizzle-orm"
+import { z } from "zod"
+import { factory } from "../../../lib"
+import { validate } from "../../../middleware"
 
 const updateProductSchema = z.object({
   name: z.string().optional(),
   description: z.string().optional(),
-});
+})
 
 export const updateProductHandler = factory.createHandlers(
-    dbMiddleware,
-    validate("param", z.object({ id: z.coerce.number() })),
-    validate("json", updateProductSchema),
-    async (c) => {
-      const { id } = c.req.valid("param");
-      const data = c.req.valid("json");
-      const db = c.get("db")
+  validate("param", z.object({ id: z.coerce.number() })),
+  validate("json", updateProductSchema),
+  async (c) => {
+    const { id } = c.req.valid("param")
+    const data = c.req.valid("json")
+    const db = c.get("db")
 
-      try {
-        const updated = await updateProduct(db, id, data);
-        if (!updated) {
-          return c.json({ error: "Unable to update product" }, 404);
-        }
-        return c.json(updated);
-      } catch (error) {
-        return c.json({ error: error instanceof Error ? error.message : String(error) }, 500);
+    try {
+      const updated = await updateProduct(db, id, data)
+      if (!updated) {
+        return c.json({ error: "Unable to update product" }, 404)
       }
-    },
-  );
+      return c.json(updated)
+    } catch (error) {
+      return c.json(
+        { error: error instanceof Error ? error.message : String(error) },
+        500
+      )
+    }
+  }
+)
 
-async function updateProduct(db: any, id: number, data: z.infer<typeof updateProductSchema>) {
+async function updateProduct(
+  db: any,
+  id: number,
+  data: z.infer<typeof updateProductSchema>
+) {
   const result = await db
     .update(products)
     .set(data)
     .where(eq(products.id, id))
-    .returning();
-  return result[0] || null;
+    .returning()
+  return result[0] || null
 }

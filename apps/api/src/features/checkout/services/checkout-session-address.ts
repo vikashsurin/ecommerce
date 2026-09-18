@@ -1,12 +1,13 @@
-import { type Transaction, addresses, checkoutSessions } from "@repo/db"
+import { addresses, checkoutSessions } from "@repo/db"
 import { and, eq } from "drizzle-orm"
+import { type DB } from "../../../db"
 
 export async function checkoutSessionAddress(
   db: any,
   addressId: number,
   checkoutSessionId: number,
   userId: number,
-  tx: Transaction = db
+  tx: DB = db
 ) {
   const expiresAt = new Date(Date.now() + 30 * 60 * 1000)
 

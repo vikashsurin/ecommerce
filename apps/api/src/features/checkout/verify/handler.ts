@@ -1,13 +1,10 @@
 import { orders, cartItems, checkoutSessions } from "@repo/db"
-import crypto from "crypto"
 import { and, eq } from "drizzle-orm"
 import { factory } from "../../../lib"
-import { authMiddleware, dbMiddleware, validate } from "../../../middleware"
+import { validate } from "../../../middleware"
 import { verifyPaymentSchema } from "./schema"
-
+import { verifyRazorpaySignature } from "../../../utils/razorpay"
 export const verifyRazorpayHandler = factory.createHandlers(
-  authMiddleware,
-  dbMiddleware,
   validate("json", verifyPaymentSchema),
   async (c) => {
     const user = c.get("user")
@@ -29,7 +26,7 @@ export const verifyRazorpayHandler = factory.createHandlers(
     })
 
     // TODO: LOOK AT THIS
-    const secret = process.env.RAZORPAY_KEY_SECRET!
+    const secret = c.env.RAZORPAY_KEY_SECRET
 
     console.log({ secret })
 
@@ -69,14 +66,20 @@ export const verifyRazorpayHandler = factory.createHandlers(
       )
     }
 
-    const expectedSignature = crypto
-      .createHmac("sha256", secret)
-      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-      .digest("hex")
+    // const expectedSignature = crypto
+    //   .createHmac("sha256", secret)
+    //   .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+    //   .digest("hex")
 
-    if (expectedSignature !== razorpay_signature) {
+    const isValid = await verifyRazorpaySignature(
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      secret
+    )
+    if (!isValid) {
       // If the signature does not match, update the session status to 'ready_for_payment' and payment status to 'failed'
-          await db
+      await db
         .update(checkoutSessions)
         .set({
           status: "ready_for_payment",

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod"
 
 export const createCategoryAttributeSchema = z.object({
   categoryId: z.number(),
@@ -9,4 +9,4 @@ export const createCategoryAttributeSchema = z.object({
   skuAbbreviation: z.boolean(),
   required: z.boolean(),
   sortOrder: z.number(),
-});
+})

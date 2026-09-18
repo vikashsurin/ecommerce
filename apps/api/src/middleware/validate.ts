@@ -1,6 +1,6 @@
-import { zValidator } from "@hono/zod-validator";
-import { type ValidationTargets } from "hono";
-import { ZodType } from "zod";
+import { zValidator } from "@hono/zod-validator"
+import { type ValidationTargets } from "hono"
+import { ZodType } from "zod"
 
 // let cycle = 0;
 
@@ -9,21 +9,21 @@ export const validate = <
   Target extends keyof ValidationTargets,
 >(
   target: Target,
-  schema: T,
+  schema: T
 ) => {
   return zValidator(target, schema, (result, ctx) => {
     // console.info(`#ZodValidation_${cycle++}`, result);
 
     if (!result.success) {
-      console.info(`#ZodValidationError`, result);
+      console.info(`#ZodValidationError`, result)
       return ctx.json(
         {
           success: false,
           message: "Validation failed",
           errors: result.error._zod.def,
         },
-        400,
-      );
+        400
+      )
     }
-  });
-};
+  })
+}

@@ -1,6 +1,5 @@
-import { products } from "@repo/db";
-import { eq } from "drizzle-orm";
-
+import { products } from "@repo/db"
+import { eq } from "drizzle-orm"
 
 // Todo: also send a list of variants
 export async function getProductById(db: any, id: number) {
@@ -8,6 +7,6 @@ export async function getProductById(db: any, id: number) {
     .select()
     .from(products)
     .where(eq(products.id, id))
-    .limit(1);
-  return product[0];
+    .limit(1)
+  return product[0]
 }

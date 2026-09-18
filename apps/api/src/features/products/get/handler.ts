@@ -1,17 +1,16 @@
-import { z } from "zod";
-import { factory } from "../../../lib";
-import { dbMiddleware, validate } from "../../../middleware";
-import { getProductById } from "../shared";
+import { z } from "zod"
+import { factory } from "../../../lib"
+import { validate } from "../../../middleware"
+import { getProductById } from "../shared"
 
 export const getProductHandler = factory.createHandlers(
-  dbMiddleware,
   validate("param", z.object({ id: z.coerce.number() })),
   async (c) => {
-    const { id } = c.req.valid("param");
+    const { id } = c.req.valid("param")
     const db = c.get("db")
 
     try {
-      const product = await getProductById(db, id);
+      const product = await getProductById(db, id)
       if (!product) {
         return c.json(
           {
@@ -20,10 +19,10 @@ export const getProductHandler = factory.createHandlers(
               message: "Product not found",
             },
           },
-          404,
-        );
+          404
+        )
       }
-      return c.json({ data: product });
+      return c.json({ data: product })
     } catch (error) {
       return c.json(
         {
@@ -32,8 +31,8 @@ export const getProductHandler = factory.createHandlers(
             message: "Internal server error",
           },
         },
-        500,
-      );
+        500
+      )
     }
-  },
-);
+  }
+)

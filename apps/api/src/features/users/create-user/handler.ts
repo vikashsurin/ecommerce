@@ -2,6 +2,7 @@ import { users } from "@repo/db"
 import { z } from "zod"
 import { factory } from "../../../lib"
 import { dbMiddleware, validate } from "../../../middleware"
+import { hashPassword } from "../../../utils/passwords"
 import { createUserSchema } from "./schema"
 
 export const createUserHandler = factory.createHandlers(
@@ -42,7 +43,7 @@ export async function createUser(
   db: any,
   data: z.infer<typeof createUserSchema>
 ) {
-  const passwordHash = await Bun.password.hash(data.password)
+  const passwordHash = await hashPassword(data.password)
 
   const user = await db
     .insert(users)

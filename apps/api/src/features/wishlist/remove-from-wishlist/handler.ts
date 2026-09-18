@@ -1,12 +1,10 @@
 import { z } from "zod"
 import { factory } from "../../../lib"
-import { authMiddleware, dbMiddleware } from "../../../middleware"
+import { dbMiddleware } from "../../../middleware"
 import { validate } from "../../../middleware/validate"
 import { deleteFromWishlist } from "../services/delete-from-wishlist.service"
 
 export const removeFromWishlistHandler = factory.createHandlers(
-  authMiddleware,
-  dbMiddleware,
   validate("param", z.object({ itemId: z.coerce.number() })),
   async (c) => {
     const { itemId } = c.req.valid("param")

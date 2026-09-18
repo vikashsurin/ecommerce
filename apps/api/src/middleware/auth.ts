@@ -1,11 +1,10 @@
 import { users } from "@repo/db"
 import { eq } from "drizzle-orm"
 import { getSession } from "../features/sessions"
-import { cookieFromContext } from "../lib/cookie-from-context"
 import { factory } from "../lib/factory"
 
 export const authMiddleware = factory.createMiddleware(async (c, next) => {
-  const token = cookieFromContext(c)
+  const token = c.get("token")
   const db = c.get("db")
 
   if (!token) {
@@ -54,48 +53,15 @@ export const authMiddleware = factory.createMiddleware(async (c, next) => {
 })
 
 async function getUser(db: any, id: number) {
-
   const user = await db
     .select({
       id: users.id,
       name: users.name,
       email: users.email,
-      role: users.role
+      role: users.role,
     })
     .from(users)
     .where(eq(users.id, id))
 
-  return user[0] || null;
+  return user[0] || null
 }
-// function _tokenFromHeader(c: any) {
-//   const authHeader = c.req.header("Authorization")
-
-//   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-//     return null
-//   }
-
-//   const token = authHeader.substring(7)
-
-//   if (!token) {
-//     return null
-//   }
-
-//   return token
-// }
-
-//  function _tokenFromCookie(c: any) {
-//   if (!cookieName) {
-//     console.error("COOKIE_NAME env not set")
-
-//   }
-
-//   const token = getCookie(c, cookieName)
-
-//   if (!token) {
-//     return null
-//   }
-
-//   // delete cookie on unauthorized
-
-//   return token
-// }

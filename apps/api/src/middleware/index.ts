@@ -1,4 +1,5 @@
-export { authMiddleware } from './auth'
-export { dbMiddleware } from './db'
-export { isSeller } from './isSeller'
-export { validate } from './validate'
+export { authMiddleware } from "./auth"
+export { dbMiddleware } from "./db"
+export { isSeller } from "./isSeller"
+export { validate } from "./validate"
+export { requireTokenMiddleware } from "./requireToken"

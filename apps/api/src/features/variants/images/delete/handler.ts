@@ -2,10 +2,9 @@ import { productImages } from "@repo/db"
 import { and, eq } from "drizzle-orm"
 import z from "zod"
 import { AppError, factory } from "../../../../lib"
-import { dbMiddleware, validate } from "../../../../middleware"
+import { validate } from "../../../../middleware"
 
 export const deleteImagesHandler = factory.createHandlers(
-  dbMiddleware,
   validate("param", z.object({ id: z.coerce.number() })),
   async (c) => {
     const { id } = c.req.valid("param")

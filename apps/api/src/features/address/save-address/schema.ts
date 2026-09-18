@@ -1,4 +1,4 @@
-import z from "zod";
+import z from "zod"
 
 export const createAddressSchema = z.object({
   address: z.string(),
@@ -8,7 +8,7 @@ export const createAddressSchema = z.object({
   state: z.string(),
   pincode: z.string(),
   country: z.string(),
-  type: z.string()
+  type: z.string(),
 })
 
 export type CreateAddressSchema = z.infer<typeof createAddressSchema>

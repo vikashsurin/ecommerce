@@ -3,11 +3,9 @@ import { eq } from "drizzle-orm"
 import z from "zod"
 import { factory } from "../../../../lib"
 import { buildImageKey, getPresignedUploadUrl } from "../../../../lib/storage"
-import { authMiddleware, dbMiddleware, validate } from "../../../../middleware"
+import { validate } from "../../../../middleware"
 
 export const presignImagesHandler = factory.createHandlers(
-  dbMiddleware,
-  authMiddleware,
   validate("param", z.object({ variantId: z.coerce.number() })),
   validate(
     "json",
@@ -21,7 +19,7 @@ export const presignImagesHandler = factory.createHandlers(
     })
   ),
   async (c) => {
-    const db = c.get('db')
+    const db = c.get("db")
     const { variantId } = c.req.valid("param")
     const { images } = c.req.valid("json")
 
@@ -43,7 +41,7 @@ export const presignImagesHandler = factory.createHandlers(
             filename: img.filename,
           })
 
-          const presignedUrl = await getPresignedUploadUrl({
+          const presignedUrl = await getPresignedUploadUrl(c, {
             key,
             contentType: img.contentType,
             expiresIn: 300,

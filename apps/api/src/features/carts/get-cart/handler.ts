@@ -1,9 +1,8 @@
 import { cartItems, carts, productVariants } from "@repo/db"
 import { asc, eq } from "drizzle-orm"
 import { factory } from "../../../lib"
-import { authMiddleware, dbMiddleware } from "../../../middleware"
 
-export const getCartHandler = factory.createHandlers(authMiddleware, dbMiddleware, async (c) => {
+export const getCartHandler = factory.createHandlers(async (c) => {
   const user = c.get("user")
   const db = c.get("db")
   try {

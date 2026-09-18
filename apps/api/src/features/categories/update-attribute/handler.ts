@@ -2,11 +2,10 @@ import { categoryAttributes } from "@repo/db"
 import { eq } from "drizzle-orm"
 import { z } from "zod"
 import { factory } from "../../../lib"
-import { dbMiddleware, validate } from "../../../middleware"
+import { validate } from "../../../middleware"
 import { updateCategoryAttributeSchema } from "./schema"
 
 export const updateAttributeHandler = factory.createHandlers(
-  dbMiddleware,
   validate("param", z.object({ id: z.coerce.number() })),
   validate("json", updateCategoryAttributeSchema),
   async (c) => {

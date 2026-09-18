@@ -1,19 +1,14 @@
-import {
-  type Transaction,
-  checkoutSessions,
-} from "@repo/db";
-import { and, eq } from "drizzle-orm";
-
+import { checkoutSessions } from "@repo/db"
+import { and, eq } from "drizzle-orm"
+import { type DB } from "../../../db"
 
 export async function checkoutSessionFinalize(
   db: any,
   checkoutSessionsId: number,
   userId: number,
-  tx: Transaction = db,
+  tx: DB = db
 ) {
-
-
-  const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
+  const expiresAt = new Date(Date.now() + 30 * 60 * 1000)
 
   const row = await tx
     .update(checkoutSessions)
@@ -25,10 +20,10 @@ export async function checkoutSessionFinalize(
     .where(
       and(
         eq(checkoutSessions.id, checkoutSessionsId),
-        eq(checkoutSessions.userId, userId),
+        eq(checkoutSessions.userId, userId)
       )
     )
-    .returning();
+    .returning()
 
   return row[0] ?? null
 }

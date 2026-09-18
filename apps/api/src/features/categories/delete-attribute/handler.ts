@@ -1,11 +1,10 @@
-import z from "zod"
-import { factory } from "../../../lib"
-import { dbMiddleware, validate } from "../../../middleware"
 import { categoryAttributes } from "@repo/db"
 import { eq } from "drizzle-orm"
+import z from "zod"
+import { factory } from "../../../lib"
+import { validate } from "../../../middleware"
 
 export const deleteAttributeHandler = factory.createHandlers(
-  dbMiddleware,
   validate("param", z.object({ id: z.coerce.number() })),
   async (c) => {
     const { id } = c.req.valid("param")

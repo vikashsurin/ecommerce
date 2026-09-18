@@ -2,13 +2,11 @@ import { addresses } from "@repo/db"
 import { and, eq } from "drizzle-orm"
 import { z } from "zod"
 import { factory } from "../../../lib"
-import { authMiddleware, dbMiddleware } from "../../../middleware"
+import { dbMiddleware } from "../../../middleware"
 import { validate } from "../../../middleware/validate"
 import { type UpdateAddressSchema, updateAddressSchema } from "./schema"
 
 export const upddateAddressHandler = factory.createHandlers(
-  dbMiddleware,
-  authMiddleware,
   validate("param", z.object({ id: z.coerce.number() })),
   validate("json", updateAddressSchema),
   async (c) => {
@@ -18,7 +16,7 @@ export const upddateAddressHandler = factory.createHandlers(
     const { id } = c.req.valid("param")
 
     try {
-      const address = await updateAddress(db,Number(id), user.id, data)
+      const address = await updateAddress(db, Number(id), user.id, data)
 
       if (!address) {
         return c.json(
@@ -48,7 +46,7 @@ export const upddateAddressHandler = factory.createHandlers(
 )
 
 async function updateAddress(
-  db:any,
+  db: any,
   id: number,
   userId: number,
   data: UpdateAddressSchema

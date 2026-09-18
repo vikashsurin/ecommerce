@@ -1,53 +1,52 @@
-import {  productImages } from "@repo/db";
-import { and, eq, isNull } from "drizzle-orm";
-import { z } from "zod";
-import { factory } from "../../../../lib";
-import { getImageUrl } from "../../../../lib/storage";
-import { validate } from "../../../../middleware";
+import { productImages } from "@repo/db"
+import { and, eq, isNull } from "drizzle-orm"
+import { z } from "zod"
+import { factory } from "../../../../lib"
+import { getImageUrl } from "../../../../lib/storage"
+import { validate } from "../../../../middleware"
 
-export const getImagesHandler= factory
-  .createHandlers(
-    validate("param", z.object({ productId: z.coerce.number() })),
-    async (c) => {
-      const { productId } = c.req.valid("param");
-      const db = c.get("db");
-      try {
-        const image = await selectImage(db,productId);
+export const getImagesHandler = factory.createHandlers(
+  validate("param", z.object({ productId: z.coerce.number() })),
+  async (c) => {
+    const { productId } = c.req.valid("param")
+    const db = c.get("db")
+    try {
+      const image = await selectImage(db, productId)
 
-        console.log("imgessdgfsg", image);
-        if (!image) {
-          return c.json({ data: null });
-        }
-
-        const { key, ...rest } = image;
-        const url = getImageUrl(key);
-
-        return c.json({ data: { ...rest, url } });
-      } catch (error) {
-        return c.json(
-          {
-            error: {
-              code: "internal_server_error",
-              message: "Internal server error" + error,
-            },
-          },
-          500,
-        );
+      console.log("imgessdgfsg", image)
+      if (!image) {
+        return c.json({ data: null })
       }
-    },
-  );
 
-async function selectImage(db:any,productId: number) {
+      const { key, ...rest } = image
+      const url = getImageUrl(c, key)
+
+      return c.json({ data: { ...rest, url } })
+    } catch (error) {
+      return c.json(
+        {
+          error: {
+            code: "internal_server_error",
+            message: "Internal server error" + error,
+          },
+        },
+        500
+      )
+    }
+  }
+)
+
+async function selectImage(db: any, productId: number) {
   const row = await db
     .select()
     .from(productImages)
     .where(
       and(
         eq(productImages.productId, productId),
-        isNull(productImages.productVariantId),
-      ),
+        isNull(productImages.productVariantId)
+      )
     )
-    .limit(1);
+    .limit(1)
 
-  return row[0] ?? null;
+  return row[0] ?? null
 }

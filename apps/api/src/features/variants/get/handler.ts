@@ -1,18 +1,17 @@
-import { productImages, productVariants, type Transaction } from "@repo/db"
+import { productImages, productVariants } from "@repo/db"
 import { eq } from "drizzle-orm"
 import z from "zod"
+import { type DB, type Transaction } from "../../../db"
 import { AppError, factory } from "../../../lib"
 import { getImageUrl } from "../../../lib/storage"
-import { authMiddleware, dbMiddleware, validate } from "../../../middleware"
+import { validate } from "../../../middleware"
 
 export const getVariantHandler = factory.createHandlers(
-  dbMiddleware,
-  authMiddleware,
   validate("param", z.object({ id: z.coerce.number() })),
   async (c) => {
     const { id } = c.req.valid("param")
     const db = c.get("db")
-    const variant = await selectVariant(db, Number(id))
+    const variant = await selectVariant(db, Number(id), c)
 
     if (!variant) {
       AppError.notFound("Variant not found")
@@ -22,7 +21,7 @@ export const getVariantHandler = factory.createHandlers(
   }
 )
 
-async function selectVariant(db: Transaction, id: number) {
+async function selectVariant(db: DB, id: number, c: any) {
   try {
     const { row, images } = await db.transaction(async (tx: Transaction) => {
       const [[row], images] = await Promise.all([
@@ -39,7 +38,7 @@ async function selectVariant(db: Transaction, id: number) {
       ...row,
       images: images.map(({ key, ...rest }) => ({
         ...rest,
-        url: getImageUrl(key),
+        url: getImageUrl(c, key),
       })),
     }
   } catch (error) {

@@ -2,11 +2,9 @@ import { cartItems } from "@repo/db"
 import { eq } from "drizzle-orm"
 import { z } from "zod"
 import { factory } from "../../../lib"
-import { authMiddleware, dbMiddleware, validate } from "../../../middleware"
+import { validate } from "../../../middleware"
 
 export const removeFromCartHandler = factory.createHandlers(
-  authMiddleware,
-  dbMiddleware,
   validate("param", z.object({ cartItemId: z.coerce.number() })),
   async (c) => {
     const user = c.get("user")

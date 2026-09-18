@@ -2,10 +2,9 @@ import { categories } from "@repo/db"
 import { eq } from "drizzle-orm"
 import z from "zod"
 import { factory } from "../../../lib"
-import { dbMiddleware, validate } from "../../../middleware"
+import { validate } from "../../../middleware"
 
 export const getCategoryHandler = factory.createHandlers(
-  dbMiddleware,
   validate("param", z.object({ categoryId: z.coerce.number() })),
   async (c) => {
     const { categoryId } = c.req.valid("param")

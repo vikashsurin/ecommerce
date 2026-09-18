@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from "zod"
 
 export const verifyPaymentSchema = z.object({
   checkoutSessionId: z.coerce.number(),

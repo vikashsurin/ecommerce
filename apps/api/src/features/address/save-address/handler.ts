@@ -6,17 +6,15 @@ import { validate } from "../../../middleware/validate"
 import { type CreateAddressSchema, createAddressSchema } from "./schema"
 
 export const saveAddressHandler = factory.createHandlers(
-   dbMiddleware,
-  authMiddleware,
   validate("json", createAddressSchema),
   async (c) => {
     const user = c.get("user")
     const data = c.req.valid("json")
 
     const db = c.get("db")
-    
+
     try {
-      const address = await insertAddress(db,user.id, data)
+      const address = await insertAddress(db, user.id, data)
 
       return c.json({ data: address })
     } catch (error) {
@@ -33,7 +31,11 @@ export const saveAddressHandler = factory.createHandlers(
   }
 )
 
-async function insertAddress(db:any,userId: number, data: CreateAddressSchema) {
+async function insertAddress(
+  db: any,
+  userId: number,
+  data: CreateAddressSchema
+) {
   const row = await db
     .insert(addresses)
     .values({

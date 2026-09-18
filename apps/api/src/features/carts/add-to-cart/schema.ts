@@ -1,10 +1,9 @@
-import { z } from 'zod';
+import { z } from "zod"
 
 export const addToCartSchema = z.object({
   productVariantId: z.number(),
   quantity: z.number(),
-});
-
+})
 
 export const createCheckoutSessionSchema = z.object({
   cartId: z.number(),
@@ -16,7 +15,9 @@ export const createCheckoutSessionSchema = z.object({
     "abandoned",
     "expired",
   ]),
-});
+})
 
-export type AddToCartSchema = z.infer<typeof addToCartSchema>;
-export type CreateCheckoutSessionSchema = z.infer<typeof createCheckoutSessionSchema>;
+export type AddToCartSchema = z.infer<typeof addToCartSchema>
+export type CreateCheckoutSessionSchema = z.infer<
+  typeof createCheckoutSessionSchema
+>

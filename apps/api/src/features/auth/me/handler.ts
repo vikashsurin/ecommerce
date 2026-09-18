@@ -1,38 +1,37 @@
-import { deleteCookie } from "hono/cookie";
-import { AppError, factory } from "../../../lib";
-import { cookieFromContext } from "../../../lib/cookie-from-context";
-import { env } from "../../../lib/env";
-import { getSession } from "../../sessions";
-import { dbMiddleware } from "../../../middleware";
-import { users } from "@repo/db";
-import { eq } from "drizzle-orm";
+import { deleteCookie } from "hono/cookie"
+import { AppError, factory } from "../../../lib"
+import { cookieFromContext } from "../../../lib/cookie-from-context"
+import { getSession } from "../../sessions"
+import { dbMiddleware } from "../../../middleware"
+import { users } from "@repo/db"
+import { eq } from "drizzle-orm"
 
 export const meHandler = factory.createHandlers(dbMiddleware, async (c) => {
-  const cookie = cookieFromContext(c);
-  const db = c.get("db");
+  const cookie = cookieFromContext(c)
+  const db = c.get("db")
 
   if (!cookie) {
-    throw AppError.unauthorized("Not logged in");
+    throw AppError.unauthorized("Not logged in")
   }
 
-  const session = await getSession(db, cookie);
+  const session = await getSession(db, cookie)
 
   if (!session) {
-    deleteCookie(c, env.COOKIE_NAME);
+    deleteCookie(c, c.env.COOKIE_NAME)
     return c.json(
       {
         data: null,
       },
-      200,
-    );
+      200
+    )
   }
 
   try {
-    const user = await getUser(db, session.userId);
+    const user = await getUser(db, session.userId)
 
     return c.json({
       data: user,
-    });
+    })
   } catch (error) {
     return c.json(
       {
@@ -41,24 +40,21 @@ export const meHandler = factory.createHandlers(dbMiddleware, async (c) => {
           message: "Internal Server Error",
         },
       },
-      500,
-    );
+      500
+    )
   }
-});
-
-
+})
 
 async function getUser(db: any, id: number) {
-
   const user = await db
     .select({
       id: users.id,
       name: users.name,
       email: users.email,
-      role: users.role
+      role: users.role,
     })
     .from(users)
     .where(eq(users.id, id))
 
-  return user[0] || null;
+  return user[0] || null
 }

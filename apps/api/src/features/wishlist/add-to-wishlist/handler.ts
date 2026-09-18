@@ -1,11 +1,9 @@
 import { wishlist } from "@repo/db"
 import { factory } from "../../../lib"
-import { authMiddleware, dbMiddleware, validate } from "../../../middleware"
+import { validate } from "../../../middleware"
 import { addToWishlistSchema } from "./schema"
 
 export const addToWishlistHandler = factory.createHandlers(
-  authMiddleware,
-  dbMiddleware,
   validate("json", addToWishlistSchema),
   async (c) => {
     const { productVariantId } = c.req.valid("json")
@@ -18,7 +16,11 @@ export const addToWishlistHandler = factory.createHandlers(
   }
 )
 
-async function saveWishlistItem(db: any, userId: number, productVariantId: number) {
+async function saveWishlistItem(
+  db: any,
+  userId: number,
+  productVariantId: number
+) {
   const item = await db
     .insert(wishlist)
     .values({ userId, productVariantId })

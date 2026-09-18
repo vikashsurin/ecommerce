@@ -1,12 +1,9 @@
 import { factory } from "../../../lib"
-import { authMiddleware, dbMiddleware } from "../../../middleware"
-import { validate } from "../../../middleware/validate"
+import { validate } from "../../../middleware"
 import { addItemToCart, findOrCreateCart } from "../services/add-to-cart"
 import { addToCartSchema } from "./schema"
 
 export const addToCartHandler = factory.createHandlers(
-  authMiddleware,
-  dbMiddleware,
   validate("json", addToCartSchema),
   async (c) => {
     const user = c.get("user")

@@ -1,17 +1,17 @@
 import {
-  type Transaction,
   cartItems,
   checkoutSessions,
   productVariants,
   products,
 } from "@repo/db"
 import { eq, notInArray, sql } from "drizzle-orm"
+import { type DB } from "../../../db"
 
 export async function checkoutSessionCart(
   db: any,
   userId: number,
   cartId: number,
-  tx: Transaction = db
+  tx: DB = db
 ) {
   const pv = productVariants
   const snapshot = await tx

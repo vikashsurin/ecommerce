@@ -2,11 +2,9 @@ import { productImages, productVariants } from "@repo/db"
 import { and, eq, sql } from "drizzle-orm"
 import z from "zod"
 import { AppError, factory } from "../../../../lib"
-import { authMiddleware, dbMiddleware, validate } from "../../../../middleware"
+import { validate } from "../../../../middleware"
 
 export const confirmImagesHandler = factory.createHandlers(
-  dbMiddleware,
-  authMiddleware,
   validate("param", z.object({ variantId: z.coerce.number() })),
   validate(
     "json",
@@ -59,7 +57,7 @@ async function insertImages(
   }
 ) {
   try {
-    return await db.transaction(async (tx:any) => {
+    return await db.transaction(async (tx: any) => {
       const [[variant], hasPrimary, maxSortResult] = await Promise.all([
         tx
           .select()

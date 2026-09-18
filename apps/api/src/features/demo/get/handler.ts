@@ -1,12 +1,11 @@
-import { categories } from "@repo/db"
 import { factory } from "../../../lib"
-import { dbMiddleware } from "../../../middleware"
 
-export const getDemoHandler = factory.createHandlers(
-  dbMiddleware,
-  async (c) => {
-    const db = c.get("db")
-    const result = await db.select().from(categories)
-    return c.json({ message: `Hello from the demo endpoint `, data: result })
-  }
-)
+export const getDemoHandler = factory.createHandlers(async (c) => {
+  const db = c.get("db")
+  console.log({ db })
+
+  const cats = await db.query.categories.findMany()
+
+  console.log({ cats })
+  return c.json({ message: `Hello from the demo endpoint ` })
+})

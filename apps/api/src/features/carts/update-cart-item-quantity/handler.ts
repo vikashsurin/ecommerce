@@ -2,11 +2,9 @@ import { cartItems, carts } from "@repo/db"
 import { and, eq, inArray } from "drizzle-orm"
 import { z } from "zod"
 import { factory } from "../../../lib"
-import { authMiddleware, dbMiddleware, validate } from "../../../middleware"
+import { validate } from "../../../middleware"
 
 export const updateCartItemQuantityHandler = factory.createHandlers(
-  authMiddleware,
-  dbMiddleware,
   validate(
     "param",
     z.object({

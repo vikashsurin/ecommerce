@@ -3,11 +3,9 @@ import { and, eq } from "drizzle-orm"
 import z from "zod"
 import { factory } from "../../../lib"
 import { AppError } from "../../../lib/app-error"
-import { authMiddleware, dbMiddleware, validate } from "../../../middleware"
+import { validate } from "../../../middleware"
 
 export const deleteProductVariantHandler = factory.createHandlers(
-  dbMiddleware,
-  authMiddleware,
   validate(
     "param",
     z.object({

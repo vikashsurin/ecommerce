@@ -1,5 +1,6 @@
-import { env } from "../env";
+import { Context } from "hono"
+import { type Env } from "../types"
 
-export function getImageUrl(key: string): string {
-  return `${env.RUSTFS_PUBLIC_URL}/${env.STORAGE_BUCKET_NAME}/${key}`;
+export function getImageUrl(c: Context<Env>, key: string): string {
+  return `${c.env.RUSTFS_PUBLIC_URL}/${c.env.STORAGE_BUCKET_NAME}/${key}`
 }

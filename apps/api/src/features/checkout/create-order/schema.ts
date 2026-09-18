@@ -1,7 +1,9 @@
-import { z } from "zod";
+import { z } from "zod"
 
 export const createRazorpayOrderSchema = z.object({
-  checkoutSessionId: z.coerce.number()
+  checkoutSessionId: z.coerce.number(),
 })
 
-export type CreateRazorpayOrderSchema = z.infer<typeof createRazorpayOrderSchema>;
+export type CreateRazorpayOrderSchema = z.infer<
+  typeof createRazorpayOrderSchema
+>

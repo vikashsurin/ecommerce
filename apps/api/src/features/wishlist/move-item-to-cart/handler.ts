@@ -2,13 +2,11 @@ import { wishlist } from "@repo/db"
 import { and, eq } from "drizzle-orm"
 import z from "zod"
 import { factory } from "../../../lib"
-import { authMiddleware, dbMiddleware, validate } from "../../../middleware"
+import { validate } from "../../../middleware"
 import { addItemToCart, findOrCreateCart } from "../../carts"
 import { deleteFromWishlist } from "../services/delete-from-wishlist.service"
 
 export const moveItemToCartHandler = factory.createHandlers(
-  authMiddleware,
-  dbMiddleware,
   validate(
     "json",
     z.object({

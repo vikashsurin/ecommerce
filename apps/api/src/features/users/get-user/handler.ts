@@ -1,5 +1,5 @@
-import { factory } from "../../../lib";
+import { factory } from "../../../lib"
 
 export const getUserApp = factory.createApp().get("/", async (c) => {
-  return c.json({data:null});
+  return c.json({ data: null })
 })

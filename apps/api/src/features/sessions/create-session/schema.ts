@@ -1,4 +1,4 @@
-import z from "zod";
+import z from "zod"
 
 export const sessionCreateSchema = z.object({
   tokenHash: z.string(),
@@ -6,7 +6,7 @@ export const sessionCreateSchema = z.object({
   ipAddress: z.string(),
   userAgent: z.string().optional(),
   refreshToken: z.string().optional(),
-  expiresAt: z.date()
+  expiresAt: z.date(),
 })
 
 export type SessionCreatePayload = z.infer<typeof sessionCreateSchema>
