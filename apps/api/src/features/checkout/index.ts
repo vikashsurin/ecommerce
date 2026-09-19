@@ -14,13 +14,13 @@ import {
   addCheckoutItemsHandler,
   finalizeCheckoutHandler,
 } from "./session/handler"
-import { verifyRazorpayHandler } from "./verify/handler"
+import { verifyRazorpayHandler } from "./verify-payment/handler"
 
 export const checkoutApp = factory
   .createApp()
   .use(requireTokenMiddleware)
-  .use(authMiddleware)
   .use(dbMiddleware)
+  .use(authMiddleware)
   .post("/add-items", ...addCheckoutItemsHandler)
   .post("/add-address", ...addCheckoutAddressHandler)
   .post("/finalize", ...finalizeCheckoutHandler)

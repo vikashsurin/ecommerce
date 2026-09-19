@@ -15,14 +15,15 @@ import { updateProductHandler } from "./update/handler"
 
 export const productsApp = factory
   .createApp()
-  .use(requireTokenMiddleware)
   .use(dbMiddleware)
-  .use(authMiddleware)
   .get("/", ...listProductsHandler)
+  .get("/:id", ...getProductHandler)
+  .get("/:productId/variants", ...listProductVariantsHandler)
+  // ---- Protected ------
+  .use(requireTokenMiddleware)
+  .use(authMiddleware)
   .post("/", ...createProductHandler)
   .route("/", productImagesApp)
   .delete("/:id", ...deleteProductHandler)
-  .get("/:id", ...getProductHandler)
   .put("/:id", ...updateProductHandler)
   .post("/:productId/variants", ...createProductVariantHandler)
-  .get("/:productId/variants", ...listProductVariantsHandler)

@@ -1,12 +1,11 @@
+import { users } from "@repo/db"
+import { eq } from "drizzle-orm"
 import { deleteCookie } from "hono/cookie"
 import { AppError, factory } from "../../../lib"
 import { cookieFromContext } from "../../../lib/cookie-from-context"
 import { getSession } from "../../sessions"
-import { dbMiddleware } from "../../../middleware"
-import { users } from "@repo/db"
-import { eq } from "drizzle-orm"
 
-export const meHandler = factory.createHandlers(dbMiddleware, async (c) => {
+export const meHandler = factory.createHandlers(async (c) => {
   const cookie = cookieFromContext(c)
   const db = c.get("db")
 

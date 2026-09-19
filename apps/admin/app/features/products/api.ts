@@ -147,7 +147,7 @@ export const generateSku = async (
   attributes: Record<string, unknown>
 ) => {
   try {
-    const response = await apiClient.api.products[":productId"].variants[
+    const response = await apiClient.api.variants[":productId"][
       "generate-sku"
     ].$post({
       param: {

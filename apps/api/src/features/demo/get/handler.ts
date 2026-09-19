@@ -2,7 +2,6 @@ import { factory } from "../../../lib"
 
 export const getDemoHandler = factory.createHandlers(async (c) => {
   const db = c.get("db")
-  console.log({ db })
 
   const cats = await db.query.categories.findMany()
 

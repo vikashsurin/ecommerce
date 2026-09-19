@@ -17,6 +17,6 @@ export const productVariantsApp = factory
   .use(authMiddleware)
   .get("/:id", ...getVariantHandler)
   .delete("/:id", ...deleteProductVariantHandler)
-  .post("/:productId/variants/generate-sku", ...generateSkuHandler)
+  .post("/:productId/generate-sku", ...generateSkuHandler)
   .put("/:id", ...updateProductVariantHandler)
   .route("/", variantImagesApp)

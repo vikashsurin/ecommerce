@@ -17,6 +17,7 @@ export const addCheckoutItems = async (data: AddCheckoutItemsSchema) => {
 
 
 export const addCheckoutAddress = async (data: AddCheckoutAddressSchema) => {
+  console.log('adding address to checkout')
   const res = await rpcClient.api.checkout['add-address'].$post({
     json: {
       addressId: data.addressId,

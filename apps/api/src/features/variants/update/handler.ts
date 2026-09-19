@@ -9,7 +9,6 @@ import {
 } from "./schema"
 
 export const updateProductVariantHandler = factory.createHandlers(
-  //
   validate(
     "param",
     z.object({

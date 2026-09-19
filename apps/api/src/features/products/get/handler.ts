@@ -11,6 +11,7 @@ export const getProductHandler = factory.createHandlers(
 
     try {
       const product = await getProductById(db, id)
+
       if (!product) {
         return c.json(
           {

@@ -1,6 +1,6 @@
 import { sessions } from "@repo/db"
-import { hashToken } from "../_shared/hashToken"
 import { eq } from "drizzle-orm"
+import { hashToken } from "../_shared/hashToken"
 
 export const getSession = async (db: any, token: string) => {
   const tokenHash = await hashToken(token)

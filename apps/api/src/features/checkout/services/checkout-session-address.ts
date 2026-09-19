@@ -3,14 +3,13 @@ import { and, eq } from "drizzle-orm"
 import { type DB } from "../../../db"
 
 export async function checkoutSessionAddress(
-  db: any,
+  db: DB,
   addressId: number,
   checkoutSessionId: number,
   userId: number,
   tx: DB = db
 ) {
   const expiresAt = new Date(Date.now() + 30 * 60 * 1000)
-
   const [address] = await db
     .select()
     .from(addresses)

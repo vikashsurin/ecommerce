@@ -8,13 +8,13 @@ import { eq, notInArray, sql } from "drizzle-orm"
 import { type DB } from "../../../db"
 
 export async function checkoutSessionCart(
-  db: any,
+  db: DB,
   userId: number,
   cartId: number,
   tx: DB = db
 ) {
   const pv = productVariants
-  const snapshot = await tx
+  const itemsSnapshot = await tx
     .select({
       productId: pv.productId,
       variantId: pv.id,
@@ -30,7 +30,7 @@ export async function checkoutSessionCart(
     .innerJoin(products, eq(pv.productId, products.id))
     .where(eq(cartItems.cartId, cartId))
 
-  const sanitizedSnapshot = snapshot.map((item) => ({
+  const sanitizedItemsSnapshot = itemsSnapshot.map((item) => ({
     ...item,
     attributes:
       typeof item.attributes === "string"
@@ -38,7 +38,7 @@ export async function checkoutSessionCart(
         : item.attributes,
   }))
 
-  const subtotal = snapshot.reduce(
+  const subtotal = sanitizedItemsSnapshot .reduce(
     (sum, item) => sum + item.unitPrice * item.quantity,
     0
   )
@@ -52,7 +52,7 @@ export async function checkoutSessionCart(
       cartId,
       subtotal: subtotal,
       total: subtotal,
-      items: sanitizedSnapshot,
+      items: sanitizedItemsSnapshot,
       status: "in_progress",
       expiresAt,
       updatedAt: new Date(),
@@ -67,7 +67,7 @@ export async function checkoutSessionCart(
       set: {
         subtotal,
         total: subtotal,
-        items: sanitizedSnapshot,
+        items: sanitizedItemsSnapshot,
         expiresAt,
         updatedAt: new Date(),
       },
